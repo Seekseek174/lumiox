@@ -4,7 +4,7 @@ const path = require('path');
 const config = require('../../core/config');
 const db = require('../../core/db');
 const logger = require('../../core/logger');
-const BACKUP_DIR = path.join(__dirname, '..', '..', 'backups');
+const BACKUP_DIR = path.join(require('os').homedir(), 'lumiox-backups');
 function einmalBackup(grund) {
   fs.mkdirSync(BACKUP_DIR, { recursive: true });
   const stamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 16);
