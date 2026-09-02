@@ -1724,5 +1724,26 @@ module.exports = function registriereApi(app) {
     res.json({ ok });
   });
 
+
+  // ═══ Studio-Systeme (auto-getriggerte Block-Ketten) ═══
+  r.get('/studio/systeme', (req, res) => {
+    const gid = String(req.query.guildId || '');
+    res.json({ liste: db.values('studio_systeme').filter((sy) => sy.guildId === gid) });
+  });
+  r.post('/studio/systeme', (req, res) => {
+    const gid = String(req.query.guildId || '');
+    const b = req.body || {};
+    const id = db.newId('sys_');
+    db.set('studio_systeme', id, {
+      id, guildId: gid, name: String(b.name || 'System').slice(0, 50),
+      trigger: String(b.trigger || 'memberJoin'),
+      nodes: Array.isArray(b.nodes) ? b.nodes : [],
+      edges: Array.isArray(b.edges) ? b.edges : [],
+      zeit: Date.now(),
+    });
+    res.json({ ok: true, id });
+  });
+  r.delete('/studio/systeme/:id', (req, res) => res.json({ ok: db.del('studio_systeme', req.params.id) }));
+
   app.use('/api', r);
 };
