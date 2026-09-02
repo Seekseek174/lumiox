@@ -18,13 +18,13 @@ function einmalBackup(grund) {
   return datei;
 }
 function aufraeumen() {
-  const s = config.get().backups || {};
+  const s = (config.get() || {}).backups || {};
   const max = Math.max(1, Math.min(50, s.maxAnzahl || 10));
   const liste = fs.readdirSync(BACKUP_DIR).filter((f) => f.startsWith('lumiox-backup-') && f.endsWith('.json')).sort();
   while (liste.length > max) fs.unlinkSync(path.join(BACKUP_DIR, liste.shift()));
 }
 function naechsterLauf() {
-  const s = config.get().backups || {};
+  const s = (config.get() || {}).backups || {};
   if (!s.enabled) return null;
   const [h, m] = String(s.uhrzeit || '04:00').split(':').map((n) => parseInt(n, 10) || 0);
   const jetzt = new Date();
