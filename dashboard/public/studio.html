@@ -5,8 +5,8 @@
 <title>Lumiox – Visual Command Studio</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#141419;--panel:#1b1c22;--panel2:#23242c;--line:#2a2b33;--text:#e8e9ee;--dim:#8b93a7;--red:#e8484f;--blue:#4aa3ff;--gruen:#34d399;--gelb:#fbbf24;--rot:#f43f5e;--cyan:#22d3ee;--lila:#9b59b6;--orange:#f7931a;--rosa:#e879f9;--indigo:#818cf8}
+*{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif}
 button{font-family:Inter;cursor:pointer}
 input,select,textarea{font-family:Inter}
@@ -34,30 +34,34 @@ input,select,textarea{font-family:Inter}
 .katT{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);padding:10px 4px 5px}
 .blk{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:7px;cursor:grab;display:flex;gap:10px;align-items:flex-start;transition:border-color .15s,transform .15s}
 .blk:hover{border-color:var(--c);transform:translateY(-1px)}
+.blk:active{cursor:grabbing}
 .blk .ico{width:32px;height:32px;border-radius:8px;background:var(--c);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
 .blk b{font-size:12.5px;display:block}
 .blk small{color:var(--dim);font-size:10.5px;line-height:1.35;display:block;margin-top:2px}
 #wrap{flex:1;position:relative;overflow:hidden;background:var(--bg);background-image:radial-gradient(rgba(255,255,255,.05) 1px,transparent 1px);background-size:24px 24px}
 #linien{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}
-.node{position:absolute;width:240px;background:var(--panel2);border:2px solid #3a3b45;border-radius:12px;box-shadow:0 10px 32px rgba(0,0,0,.55);z-index:5}
+.node{position:absolute;width:240px;background:var(--panel2);border:2px solid #3a3b45;border-radius:12px;box-shadow:0 10px 32px rgba(0,0,0,.55);z-index:5;user-select:none}
 .node.sel{border-color:var(--c);box-shadow:0 0 26px color-mix(in srgb,var(--c) 40%,transparent)}
 .node .kopf{display:flex;align-items:center;gap:9px;padding:10px 12px;cursor:grab;border-bottom:1px solid rgba(255,255,255,.06)}
+.node .kopf:active{cursor:grabbing}
 .node .kopf .ico{width:28px;height:28px;border-radius:8px;background:var(--c);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
 .node .kopf b{font-size:12.5px;flex:1}
 .node .del{color:var(--dim);cursor:pointer;font-size:13px;background:none;border:none;opacity:.6}
 .node .del:hover{color:var(--red);opacity:1}
-.node .txt{padding:8px 12px 10px;font-size:11px;color:var(--dim);line-height:1.45;word-break:break-word}
+.node .txt{padding:9px 12px 11px;font-size:11px;color:var(--dim);line-height:1.45;word-break:break-word}
 .node .txt b{color:var(--text)}
 .port{position:absolute;width:15px;height:15px;border-radius:50%;border:2.5px solid var(--bg);cursor:crosshair;z-index:10;transition:transform .12s}
 .port:hover{transform:scale(1.4)}
+.port.in{top:-8px;left:50%;transform:translateX(-50%);background:var(--blue)}
+.port.in:hover{transform:translateX(-50%) scale(1.35)}
 .port.out{bottom:-8px;left:50%;transform:translateX(-50%);background:var(--blue)}
 .port.out:hover{transform:translateX(-50%) scale(1.35)}
-.port.dann{bottom:-8px;left:26%;background:var(--gruen)}
+.port.dann{bottom:-8px;left:28%;background:var(--gruen)}
 .port.dann:hover{transform:scale(1.35)}
-.port.sonst{bottom:-8px;right:26%;background:var(--rot)}
+.port.sonst{bottom:-8px;right:28%;background:var(--rot)}
 .port.sonst:hover{transform:scale(1.35)}
-.plab{position:absolute;font-size:9px;font-weight:800;color:var(--gruen);bottom:-23px;left:18%}
-.plab2{position:absolute;font-size:9px;font-weight:800;color:var(--rot);bottom:-23px;right:18%}
+.plab{position:absolute;font-size:9px;font-weight:800;color:var(--gruen);bottom:-24px;left:20%}
+.plab2{position:absolute;font-size:9px;font-weight:800;color:var(--rot);bottom:-24px;right:20%}
 #zoomCtl{position:absolute;bottom:16px;right:16px;z-index:30;display:flex;flex-direction:column;gap:6px}
 #zoomCtl button{width:36px;height:36px;border-radius:8px;background:var(--panel2);border:1px solid var(--line);color:var(--text);font-size:16px;cursor:pointer}
 #zoomAnz{position:absolute;bottom:16px;right:60px;z-index:30;font:700 11px ui-monospace;color:var(--dim);background:var(--panel2);padding:5px 9px;border-radius:6px}
@@ -73,7 +77,7 @@ input,select,textarea{font-family:Inter}
 #modal .unter{font-size:11.5px;color:var(--dim);margin-bottom:12px;line-height:1.5}
 #modal label{display:block;font-size:12px;color:var(--dim);margin:12px 0 5px;font-weight:600}
 #modal input,#modal select,#modal textarea{width:100%;background:#0f1015;border:1px solid #33343d;border-radius:8px;color:var(--text);padding:9px 12px;font:13px Inter}
-#modal textarea{resize:vertical;min-height:60px}
+#modal textarea{resize:vertical;min-height:64px}
 #modal .chk{display:flex;gap:8px;align-items:center;font-size:13px;margin:12px 0}
 #modal .chk input{width:auto}
 #modal .btns{display:flex;gap:10px;margin-top:18px;justify-content:flex-end}
@@ -81,9 +85,11 @@ input,select,textarea{font-family:Inter}
 #modal .ok{background:linear-gradient(120deg,var(--cyan),var(--indigo));color:#fff}
 #modal .zu{background:#33343d;color:var(--text)}
 #toasts{position:fixed;bottom:20px;right:20px;z-index:400;display:flex;flex-direction:column;gap:8px}
-.toast{background:rgba(24,28,46,.96);border-left:4px solid var(--cyan);border-radius:10px;padding:12px 18px;font:500 13px Inter;box-shadow:0 10px 30px rgba(0,0,0,.5);animation:tI .25s ease}
+.toast{background:rgba(24,28,46,.96);border-left:4px solid var(--cyan);border-radius:10px;padding:12px 18px;font:500 13px Inter;color:var(--text);box-shadow:0 10px 30px rgba(0,0,0,.5);animation:tI .25s ease}
 .toast.ok{border-left-color:var(--gruen)}.toast.err{border-left-color:var(--red)}
 @keyframes tI{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:none}}
+#kurzbefehle{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:50;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:8px 16px;font-size:11px;color:var(--dim);display:flex;gap:14px}
+#kurzbefehle b{color:var(--text)}
 </style>
 </head>
 <body>
@@ -128,57 +134,10 @@ input,select,textarea{font-family:Inter}
     <div class="btns"><button class="zu" id="mZu">Abbrechen</button><button class="ok" id="mOk">Übernehmen</button></div>
   </div>
 </div>
-
-<div id="buch" style="position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:250;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)">
-  <div style="width:680px;max-width:94vw;max-height:86vh;overflow-y:auto;background:var(--panel2);border:1px solid #33343d;border-radius:14px;padding:22px">
-    <div style="display:flex;align-items:center;margin-bottom:14px">
-      <h3 style="font-size:16px;flex:1">📖 Nutz-Buch – Alles was du wissen musst</h3>
-      <button onclick="document.getElementById('buch').style.display='none'" style="background:none;border:none;color:#8b93a7;font-size:18px;cursor:pointer">✕</button>
-    </div>
-
-    <b style="font-size:14px;color:var(--cyan)">🏷️ Variablen (in Texten nutzbar)</b>
-    <table style="width:100%;font-size:12.5px;margin:8px 0 16px;border-collapse:collapse">
-      <tr><td style="padding:5px 8px;background:rgba(255,255,255,.04)"><b>{user}</b></td><td style="padding:5px 8px">Erwähnt den Nutzer (@ping)</td></tr>
-      <tr><td style="padding:5px 8px"><b>{username}</b></td><td style="padding:5px 8px">Nur der Name (ohne Ping)</td></tr>
-      <tr><td style="padding:5px 8px;background:rgba(255,255,255,.04)"><b>{server}</b></td><td style="padding:5px 8px">Name des Servers</td></tr>
-      <tr><td style="padding:5px 8px"><b>{member}</b></td><td style="padding:5px 8px">Mitglieder-Zahl</td></tr>
-      <tr><td style="padding:5px 8px"><b>{arg1} / {arg2}</b></td><td style="padding:5px 8px">Command-Argumente (wenn Optionen definiert)</td></tr>
-    </table>
-
-    <b style="font-size:14px;color:var(--magenta)">⌨️ Tastenkombinationen</b>
-    <table style="width:100%;font-size:12.5px;margin:8px 0 16px;border-collapse:collapse">
-      <tr><td style="padding:5px 8px;background:rgba(255,255,255,.04)"><b>Strg + S</b></td><td style="padding:5px 8px">Command speichern</td></tr>
-      <tr><td style="padding:5px 8px"><b>Strg + Z</b></td><td style="padding:5px 8px">Undo (rückgängig)</td></tr>
-      <tr><td style="padding:5px 8px;background:rgba(255,255,255,.04)"><b>Strg + Y</b></td><td style="padding:5px 8px">Redo (wiederherstellen)</td></tr>
-      <tr><td style="padding:5px 8px"><b>Entf</b></td><td style="padding:5px 8px">Ausgewählten Block löschen</td></tr>
-      <tr><td style="padding:5px 8px;background:rgba(255,255,255,.04)"><b>Strg + D</b></td><td style="padding:5px 8px">Block duplizieren</td></tr>
-      <tr><td style="padding:5px 8px"><b>Strg + C / Strg + V</b></td><td style="padding:5px 8px">Block kopieren / einfügen</td></tr>
-    </table>
-
-    <b style="font-size:14px;color:var(--gruen)">🖱️ Maus-Bedienung</b>
-    <table style="width:100%;font-size:12.5px;margin:8px 0 16px;border-collapse:collapse">
-      <tr><td style="padding:5px 8px;background:rgba(255,255,255,.04)"><b>Palette-Klick</b></td><td style="padding:5px 8px">Block auf die Leinwand</td></tr>
-      <tr><td style="padding:5px 8px"><b>Doppelklick Block</b></td><td style="padding:5px 8px">Felder bearbeiten</td></tr>
-      <tr><td style="padding:5px 8px;background:rgba(255,255,255,.04)"><b>Vom Punkt ziehen</b></td><td style="padding:5px 8px">Mit nächstem Block verbinden</td></tr>
-      <tr><td style="padding:5px 8px"><b>Rechtsklick Block</b></td><td style="padding:5px 8px">Menü: Bearbeiten/Duplizieren/Löschen</td></tr>
-      <tr><td style="padding:5px 8px;background:rgba(255,255,255,.04)"><b>Leere Fläche ziehen</b></td><td style="padding:5px 8px">Ansicht verschieben</td></tr>
-      <tr><td style="padding:5px 8px"><b>Scrollen</b></td><td style="padding:5px 8px">Zoomen</td></tr>
-    </table>
-
-    <b style="font-size:14px;color:var(--gelb)">💡 Profi-Tipps</b>
-    <ul style="font-size:12.5px;color:var(--dim);margin:8px 0 0 18px;line-height:1.8">
-      <li>Bedingungs-Blöcke haben <b>zwei Punkte</b>: 🟢 DANN und 🔴 SONST – jedes verbindet eine eigene Kette!</li>
-      <li>Nutze <b>⛔ Stop Flow</b> um Ketten früh zu beenden (spart Ausführung)</li>
-      <li><b>⏱️ Wait</b> max. 60 s – für längeres nutze mehrere Wait-Blöcke</li>
-      <li><b>📝 Variablen</b> speichern Werte – mit <b>Compare Variable</b> kannst du sie später prüfen!</li>
-      <li><b>🌐 API-Block</b> holt live Daten aus dem Internet → in Variable speichern → mit IF vergleichen</li>
-    </ul>
-  </div>
-</div>
 <div id="toasts"></div>
+<div id="kurzbefehle"><b>Strg+Z</b> Undo · <b>Strg+Y</b> Redo · <b>Entf</b> Löschen · <b>Strg+S</b> Speichern · <b>Strg+D</b> Duplizieren · <b>Rechtsklick</b> Menü</div>
 <script>
-'use strict';
-// ═══ KATALOG: 40+ Blöcke in 12 Kategorien ═══
+// ══════════════════ KATALOG: 40+ Blöcke ══════════════════
 const KAT = [
   { typ:'respond', kat:'message', c:'#34d399', ico:'💬', name:'Send Reply', desc:'Antwort an den Nutzer', felder:[
     {k:'text',l:'Text',t:'textarea',d:'Hallo {user}! 🎉'},{k:'title',l:'Embed-Titel (optional)',t:'text'},
@@ -194,6 +153,14 @@ const KAT = [
     {k:'kanal',l:'Ziel-Kanal-ID',t:'text'}]},
   { typ:'poll', kat:'message', c:'#9b59b6', ico:'📊', name:'Mini Poll', desc:'Umfrage starten', felder:[
     {k:'frage',l:'Frage',t:'text',d:'Wie findet ihr das?'},{k:'optionen',l:'Optionen (Komma)',t:'text',d:'Ja,Nein'}]},
+  { typ:'zufalls_nachricht', kat:'message', c:'#f7931a', ico:'🎲', name:'Random Message', desc:'Zufällige Antwort', felder:[
+    {k:'nachrichten',l:'Texte mit | trennen',t:'text',d:'Hi! | Hallo! | Servus!'}]},
+  { typ:'embed_felder', kat:'message', c:'#e879f9', ico:'🖼️', name:'Embed with Fields', desc:'Embed mit Feldern', felder:[
+    {k:'title',l:'Titel',t:'text'},{k:'text',l:'Text',t:'textarea',d:'Beschreibung'},
+    {k:'felder',l:'Felder (Name=Wert | N2=W2)',t:'text'},{k:'color',l:'Farbe HEX',t:'text',d:'5865F2'}]},
+  { typ:'webseite', kat:'message', c:'#46c2cb', ico:'🌐', name:'Website Embed', desc:'Embed mit Link', felder:[
+    {k:'titel',l:'Titel',t:'text'},{k:'url',l:'URL',t:'text'},
+    {k:'text',l:'Text',t:'textarea'},{k:'bild',l:'Bild-URL',t:'text'}]},
   { typ:'comparison', kat:'conditions', c:'#fbbf24', ico:'⚖️', name:'Comparison', desc:'Zwei Werte vergleichen', felder:[
     {k:'wertA',l:'Wert A',t:'text'},{k:'op',l:'Operator',t:'select',opts:['>','<','=','>=','<=']},
     {k:'wertB',l:'Wert B',t:'text'},{k:'dann',l:'Dann',t:'nested'},{k:'sonst',l:'Sonst',t:'nested'}]},
@@ -230,8 +197,8 @@ const KAT = [
     {k:'user',l:'User-ID',t:'text'},{k:'grund',l:'Grund',t:'text',d:'Kick'}]},
   { typ:'ban', kat:'server', c:'#C0392B', ico:'🔨', name:'Ban Member', desc:'Mitglied bannen', felder:[
     {k:'user',l:'User-ID',t:'text'},{k:'grund',l:'Grund',t:'text',d:'Ban'}]},
-  { typ:'timeout', kat:'server', c:'#fbbf24', ico:'⏳', name:'Timeout', desc:'Timeout in Minuten', felder:[
-    {k:'user',l:'User-ID',t:'text'},{k:'min',l:'Minuten',t:'number',d:10}]},
+  { typ:'timeout_user', kat:'server', c:'#fbbf24', ico:'⏳', name:'Timeout', desc:'Timeout in Minuten', felder:[
+    {k:'user',l:'User-ID',t:'text'},{k:'min',l:'Minuten',t:'number',d:10},{k:'grund',l:'Grund',t:'text',d:'Timeout'}]},
   { typ:'nickname', kat:'server', c:'#818cf8', ico:'✏️', name:'Change Nickname', desc:'Nickname ändern', felder:[
     {k:'user',l:'User-ID',t:'text'},{k:'name',l:'Neuer Name',t:'text'}]},
   { typ:'purge', kat:'server', c:'#e67e22', ico:'🧹', name:'Purge Messages', desc:'Nachrichten löschen', felder:[
@@ -250,6 +217,9 @@ const KAT = [
     {k:'equation',l:'Rechnung',t:'text',d:'2+2'},{k:'name',l:'Name',t:'text',d:'result'}]},
   { typ:'delete_var', kat:'variables', c:'#C0392B', ico:'🗑️', name:'Delete Variable', desc:'Variable löschen', felder:[
     {k:'name',l:'Name',t:'text',d:'meineVar'}]},
+  { typ:'var_vergleich', kat:'variables', c:'#8e44ad', ico:'⚖️', name:'Compare Variable', desc:'Variable = Wert?', felder:[
+    {k:'name',l:'Name',t:'text',d:'meineVar'},{k:'wert',l:'Vergleich mit',t:'text'},
+    {k:'dann',l:'Gleich',t:'nested'},{k:'sonst',l:'Ungleich',t:'nested'}]},
   { typ:'fetch_api', kat:'api', c:'#4aa3ff', ico:'🌐', name:'Send API Request', desc:'HTTP GET → JSON', felder:[
     {k:'url',l:'API-URL',t:'text'},{k:'varName',l:'In Variable',t:'text',d:'api'}]},
   { typ:'run_loop', kat:'loops', c:'#2ecc71', ico:'🔁', name:'Run a Loop', desc:'X-mal ausführen', felder:[
@@ -258,7 +228,10 @@ const KAT = [
   { typ:'join_voice', kat:'voice', c:'#9b59b6', ico:'🔊', name:'Join Voice', desc:'Voice betreten', felder:[
     {k:'kanal',l:'Voice-Kanal-ID',t:'text'}]},
   { typ:'leave_voice', kat:'voice', c:'#95a5a6', ico:'🔇', name:'Leave Voice', desc:'Voice verlassen', felder:[]},
-  { typ:'start', kat:'start', c:'#34d399', ico:'▶️', name:'START', desc:'Beginn des Befehls', felder:[]},
+  { typ:'cooldown_user', kat:'conditions', c:'#e8484f', ico:'⏳', name:'Cooldown (pro User)', desc:'Nutzer-Wartezeit', felder:[
+    {k:'minuten',l:'Minuten',t:'number',d:5}]},
+  { typ:'log', kat:'other', c:'#95a5a6', ico:'📜', name:'Mod-Log Eintrag', desc:'Ins Protokoll', felder:[
+    {k:'text',l:'Text',t:'text',d:'Block-Ereignis'}]},
   { typ:'abbruch', kat:'other', c:'#33343d', ico:'⛔', name:'Stop Flow', desc:'Kette beenden', felder:[]},
 ];
 const KAT_NAMEN = { start:'▶️ Start', message:'💬 Message', conditions:'❓ Conditions', roles:'🏷️ Roles',
@@ -267,9 +240,10 @@ const KAT_NAMEN = { start:'▶️ Start', message:'💬 Message', conditions:'�
 
 // ═══ STATE ═══
 let nodes = [], edges = [], nid = 1, selId = null, connect = null;
-let panX = 0, panY = 0, panAktiv = false, panStart = null;
+let panX = 0, panY = 0, panAktiv = false, panStart = null, panning = false;
 let zoom = 1, palTab = 'message', palFilter = '', editId = null;
 let undoStack = [], redoStack = [];
+let kopiert = null;
 const WRAP = document.getElementById('wrap');
 const SVG = document.getElementById('linien');
 
@@ -279,13 +253,21 @@ const esc = (t) => String(t ?? '').replace(/[<>&"']/g, (c) => ({'<':'&lt;','>':'
 function toast(msg, typ) {
   const t = document.createElement('div');
   t.className = 'toast ' + (typ || ''); t.textContent = msg;
-  t.style.cssText = 'background:rgba(24,28,46,.96);border-left:4px solid ' + (typ === 'ok' ? '#34d399' : typ === 'err' ? '#f43f5e' : '#22d3ee') + ';border-radius:10px;padding:12px 18px;font:500 13px Inter;color:#e8e9ee;box-shadow:0 10px 30px rgba(0,0,0,.5)';
   document.getElementById('toasts').appendChild(t);
   setTimeout(() => t.remove(), 3200);
 }
 function katVon(typ) { return KAT.find((k) => k.typ === typ) || { typ:'start', c:'#34d399', ico:'▶️', name:'START' }; }
-function markDirty() { document.getElementById('saveAnz').textContent = '⚠ Ungespeichert'; }
+function saveAnzeige(txt) { const e = document.getElementById('saveAnz'); e.textContent = txt; e.className = txt.includes('✓') ? '' : 'warn'; }
 function snapshot() { undoStack.push(JSON.stringify({ nodes, edges })); if (undoStack.length > 50) undoStack.shift(); redoStack = []; markDirty(); }
+function markDirty() { document.getElementById('saveAnz').textContent = '⚠ Ungespeicherte Änderungen'; }
+async function API(m, u, b) {
+  const o = { method: m, headers: { 'Content-Type': 'application/json' } };
+  if (b !== undefined) o.body = JSON.stringify(b);
+  const r = await fetch('/api' + u, o);
+  const d = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(d.error || 'HTTP ' + r.status);
+  return d;
+}
 
 // ═══ UNDO / REDO ═══
 function doUndo() { if (!undoStack.length) return toast('Nichts zum Undo', 'err');
@@ -294,10 +276,6 @@ function doUndo() { if (!undoStack.length) return toast('Nichts zum Undo', 'err'
 function doRedo() { if (!redoStack.length) return toast('Nichts zum Redo', 'err');
   undoStack.push(JSON.stringify({ nodes, edges }));
   const st = JSON.parse(redoStack.pop()); nodes = st.nodes; edges = st.edges; render(); }
-document.getElementById('buchB').addEventListener('click', () => {
-  const b = document.getElementById('buch');
-  if (b) b.style.display = 'flex';
-});
 document.getElementById('undoB').addEventListener('click', doUndo);
 document.getElementById('redoB').addEventListener('click', doRedo);
 
@@ -311,9 +289,9 @@ function palette() {
   tabs.querySelectorAll('button').forEach((b) => b.addEventListener('click', () => { aktPalKat = b.dataset.k; palette(); }));
   const box = document.getElementById('palListe');
   box.innerHTML = '';
-  const titel = document.createElement('div');
-  titel.className = 'katT'; titel.textContent = KAT_NAMEN[aktPalKat] || aktPalKat;
-  box.appendChild(titel);
+  const katTitel = document.createElement('div');
+  katTitel.className = 'katT'; katTitel.textContent = KAT_NAMEN[aktPalKat] || aktPalKat;
+  box.appendChild(katTitel);
   KAT.filter((k) => k.kat === aktPalKat)
      .filter((k) => !palFilter || k.name.toLowerCase().includes(palFilter) || k.desc.toLowerCase().includes(palFilter))
      .forEach((k) => {
@@ -336,59 +314,7 @@ function addNode(kat) {
 function delNode(id) { snapshot(); nodes = nodes.filter((n) => n.id !== id);
   edges = edges.filter((e) => e.from !== id && e.to !== id); render(); }
 
-// ═══ RENDER ═══
-function render() {
-  WRAP.querySelectorAll('.node').forEach((n) => n.remove());
-  SVG.innerHTML = '';
-  for (const e of edges) {
-    const von = nodes.find((n) => n.id === e.from), zu = nodes.find((n) => n.id === e.to);
-    if (!von || !zu) continue;
-    const p1 = portPos(von, e.fromPort);
-    const p2 = { x: zu.x + 120 * zoom - panX, y: zu.y + 14 * zoom - panY };
-    const mx = (p1.x + p2.x) / 2;
-    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    path.setAttribute('d', 'M' + p1.x + ',' + p1.y + ' C' + mx + ',' + p1.y + ' ' + mx + ',' + p2.y + ' ' + p2.x + ',' + p2.y);
-    path.setAttribute('stroke', e.fromPort === 'dann' ? '#34d399' : e.fromPort === 'sonst' ? '#f43f5e' : '#4aa3ff');
-    path.setAttribute('stroke-width', '2.5'); path.setAttribute('fill', 'none');
-    path.style.filter = 'drop-shadow(0 0 5px currentColor)';
-    SVG.appendChild(path);
-  }
-  for (const n of nodes) {
-    const k = katVon(n.typ);
-    const d = document.createElement('div');
-    d.className = 'node' + (selId === n.id ? ' sel' : '');
-    d.style.left = (n.x - panX) + 'px'; d.style.top = (n.y - panY) + 'px';
-    d.style.setProperty('--c', k.c); d.dataset.id = n.id;
-    d.style.width = (240 * zoom) + 'px';
-    const condPorts = ['if_role','if_money','comparison','random','permission','channel_cond','user_cond'].includes(n.typ);
-    const ports = condPorts
-      ? '<span class="port dann" data-port="dann"></span><span class="plab">DANN</span>' +
-        '<span class="port sonst" data-port="sonst"></span><span class="plab2">SONST</span>'
-      : '<span class="port out" data-port="out"></span>';
-    d.innerHTML = '<div class="kopf"><div class="ico">' + k.ico + '</div><b>' + esc(k.name) + '</b>' +
-      (n.typ !== 'start' ? '<button class="del">✕</button>' : '') + '</div>' +
-      '<div class="txt"><b>' + esc(summarize(n)) + '</b></div>' + ports;
-    d.querySelector('.kopf').addEventListener('mousedown', (e) => {
-      if (e.button !== 0) return; e.preventDefault();
-      const sx = e.clientX - n.x, sy = e.clientY - n.y;
-      const mv = (ev) => { n.x = ev.clientX - sx; n.y = ev.clientY - sy; render(); };
-      const up = () => { removeEventListener('mousemove', mv); removeEventListener('mouseup', up); };
-      addEventListener('mousemove', mv); addEventListener('mouseup', up);
-    });
-    d.querySelector('.del')?.addEventListener('click', (e) => { e.stopPropagation(); delNode(n.id); });
-    d.addEventListener('dblclick', () => editNode(n));
-    d.addEventListener('click', (e) => { e.stopPropagation(); selId = n.id; render(); });
-    d.addEventListener('contextmenu', (e) => { e.preventDefault(); selId = n.id; kontext(e.clientX, e.clientY, n.id); });
-    d.querySelectorAll('.port').forEach((port) => {
-      port.addEventListener('mousedown', (e) => {
-        e.preventDefault(); e.stopPropagation();
-        connect = { node: n.id, port: port.dataset.port };
-      });
-    });
-    WRAP.appendChild(d);
-  }
-  minimap();
-}
+// ═══ PORT-POSITION ═══
 function portPos(n, port) {
   const nodeEl = document.querySelector('.node[data-id="' + n.id + '"]');
   const h = nodeEl ? nodeEl.offsetHeight : 60;
@@ -422,16 +348,77 @@ function minimap() {
   }
 }
 
-// ═══ CONNECT & PAN ═══
+// ═══ RENDER ═══
+function render() {
+  WRAP.querySelectorAll('.node').forEach((n) => n.remove());
+  SVG.innerHTML = '';
+  // Alle Koordinaten werden mit panX/panY und zoom transformiert
+  const tx = (x) => (x * zoom) - panX;
+  const ty = (y) => (y * zoom) - panY;
+  for (const e of edges) {
+    const von = nodes.find((n) => n.id === e.from), zu = nodes.find((n) => n.id === e.to);
+    if (!von || !zu) continue;
+    const p1 = { x: tx(von.x) + 120 * zoom, y: ty(von.y) + 55 * zoom };
+    const p2 = { x: tx(zu.x), y: ty(zu.y) + 14 * zoom };
+    const mx = (p1.x + p2.x) / 2;
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', 'M' + p1.x + ',' + p1.y + ' C' + mx + ',' + p1.y + ' ' + mx + ',' + p2.y + ' ' + p2.x + ',' + p2.y);
+    path.setAttribute('stroke', e.fromPort === 'dann' ? '#34d399' : e.fromPort === 'sonst' ? '#f43f5e' : '#4aa3ff');
+    path.setAttribute('stroke-width', '2.5'); path.setAttribute('fill', 'none');
+    SVG.appendChild(path);
+  }
+  for (const n of nodes) {
+    const k = katVon(n.typ);
+    const d = document.createElement('div');
+    d.className = 'node' + (selId === n.id ? ' sel' : '');
+    d.style.left = tx(n.x) + 'px'; d.style.top = ty(n.y) + 'px';
+    d.style.setProperty('--c', k.c); d.dataset.id = n.id;
+    d.style.width = (240 * zoom) + 'px';
+    d.style.transform = 'scale(' + zoom + ')'; d.style.transformOrigin = 'top left';
+    const condPorts = ['if_role','if_money','comparison','random','permission','channel_cond','user_cond','var_vergleich'].includes(n.typ);
+    const ports = condPorts
+      ? '<span class="port dann" data-port="dann"></span><span class="plab">DANN</span>' +
+        '<span class="port sonst" data-port="sonst"></span><span class="plab2">SONST</span>'
+      : '<span class="port out" data-port="out"></span>';
+    d.innerHTML = '<div class="kopf"><div class="ico">' + k.ico + '</div><b>' + esc(k.name) + '</b>' +
+      (n.typ !== 'start' ? '<button class="del">✕</button>' : '') + '</div>' +
+      '<div class="txt"><b>' + esc(summarize(n)) + '</b></div>' + ports;
+    d.querySelector('.kopf').addEventListener('mousedown', (e) => {
+      if (e.button !== 0) return; e.preventDefault();
+      const sx = e.clientX - tx(n.x), sy = e.clientY - ty(n.y);
+      const mv = (ev) => { n.x = (ev.clientX - sx + panX) / zoom; n.y = (ev.clientY - sy + panY) / zoom; render(); };
+      const up = () => { removeEventListener('mousemove', mv); removeEventListener('mouseup', up); };
+      addEventListener('mousemove', mv); addEventListener('mouseup', up);
+    });
+    d.querySelector('.del')?.addEventListener('click', (e) => { e.stopPropagation(); delNode(n.id); });
+    d.addEventListener('dblclick', () => editNode(n));
+    d.addEventListener('click', (e) => { e.stopPropagation(); selId = n.id; render(); });
+    d.addEventListener('contextmenu', (e) => { e.preventDefault(); selId = n.id; kontext(e.clientX, e.clientY, n.id); });
+    d.querySelectorAll('.port').forEach((port) => {
+      port.addEventListener('mousedown', (e) => {
+        e.preventDefault(); e.stopPropagation();
+        connect = { node: n.id, port: port.dataset.port };
+      });
+    });
+    WRAP.appendChild(d);
+  }
+  minimap();
+}
+
+// ═══ CONNECT & PAN & ZOOM ═══
 addEventListener('mousemove', (e) => {
   if (connect) {
     const r = WRAP.getBoundingClientRect();
     const tmp = document.getElementById('tmpL');
     if (tmp) { tmp.setAttribute('x2', e.clientX - r.left); tmp.setAttribute('y2', e.clientY - r.top); }
-  }
   if (panning) {
     panX += e.clientX - panStart.x; panY += e.clientY - panStart.y;
-    panStart = { x: e.clientX, y: e.clientY }; render();
+    panStart = { x: e.clientX, y: e.clientY };
+    WRAP.querySelectorAll('.node').forEach((n) => {
+      const el = n;
+      el.style.left = (parseFloat(el.style.left) + (e.clientX - panStart.x === 0 ? 0 : 0)) + 'px';
+    });
+    render(); // WICHTIG: render() verschiebt alles korrekt, da panX/panY einfließen
   }
 });
 addEventListener('mouseup', (e) => {
@@ -453,27 +440,17 @@ WRAP.addEventListener('mousedown', (e) => {
   }
 });
 document.addEventListener('click', () => { document.getElementById('ctx').style.display = 'none'; });
-
-// ═══ ZOOM & PAN v2 ═══
-function zoomAnPunkt(f, mx, my) {
-  // Zoom um einen festen Punkt: Datenpunkt unter der Maus bleibt fix
-  const [wx, wy] = pxD(mx, my);
-  zoom = Math.max(0.25, Math.min(2.5, zoom * f));
-  // Verschiebung anpassen, damit (wx,wy) unter der Maus bleibt
-  const B = 240 * zoom; // Block-Breite skaliert nicht, aber Koordinaten:
-  // view wird über panX/panY gesteuert: wir zentrieren auf den Datenpunkt
-  const zielPx = mx + panX, zielPy = my + panY;
-  panX = zielPx - wx * zoom;
-  panY = zielPy - wy * zoom;
+function setZoom(f) {
+  zoom = Math.max(0.3, Math.min(2.5, zoom * f));
   document.getElementById('zoomAnz').textContent = Math.round(zoom * 100) + ' %';
   render();
 }
-WRAP.addEventListener('wheel', (e) => {
-  e.preventDefault();
-  const r = WRAP.getBoundingClientRect();
-  const mx = e.clientX - r.left, my = e.clientY - r.top;
-  zoomAnPunkt(e.deltaY > 0 ? 1/1.15 : 1.15, mx, my);
-}, { passive: false });
+document.getElementById('zIn').addEventListener('click', () => setZoom(1.2));
+document.getElementById('zOut').addEventListener('click', () => setZoom(1 / 1.2));
+document.getElementById('zFit').addEventListener('click', () => { zoom = 1;
+  document.getElementById('zoomAnz').textContent = '100 %'; render(); });
+WRAP.addEventListener('wheel', (e) => { e.preventDefault(); setZoom(e.deltaY > 0 ? 1/1.12 : 1.12); }, { passive: false });
+
 // ═══ KONTEXT-MENÜ ═══
 function kontext(x, y, id) {
   const c = document.getElementById('ctx');
@@ -552,44 +529,25 @@ async function speichern() {
       roles: [...document.getElementById('cRoles').selectedOptions].map((o) => o.value),
       guildId: gid(), nodes, edges };
     if (editId) payload.id = editId;
-    await APIPOST('/studio/befehle', payload);
+    await API('POST', '/studio/befehle', payload);
     editId = null;
     document.getElementById('saveAnz').textContent = '✓ Gespeichert: ' + new Date().toLocaleTimeString('de-DE');
     toast('💾 Gespeichert & live geladen! /' + name, 'ok');
   } catch (e) { toast('Fehler: ' + e.message, 'err'); }
 }
-async function APIPOST(u, b) {
-  const r = await fetch('/api' + u, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(b) });
-  const d = await r.json().catch(() => ({}));
-  if (!r.ok) throw new Error(d.error || 'HTTP ' + r.status);
-  return d;
-}
 document.getElementById('saveB').addEventListener('click', speichern);
 addEventListener('keydown', (e) => {
-  // ═══ STRG+D = Block duplizieren ═══
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); speichern(); }
+  if ((e.ctrlKey || e.metaKey) && e.key === 'z') { e.preventDefault(); doUndo(); }
+  if ((e.ctrlKey || e.metaKey) && e.key === 'y') { e.preventDefault(); doRedo(); }
+  if (e.key === 'Delete' && selId && document.activeElement.tagName !== 'INPUT') { delNode(selId); }
   if ((e.ctrlKey || e.metaKey) && e.key === 'd' && selId) {
     e.preventDefault();
     const n = nodes.find((x) => x.id === selId);
     if (n) { const kopie = JSON.parse(JSON.stringify(n));
-      kopie.id = 'n' + Date.now(); kopie.x += 50; kopie.y += 50;
-      nodes.push(kopie); render(); toast('Block dupliziert ✔', 'ok'); }
+      kopie.id = 'n' + (nid++); kopie.x += 50; kopie.y += 50;
+      nodes.push(kopie); render(); toast('Dupliziert ✔', 'ok'); }
   }
-  // ═══ STRG+C = Block kopieren ═══
-  if ((e.ctrlKey || e.metaKey) && e.key === 'c' && selId) {
-    const n = nodes.find((x) => x.id === selId);
-    if (n) { window.__zwischablag = JSON.parse(JSON.stringify(n)); toast('Block kopiert 📋', 'ok'); }
-  }
-  // ═══ STRG+V = Block einfügen ═══
-  if ((e.ctrlKey || e.metaKey) && e.key === 'v' && window.__zwischablag) {
-    e.preventDefault();
-    const kopie = JSON.parse(JSON.stringify(window.__zwischablag));
-    kopie.id = 'n' + Date.now(); kopie.x += 50; kopie.y += 50;
-    nodes.push(kopie); render(); toast('Block eingefügt ✔', 'ok');
-  }
-  if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); speichern(); } // __strgDV
-  if ((e.ctrlKey || e.metaKey) && e.key === 'z') { e.preventDefault(); doUndo(); }
-  if ((e.ctrlKey || e.metaKey) && e.key === 'y') { e.preventDefault(); doRedo(); }
-  if (e.key === 'Delete' && selId && document.activeElement.tagName !== 'INPUT') { delNode(selId); }
 });
 
 // ═══ IMPORT / EXPORT ═══
@@ -615,7 +573,7 @@ document.getElementById('impB').addEventListener('click', () => {
   i.click();
 });
 
-// ═══ ROLLEN LADEN ═══
+// ═══ ROLLEN ═══
 fetch('/api/roles').then((r) => r.json()).then((r) => {
   document.getElementById('cRoles').innerHTML = r.liste.map((x) =>
     '<option value="' + esc(x.id) + '">' + esc(x.name) + '</option>').join('');
@@ -643,33 +601,6 @@ fetch('/api/roles').then((r) => r.json()).then((r) => {
   nid = 1;
   render();
 })();
-// ═══ PAN: Pfeiltasten + Shift-Ziehen ═══
-addEventListener('keydown', (e) => {
-  if (document.activeElement && ['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)) return;
-  const schritt = 80;
-  if (e.key === 'ArrowLeft')  { panX += schritt; render(); }
-  if (e.key === 'ArrowRight') { panX -= schritt; render(); }
-  if (e.key === 'ArrowUp')    { panY += schritt; render(); }
-  if (e.key === 'ArrowDown')  { panY -= schritt; render(); }
-});
-// Shift + ziehen = Pan (auch im Zeichen-Modus!)
-let shiftPan = null;
-WRAP.addEventListener('mousedown', (e) => {
-  if (e.shiftKey && e.button === 0) {
-    shiftPan = { x: e.clientX, y: e.clientY };
-    e.preventDefault();
-  }
-});
-addEventListener('mousemove', (e) => {
-  if (shiftPan) {
-    panX += e.clientX - shiftPan.x;
-    panY += e.clientY - shiftPan.y;
-    shiftPan = { x: e.clientX, y: e.clientY };
-    render();
-  }
-});
-addEventListener('mouseup', () => { shiftPan = null; });
-
 palette();
 </script>
 </body>
