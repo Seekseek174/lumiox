@@ -1588,6 +1588,14 @@ page.appendChild(karte('🧩 Command-Studio', '' +
       options: opt }));
   }
 
+  // ══════════════════ SEITE: DESIGN ══════════════════
+  async function seiteDesign(page) {
+    page.appendChild(el('<div class="panel card"><h3>🎨 Design-Editor</h3><p class="dim small">Alle Regler wirken sofort live. Dein Design wird pro Account gespeichert.</p></div>'));
+    const host = el('<div style="display:flex;flex-direction:column;gap:16px"></div>');
+    page.appendChild(host);
+    Design.editor(host);
+  }
+
   // ══════════════════ SEITE: BACKUP ══════════════════
   async function seiteBackup(page) {
     page.appendChild(karte('💾 Backup', `
