@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>LUMIOX – COMING SOON</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--cyan:#22d3ee;--indigo:#818cf8;--magenta:#e879f9;--text:#eef1f7;--dim:#94a3b8}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:#03040a;color:var(--text);font-family:'Inter',system-ui,sans-serif;overflow:hidden}
+#sterne3d{position:fixed;inset:0;z-index:0}
+.vig{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,.8))}
+.korn{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.4;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.85'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E")}
+.stage{position:fixed;inset:0;z-index:5}
+.scene{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2.5vmin;opacity:0;animation:sz var(--dur) ease var(--dl) forwards}
+@keyframes sz{0%{opacity:0}5%{opacity:1}90%{opacity:1}100%{opacity:0;visibility:hidden}}
+.scene.last{animation-name:szEnde}
+@keyframes szEnde{0%{opacity:0;transform:scale(1.03)}6%{opacity:1;transform:none}100%{opacity:1}}
+.kick{font-size:1.9vmin;letter-spacing:.6em;color:var(--cyan);text-transform:uppercase;opacity:0;animation:rein 1s ease calc(var(--dl) + .5s) forwards}
+@keyframes rein{to{opacity:1}}
+h2{font-size:6vmin;font-weight:800;text-align:center;line-height:1.2}
+/* ── 3D-Sternenfeld ── */
+#warpcanvas{position:fixed;inset:0;z-index:0}
+/* ── 3D-Logo ── */
+.logo3d{position:relative;transform-style:preserve-3d;animation:logoTilt 8s ease-in-out infinite alternate;transform:rotateX(12deg)}
+@keyframes logoTilt{from{transform:rotateX(14deg) rotateY(-10deg)}to{transform:rotateX(6deg) rotateY(10deg)}}
+.logo-ebene{font-size:14vmin;font-weight:800;letter-spacing:.04em;line-height:1;position:absolute;left:0;top:0;white-space:nowrap}
+.logo-stack{position:relative;width:max-content;height:15vmin;transform-style:preserve-3d}
+.logo-stack .eb1{color:transparent;-webkit-text-stroke:1px rgba(34,211,238,.25);transform:translateZ(-60px);animation:rein 1.2s ease calc(var(--dl) + .5s) forwards;opacity:0}
+.logo-stack .eb2{color:transparent;-webkit-text-stroke:1px rgba(129,140,248,.45);transform:translateZ(-30px);animation:rein 1.2s ease calc(var(--dl) + .8s) forwards;opacity:0}
+.logo-stack .eb3{background:linear-gradient(120deg,var(--cyan),var(--indigo) 55%,var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent;transform:translateZ(0);filter:drop-shadow(0 0 30px rgba(34,211,238,.5));animation:rein 1.2s ease calc(var(--dl) + 1.1s) forwards;opacity:0}
+/* ── 3D-Würfel ── */
+.cube-wrap{perspective:900px;width:22vmin;height:22vmin;opacity:0;animation:rein 1s ease calc(var(--dl) + .8s) forwards}
+.cube{position:relative;width:100%;height:100%;transform-style:preserve-3d;animation:spin 14s linear infinite}
+@keyframes spin{from{transform:rotateX(-15deg) rotateY(0)}to{transform:rotateX(-15deg) rotateY(360deg)}}
+.face{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1vmin;
+  background:rgba(13,18,36,.85);border:2px solid var(--cyan);border-radius:2vmin;
+  box-shadow:inset 0 0 40px rgba(34,211,238,.15)}
+.face b{font-size:2vmin}
+.face .ico{font-size:7vmin}
+.f1{transform:translateZ(11vmin)}.f2{transform:rotateY(180deg) translateZ(11vmin)}
+.f3{transform:rotateY(90deg) translateZ(11vmin)}.f4{transform:rotateY(-90deg) translateZ(11vmin)}
+.f5{transform:rotateX(90deg) translateZ(11vmin)}.f6{transform:rotateX(-90deg) translateZ(11vmin)}
+/* ── 3D-Karten-Flug ── */
+.karten{perspective:1200px;display:grid;grid-template-columns:repeat(2,30vmin);gap:3vmin}
+.k3d{width:30vmin;height:30vmin;background:rgba(13,18,36,.9);border:1px solid rgba(255,255,255,.14);border-radius:2vmin;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.2vmin;
+  opacity:0;animation:kIn 1s cubic-bezier(.22,1,.36,1) forwards;animation-delay:calc(var(--dl) + var(--d));
+  box-shadow:0 25px 60px rgba(0,0,0,.6)}
+.k3d .ico{font-size:6vmin}.k3d b{font-size:2vmin}.k3d small{color:var(--dim);font-size:1.4vmin;text-align:center;padding:0 1vmin}
+@keyframes kIn{from{opacity:0;transform:rotateY(70deg) translateZ(-200px)}to{opacity:1;transform:rotateY(0) translateZ(0)}}
+/* ── COMING SOON ── */
+.soon{font-size:11vmin;font-weight:800;letter-spacing:.12em;text-align:center;line-height:1.05;
+  transform-style:preserve-3d;animation:soon3d 4s ease-in-out infinite alternate}
+@keyframes soon3d{from{transform:perspective(600px) rotateX(12deg) rotateY(-6deg)}to{transform:perspective(600px) rotateX(-8deg) rotateY(6deg)}}
+.soon span{display:inline-block}
+.soon .c1{color:var(--cyan);text-shadow:0 1px 0 #0e7490,0 2px 0 #0b5e73,0 3px 0 #094a5c,0 4px 0 #073745,0 5px 0 #05242d,0 6px 0 #031216,0 10px 30px rgba(34,211,238,.6)}
+.soon .c2{color:var(--magenta);text-shadow:0 1px 0 #9d174d,0 2px 0 #7f1240,0 3px 0 #610e33,0 4px 0 #430a25,0 5px 0 #250617,0 6px 0 #0d0208,0 10px 30px rgba(232,121,249,.6)}
+.datum{font-size:2.4vmin;letter-spacing:.5em;color:var(--dim);text-transform:uppercase}
+.progress{width:50vmin;height:.7vmin;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden;opacity:0;animation:rein 1s ease calc(var(--dl) + 2s) forwards}
+.progress i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--cyan),var(--magenta));animation:fuelle 6s ease calc(var(--dl) + 2.5s) forwards}
+@keyframes fuelle{to{width:78%}}
+.cta-pill{font-family:ui-monospace,monospace;font-size:2.4vmin;background:rgba(13,18,36,.9);border:1px solid rgba(255,255,255,.18);padding:1.5vmin 3vmin;border-radius:99px;opacity:0;animation:rein .8s ease calc(var(--dl) + 3s) forwards}
+.cta-btn{font-size:2.7vmin;font-weight:700;color:#fff;background:linear-gradient(120deg,var(--cyan),var(--indigo),var(--magenta));border:none;padding:2vmin 4.6vmin;border-radius:99px;animation:puls 1.5s ease-in-out infinite}
+@keyframes puls{0%,100%{box-shadow:0 0 20px rgba(34,211,238,.5)}50%{box-shadow:0 0 48px rgba(232,121,249,.7)}}
+.support{display:flex;align-items:center;gap:1.4vmin;border:1px solid rgba(52,211,153,.45);border-radius:99px;padding:1.2vmin 2.6vmin;font-size:1.9vmin;opacity:0;animation:rein .8s ease calc(var(--dl) + 4s) forwards}
+.support .dot{width:1.3vmin;height:1.3vmin;border-radius:50%;background:#34d399;box-shadow:0 0 12px #34d399}
+#replay{position:fixed;bottom:3vmin;left:50%;transform:translateX(-50%);z-index:50;opacity:0;pointer-events:none;transition:.5s;background:rgba(13,18,36,.9);color:var(--text);border:1px solid rgba(255,255,255,.2);padding:1.2vmin 3vmin;border-radius:99px;font-size:2vmin;cursor:pointer;font-family:inherit}
+#replay.show{opacity:.9;pointer-events:auto}
+</style>
+</head>
+<body>
+<canvas id="sterne3d"></canvas><canvas id="warpcanvas" style="display:none"></canvas>
+<div class="vig"></div><div class="korn"></div>
+
+<div class="stage">
+  <!-- S1 (0-9s): Countdown -->
+  <section class="scene" style="--dl:0s;--dur:9.5s" id="countdown"></section>
+
+  <!-- S2 (9-25s): 3D-Sternenfeld + "Reise beginnt" -->
+  <section class="scene" style="--dl:9.5s;--dur:16s">
+    <p class="kick" style="animation-delay:10.5s">EINE REISE BEGINNT</p>
+    <h2>Der Server deines Servers.<br><span style="background:linear-gradient(120deg,var(--cyan),var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent">100 % lokal.</span></h2>
+    <p class="datum" style="animation:rein 1s ease 13s forwards;opacity:0">Moderation · Wirtschaft · Level · Steuern · Design</p>
+  </section>
+
+  <!-- S3 (25.5-40s): 3D-Logo -->
+  <section class="scene" style="--dl:25.5s;--dur:15s;perspective:1000px">
+    <div class="logo3d">
+      <div class="logo-stack">
+        <span class="logo-ebene eb1" style="--dl:25.5s">LUMIOX</span>
+        <span class="logo-ebene eb2" style="--dl:25.5s">LUMIOX</span>
+        <span class="logo-ebene eb3" style="--dl:25.5s">LUMIOX</span>
+      </div>
+    </div>
+    <p class="kick" style="animation-delay:29s">LIGHT · DATA · POSSIBILITIES</p>
+  </section>
+
+  <!-- S4 (40.5-60s): 3D-Würfel mit Features -->
+  <section class="scene" style="--dl:40.5s;--dur:20s">
+    <div class="cube-wrap">
+      <div class="cube">
+        <div class="face f1"><span class="ico">🧠</span><b>Moderation</b></div>
+        <div class="face f2"><span class="ico">🏛️</span><b>Steuern</b></div>
+        <div class="face f3"><span class="ico">💰</span><b>Wirtschaft</b></div>
+        <div class="face f4"><span class="ico">⭐</span><b>Level</b></div>
+        <div class="face f5"><span class="ico">🛡️</span><b>Schutz</b></div>
+        <div class="face f6"><span class="ico">🎨</span><b>Design</b></div>
+      </div>
+    </div>
+    <h2 style="font-size:4vmin;opacity:0;animation:rein 1s ease 46s forwards">Sechs Dimensionen.<br>Ein Bot.</h2>
+  </section>
+
+  <!-- S5 (60.5-80s): 3D-Karten -->
+  <section class="scene" style="--dl:60.5s;--dur:20s">
+    <p class="kick" style="animation-delay:61s">ALLES WAS KOMMEN WIRD</p>
+    <div class="karten">
+      <div class="k3d" style="--d:1s"><span class="ico">🎬</span><b>Update-Zentrale</b><small>Alle Neuerungen auf einen Blick</small></div>
+      <div class="k3d" style="--d:1.6s"><span class="ico">🎭</span><b>Trailer-Theater</b><small>Geheime Filme im Geheimpanel</small></div>
+      <div class="k3d" style="--d:2.2s"><span class="ico">🗂️</span><b>Kategorie-System</b><small>Owner · Admin · Support · Player · Fun</small></div>
+      <div class="k3d" style="--d:2.8s"><span class="ico">🤫</span><b>Geheimpanel</b><small>2085! – du weißt Bescheid</small></div>
+    </div>
+  </section>
+
+  <!-- S6 (80.5-100s): COMING SOON 3D -->
+  <section class="scene" style="--dl:80.5s;--dur:20s">
+    <div class="soon"><span class="c1">COMING</span> <span class="c2">SOON</span></div>
+    <div class="progress"><i></i></div>
+    <p class="datum" style="margin-top:1vmin">Entwicklung: <span style="color:#6ee7b7">78 %</span> · Release: <span style="color:var(--cyan)">BALD</span></p>
+  </section>
+
+  <!-- S7 (100.5s-Ende): CTA -->
+  <section class="scene last" style="--dl:100.5s;--dur:20s">
+    <h2 style="font-size:7vmin">Sei <span style="background:linear-gradient(120deg,var(--cyan),var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent">dabei</span>,<br>wenn es losgeht.</h2>
+    <div class="cta-pill">github.com/Seekseek174/lumiox</div>
+    <button class="cta-btn">⭐ Star auf GitHub</button>
+    <div class="support"><span class="dot"></span>💬 Super Support · Made by ginizw · 100 % lokal</div>
+  </section>
+</div>
+
+<button id="replay">▶ Erneut abspielen</button>
+
+<script>
+// ── 3D-Sternenfeld (Kameraflug durchs All) ──
+const c = document.getElementById('sterne3d'), x = c.getContext('2d');
+let W, H, sterne = [], speed = 1;
+function init(){ W = c.width = innerWidth; H = c.height = innerHeight;
+  sterne = Array.from({length: 500}, () => ({
+    x: (Math.random() - .5) * W * 2, y: (Math.random() - .5) * H * 2, z: Math.random() * W })); }
+init(); addEventListener('resize', init);
+(function loop(){
+  x.fillStyle = 'rgba(3,4,10,.35)'; x.fillRect(0, 0, W, H);
+  x.save(); x.translate(W/2, H/2);
+  for (const s of sterne) {
+    s.z -= speed;
+    if (s.z < 1) { s.z = W; s.x = (Math.random() - .5) * W * 2; s.y = (Math.random() - .5) * H * 2; }
+    const k = 250 / s.z;
+    const px = s.x * k, py = s.y * k;
+    const groesse = Math.max(.5, (1 - s.z / W) * 3.2);
+    const farbe = Math.min(1, (1 - s.z / W) * 1.4);
+    x.fillStyle = 'rgba(190,205,255,' + farbe + ')';
+    x.fillRect(px, py, groesse, groesse);
+  }
+  x.restore();
+  requestAnimationFrame(loop);
+})();
+// Warp-Beschleunigung in Szene 2 und 6
+setTimeout(() => { const t = setInterval(() => { speed = Math.min(14, speed + .3); }, 60);
+  setTimeout(() => clearInterval(t), 6000); }, 9500);
+setTimeout(() => { const t = setInterval(() => { speed = Math.min(18, speed + .4); }, 50);
+  setTimeout(() => clearInterval(t), 8000); }, 80500);
+
+// ── Countdown in Szene 1 ──
+const cd = document.getElementById('countdown');
+['3','2','1'].forEach((z, i) => {
+  const sp = document.createElement('span');
+  sp.textContent = z;
+  sp.style.cssText = 'position:absolute;font-size:20vmin;font-weight:800;opacity:0;animation:cnt .9s ease ' + (i*.95) + 's forwards;text-shadow:0 0 60px rgba(34,211,238,.5)';
+  sp.innerHTML = z; cd.appendChild(sp);
+});
+const st = document.createElement('style');
+st.textContent = '@keyframes cnt{0%{opacity:0;transform:scale(1.7);filter:blur(14px)}25%{opacity:1;transform:scale(1);filter:blur(0)}80%{opacity:1}100%{opacity:0}}';
+document.head.appendChild(st);
+setTimeout(() => { const p = document.createElement('p');
+  p.className = 'kick'; p.style.animationDelay = '3.2s'; p.textContent = 'LUMIOX PRÄSENTIERT';
+  cd.appendChild(p); }, 100);
+// Statische Logo-Ebenen korrekt positionieren (alle übereinander)
+document.querySelectorAll('.logo-stack').forEach(s => {
+  s.querySelectorAll('.logo-ebene').forEach(e => { e.style.position = 'absolute'; e.style.left = '0'; e.style.top = '0'; });
+});
+
+setTimeout(() => document.getElementById('replay').classList.add('show'), 118000);
+document.getElementById('replay').addEventListener('click', () => location.reload());
+</script>
+</body>
+</html>

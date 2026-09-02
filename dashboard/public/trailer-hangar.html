@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>LUMIOX – THE FULL EXPERIENCE</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--cyan:#22d3ee;--indigo:#818cf8;--magenta:#e879f9;--rot:#f43f5e;--gruen:#34d399;--warn:#fbbf24;--text:#eef1f7;--dim:#8b93a7}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:#02030a;color:var(--text);font-family:'Inter',system-ui,sans-serif;overflow:hidden}
+#bg{position:fixed;inset:0;z-index:0}
+.vig{position:fixed;inset:0;z-index:40;pointer-events:none;background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,.8) 100%)}
+.stage{position:fixed;inset:0;z-index:10}
+/* ── Szenen-Basis ── */
+.scene{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.8vmin;opacity:0;animation:sz var(--dur) ease var(--dl) forwards;padding:4vmin;text-align:center}
+@keyframes sz{0%{opacity:0;transform:scale(.97)}8%{opacity:1;transform:none}88%{opacity:1}100%{opacity:0;visibility:hidden}}
+.scene.last{animation-name:szEnde}
+@keyframes szEnde{0%{opacity:0;transform:scale(1.04)}6%{opacity:1;transform:none}100%{opacity:1}}
+/* ── Ansichts-Modifier ── */
+.iso{transform:rotateX(14deg) rotateY(-12deg)}
+.flat{transform:rotateX(40deg) scale(.9)}
+.tilt-r{transform:rotateY(14deg)}
+/* ── Typo ── */
+.kick{font-size:1.7vmin;letter-spacing:.55em;text-transform:uppercase;opacity:0;animation:rein .7s ease calc(var(--dl) + .4s) forwards}
+.kick.c{color:var(--cyan)}.kick.m{color:var(--magenta)}.kick.r{color:var(--rot)}.kick.g{color:var(--gruen)}.kick.w{color:var(--warn)}.kick.i{color:var(--indigo)}
+@keyframes rein{to{opacity:1}}
+h2{font-size:5.4vmin;font-weight:800;line-height:1.15}
+h2 em{font-style:normal;background:linear-gradient(120deg,var(--cyan),var(--indigo) 50%,var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent}
+h2.flash{opacity:0;animation:flashIn .5s ease calc(var(--dl) + .3s) forwards}
+@keyframes flashIn{from{opacity:0;filter:blur(14px)}to{opacity:1;filter:none}}
+.sub{color:var(--dim);font-size:1.9vmin}
+/* ── LICHT-Komponenten ── */
+.sweep{position:absolute;top:0;bottom:0;width:20vw;pointer-events:none;opacity:0;
+  background:linear-gradient(90deg,transparent,rgba(34,211,238,.25),rgba(232,121,249,.3),transparent);filter:blur(6px)}
+.sweep.go{animation:sweepGo 1.4s ease calc(var(--dl) + .8s) forwards}
+@keyframes sweepGo{0%{opacity:.9;left:-25vw}100%{opacity:0;left:110vw}}
+.burst{position:absolute;left:50%;top:50%;width:10vmin;height:10vmin;border-radius:50%;border:3px solid var(--cyan);transform:translate(-50%,-50%);opacity:0;pointer-events:none}
+.burst.go{animation:burstGo 1.2s ease calc(var(--dl) + .5s) forwards}
+@keyframes burstGo{0%{opacity:.9;transform:translate(-50%,-50%) scale(.2);border-color:var(--cyan)}100%{opacity:0;transform:translate(-50%,-50%) scale(14);border-color:var(--magenta)}}
+.rays{position:absolute;inset:-40%;pointer-events:none;opacity:0;animation:raysIn 1s ease calc(var(--dl) + .4s) forwards;
+  background:conic-gradient(from 0deg,transparent 0 20deg,rgba(34,211,238,.14) 22deg 24deg,transparent 26deg 60deg,rgba(232,121,249,.12) 62deg 64deg,transparent 66deg 100deg,rgba(129,140,248,.14) 102deg 104deg,transparent 106deg 140deg,rgba(34,211,238,.12) 142deg 144deg,transparent 146deg 180deg,rgba(232,121,249,.13) 182deg 184deg,transparent 186deg 220deg,rgba(129,140,248,.12) 222deg 224deg,transparent 226deg 260deg,rgba(34,211,238,.13) 262deg 264deg,transparent 266deg 300deg,rgba(232,121,249,.12) 302deg 304deg,transparent 306deg 360deg)}
+@keyframes raysIn{to{opacity:.85}}
+.streaks{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.streaks i{position:absolute;height:2px;width:38vw;background:linear-gradient(90deg,transparent,var(--cyan),transparent);opacity:0;animation:streakGo 1s ease var(--d) forwards}
+@keyframes streakGo{0%{opacity:.9;transform:translateX(-45vw)}100%{opacity:0;transform:translateX(115vw)}}
+.neonbox{position:relative;background:rgba(10,14,28,.92);border:1px solid var(--c,var(--cyan));border-radius:1.6vmin;padding:2.2vmin 3vmin;
+  box-shadow:0 0 30px color-mix(in srgb,var(--c,var(--cyan)) 35%,transparent),inset 0 0 24px color-mix(in srgb,var(--c,var(--cyan)) 14%,transparent);
+  animation:neonPuls 1.8s ease-in-out infinite alternate;opacity:0;animation-delay:calc(var(--dl) + .6s),var(--dl);animation-name:neonPuls,rein;animation-duration:1.8s,.5s;animation-fill-mode:forwards;animation-iteration-count:infinite,1}
+@keyframes neonPuls{from{box-shadow:0 0 18px color-mix(in srgb,var(--c,var(--cyan)) 28%,transparent)}to{box-shadow:0 0 44px color-mix(in srgb,var(--c,var(--cyan)) 60%,transparent)}}
+/* ── Kleinteile ── */
+.pillrow{display:flex;gap:1.2vmin;flex-wrap:wrap;justify-content:center;opacity:0;animation:rein .6s ease calc(var(--dl) + 1.4s) forwards}
+.pill{font-size:1.7vmin;padding:.8vmin 1.8vmin;border-radius:99px;border:1px solid var(--pc);color:var(--pc);background:color-mix(in srgb,var(--pc) 12%,transparent);box-shadow:0 0 14px color-mix(in srgb,var(--pc) 30%,transparent)}
+.meter{width:min(60vmin,600px);height:2.2vmin;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden;opacity:0;animation:rein .4s ease calc(var(--dl) + 1.2s) forwards}
+.meter i{display:block;height:100%;width:0;border-radius:99px;animation:meterGo 1.3s cubic-bezier(.22,1,.36,1) calc(var(--dl) + 1.6s) forwards}
+@keyframes meterGo{to{width:var(--w)}}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:1.4vmin;opacity:0;animation:rein .5s ease calc(var(--dl) + 1s) forwards}
+.tile{background:rgba(12,16,32,.94);border:1px solid rgba(255,255,255,.14);border-radius:1.4vmin;padding:1.6vmin 2vmin;text-align:left}
+.tile small{color:var(--dim);font-size:1.3vmin;display:block}
+.tile b{font-size:2.6vmin;font-weight:800;background:linear-gradient(120deg,var(--cyan),var(--indigo));-webkit-background-clip:text;background-clip:text;color:transparent}
+.katrow{display:flex;gap:1.6vmin;flex-wrap:wrap;justify-content:center;perspective:800px;opacity:0;animation:rein .5s ease calc(var(--dl) + 1s) forwards}
+.katcard{width:15vmin;height:15vmin;border-radius:1.6vmin;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8vmin;
+  background:rgba(12,16,32,.95);border:1px solid var(--kc);color:var(--kc);font-size:1.6vmin;font-weight:700;
+  box-shadow:0 0 26px color-mix(in srgb,var(--kc) 30%,transparent);animation:katIn .7s cubic-bezier(.22,1,.36,1) calc(var(--dl) + 1.4s + var(--i)*.25s) both}
+.katcard .ico{font-size:4.6vmin}
+@keyframes katIn{from{opacity:0;transform:rotateX(80deg) translateZ(-60px)}to{opacity:1;transform:rotateX(0) translateZ(0)}}
+.glitch{position:relative}
+.glitch::before,.glitch::after{content:attr(data-t);position:absolute;inset:0;opacity:.8}
+.glitch::before{color:var(--cyan);animation:gl1 2.4s steps(2) infinite;clip-path:polygon(0 0,100% 0,100% 45%,0 45%)}
+.glitch::after{color:var(--magenta);animation:gl2 2.1s steps(2) infinite;clip-path:polygon(0 55%,100% 55%,100% 100%,0 100%)}
+@keyframes gl1{0%,92%,100%{transform:none}94%{transform:translate(-.6vmin,.3vmin)}97%{transform:translate(.5vmin,-.2vmin)}}
+@keyframes gl2{0%,90%,100%{transform:none}93%{transform:translate(.6vmin,-.3vmin)}96%{transform:translate(-.5vmin,.2vmin)}}
+.zahl{font-size:11vmin;font-weight:800;background:linear-gradient(120deg,var(--cyan),var(--indigo),var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 26px rgba(34,211,238,.4))}
+.bigz{display:flex;gap:5vmin;flex-wrap:wrap;justify-content:center;opacity:0;animation:rein .6s ease calc(var(--dl) + .8s) forwards}
+.bigz .z{opacity:0;animation:rein .5s ease var(--d) forwards}
+.bigz small{display:block;color:var(--dim);letter-spacing:.22em;text-transform:uppercase;font-size:1.6vmin;margin-top:.4vmin}
+.confetti{position:absolute;top:-4vh;font-size:3vmin;animation:confFall 3s linear var(--d) infinite}
+@keyframes confFall{to{transform:translateY(110vh) rotate(540deg)}}
+.augen{display:flex;gap:2vmin}
+.auge{width:7vmin;height:7vmin;border-radius:50%;border:.4vmin solid var(--cyan);display:flex;align-items:center;justify-content:center;background:rgba(34,211,238,.07);box-shadow:0 0 22px rgba(34,211,238,.4);animation:augeP 2s ease-in-out infinite}
+.auge:nth-child(2){animation-delay:.3s}.auge:nth-child(3){animation-delay:.6s}
+@keyframes augeP{50%{box-shadow:0 0 44px rgba(34,211,238,.7)}}
+.auge::after{content:'';width:2vmin;height:2vmin;border-radius:50%;background:var(--cyan);box-shadow:0 0 12px var(--cyan)}
+.typing{font-family:ui-monospace,monospace;font-size:2.2vmin;color:#67e8f9;text-align:left;width:min(64vmin,640px);min-height:12vmin;text-shadow:0 0 12px rgba(103,232,249,.4)}
+.typing div{opacity:0;animation:rein .3s ease var(--d) forwards}
+.soon{font-size:10vmin;font-weight:800;letter-spacing:.1em}
+.soon .a{color:var(--cyan);text-shadow:0 1px 0 #0e7490,0 2px 0 #0b5e73,0 3px 0 #094a5c,0 4px 0 #073745,0 5px 0 #05242d,0 9px 34px rgba(34,211,238,.6)}
+.soon .b{color:var(--magenta);text-shadow:0 1px 0 #9d174d,0 2px 0 #7f1240,0 3px 0 #610e33,0 4px 0 #430a25,0 5px 0 #250617,0 9px 34px rgba(232,121,249,.6)}
+.cta-pill{font-family:ui-monospace,monospace;font-size:2.3vmin;background:rgba(13,18,36,.92);border:1px solid rgba(255,255,255,.18);padding:1.4vmin 3vmin;border-radius:99px}
+.cta-btn{font-size:2.6vmin;font-weight:700;color:#fff;background:linear-gradient(120deg,var(--cyan),var(--indigo),var(--magenta));border:none;padding:1.9vmin 4.4vmin;border-radius:99px;animation:puls 1.5s ease-in-out infinite}
+@keyframes puls{0%,100%{box-shadow:0 0 18px rgba(34,211,238,.5)}50%{box-shadow:0 0 46px rgba(232,121,249,.7)}}
+#replay{position:fixed;bottom:3vmin;left:50%;transform:translateX(-50%);z-index:60;opacity:0;pointer-events:none;transition:.5s;background:rgba(13,18,36,.92);color:var(--text);border:1px solid rgba(255,255,255,.2);padding:1.2vmin 3vmin;border-radius:99px;font-size:2vmin;cursor:pointer;font-family:inherit}
+#replay.show{opacity:.9;pointer-events:auto}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+<div class="vig"></div>
+<div class="stage">
+
+<!-- S1 (0–9s) · LICHT-EXPLOSION + LOGO -->
+<section class="scene" style="--dl:0s;--dur:9s">
+  <div class="burst go"></div><div class="rays"></div>
+  <h2 class="flash" style="--dl:0s;font-size:11vmin;letter-spacing:.05em">LUMIOX</h2>
+  <p class="kick c" style="animation-delay:2s">THE FULL EXPERIENCE · 3:45</p>
+</section>
+
+<!-- S2 (9–15s) · TITEL -->
+<section class="scene" style="--dl:9s;--dur:6s">
+  <div class="sweep go"></div>
+  <h2 class="flash" style="--dl:9s">DER KOMPLETTE BOT.<br><em>100 % AUF DEINEM GERÄT.</em></h2>
+</section>
+
+<!-- S3 (15–22s) · SENTINEL -->
+<section class="scene" style="--dl:15s;--dur:7s">
+  <div class="burst go" style="border-color:var(--cyan)"></div>
+  <p class="kick c" style="animation-delay:15.4s">MODUL · MODERATION</p>
+  <div class="augen"><div class="auge"></div><div class="auge"></div><div class="auge"></div></div>
+  <h2 style="font-size:3.6vmin">Sentinel sieht <em>alles.</em></h2>
+</section>
+
+<!-- S4 (22–28s) · COMMAND-ZAHL -->
+<section class="scene" style="--dl:22s;--dur:6s">
+  <div class="streaks"><i style="--d:.5s;top:30%"></i><i style="--d:.9s;top:55%;animation-duration:1.2s"></i><i style="--d:1.4s;top:70%"></i></div>
+  <div class="zahl" id="cmdZahl">0</div>
+  <p class="kick c" style="animation-delay:23.5s">SLASH-BEFEHLE · MEHR ALS JEDE ANDERE LÖSUNG</p>
+</section>
+
+<!-- S5 (28–35s) · WARN -->
+<section class="scene" style="--dl:28s;--dur:7s">
+  <p class="kick r" style="animation-delay:28.4s">MODERATION IN AKTION</p>
+  <div class="neonbox" style="--c:var(--rot)">
+    <b style="font-size:2.4vmin">⚖️ Verwarnung erteilt</b>
+    <div class="sub" style="margin-top:.8vmin">Benutzer • Grund dokumentiert • Protokoll aktualisiert</div>
+  </div>
+</section>
+
+<!-- S6 (35–41s) · TIMEOUT -->
+<section class="scene" style="--dl:35s;--dur:6s">
+  <div class="neonbox" style="--c:var(--warn)">
+    <b style="font-size:2.4vmin">🔇 Timeout · 60 Minuten</b>
+    <div class="meter" style="--dl:35s;--w:78%;margin-top:1vmin"><i style="background:linear-gradient(90deg,var(--warn),var(--rot))"></i></div>
+  </div>
+</section>
+
+<!-- S7 (41–49s) · KATEGORIEN -->
+<section class="scene" style="--dl:41s;--dur:8s">
+  <p class="kick i" style="animation-delay:41.4s">BEFEHLE IN KATEGORIEN</p>
+  <div class="katrow">
+    <div class="katcard" style="--kc:var(--rot);--i:0"><span class="ico">👑</span>OWNER</div>
+    <div class="katcard" style="--kc:var(--warn);--i:1"><span class="ico">🛡️</span>ADMIN</div>
+    <div class="katcard" style="--kc:var(--cyan);--i:2"><span class="ico">🎫</span>SUPPORT</div>
+    <div class="katcard" style="--kc:var(--gruen);--i:3"><span class="ico">🎮</span>PLAYER</div>
+    <div class="katcard" style="--kc:var(--magenta);--i:4"><span class="ico">🎉</span>FUN</div>
+  </div>
+</section>
+
+<!-- S8 (49–56s) · WORTFILTER -->
+<section class="scene" style="--dl:49s;--dur:7s">
+  <p class="kick w" style="animation-delay:49.4s">WORTFILTER</p>
+  <h2 class="glitch flash" style="--dl:49s;font-size:4.4vmin" data-t="h*r*n**hn">h*r*n**hn</h2>
+  <p class="sub">Umgehungsversuche? Erkannt. Automatisch zensiert.</p>
+</section>
+
+<!-- S9 (56–63s) · RADAR -->
+<section class="scene" style="--dl:56s;--dur:7s">
+  <div style="position:relative;width:26vmin;height:26vmin;border-radius:50%;border:2px solid rgba(52,211,153,.5);overflow:hidden">
+    <div style="position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,rgba(52,211,153,.5),transparent 25%);animation:rsp 2.5s linear infinite"></div>
+  </div>
+  <p class="kick g" style="animation-delay:56.5s">AUTO-MOD · IMMER IM SCHWARZFIRE</p>
+  <style>@keyframes rsp{to{transform:rotate(360deg)}}</style>
+</section>
+
+<!-- S10 (63–69s) · ANTI-RAID -->
+<section class="scene" style="--dl:63s;--dur:6s">
+  <h2 class="flash" style="--dl:63s;color:var(--rot);text-shadow:0 0 40px rgba(244,63,94,.7)">🚨 ANTI-RAID</h2>
+  <p class="sub">Raid erkannt → Schutzmodus → Auto-Kick. In Sekunden.</p>
+</section>
+
+<!-- S11 (69–77s) · WIRTSCHAFT -->
+<section class="scene" style="--dl:69s;--dur:8s" id="szMuenzen">
+  <p class="kick w" style="animation-delay:69.4s">WIRTSCHAFT &amp; STEUERN</p>
+  <h2 class="flash" style="--dl:69s">🪙 DINAMISCHE <em>WÄHRUNG</em></h2>
+  <p class="sub">Arbeiten · Shop · Gambling · Lotterie · Bankzinsen</p>
+</section>
+
+<!-- S12 (77–84s) · WORK -->
+<section class="scene" style="--dl:77s;--dur:7s">
+  <div class="neonbox" style="--c:var(--gruen)">
+    <b style="font-size:2.4vmin">💼 /work · Programmierer/in</b>
+    <div class="zeile" style="display:flex;justify-content:space-between;margin-top:1vmin;font-size:1.8vmin"><span>Brutto</span><b style="color:#6ee7b7">+180 🪙</b></div>
+    <div class="zeile" style="display:flex;justify-content:space-between;font-size:1.8vmin;border:none"><span>Einkommensteuer</span><b style="color:#fda4af">−18 🪙 → Kasse</b></div>
+  </div>
+</section>
+
+<!-- S13 (84–91s) · STEUER -->
+<section class="scene" style="--dl:84s;--dur:7s">
+  <p class="kick w" style="animation-delay:84.4s">ECHTES STEUERSYSTEM</p>
+  <div class="meter" style="--w:62%"><i style="background:linear-gradient(90deg,var(--gruen),var(--cyan))"></i></div>
+  <div class="sub">Progressive Staffeln · Vermögenssteuer · eigene Steuerklassen pro Spieler</div>
+</section>
+
+<!-- S14 (91–97s) · KASSE -->
+<section class="scene" style="--dl:91s;--dur:6s">
+  <div class="zahl" id="kasseZahl" style="color:#6ee7b7;-webkit-text-stroke:0">0</div>
+  <p class="kick g" style="animation-delay:92s">SERVERKASSE · FINANZIERT JACKPOTS &amp; BOOSTER</p>
+</section>
+
+<!-- S15 (97–104s) · JACKPOT -->
+<section class="scene" style="--dl:97s;--dur:7s">
+  <div class="burst go" style="border-color:var(--magenta)"></div>
+  <h2 class="flash" style="--dl:97s;font-size:7vmin">🎰 <em>JACKPOT!</em></h2>
+  <p class="sub">Serverweite Lotterie · täglich · gewichtete Gewinnchance</p>
+</section>
+
+<!-- S16 (104–111s) · SHOP -->
+<section class="scene" style="--dl:104s;--dur:7s">
+  <p class="kick m" style="animation-delay:104.4s">SHOP</p>
+  <div class="pillrow" style="--dl:104s">
+    <span class="pill" style="--pc:var(--cyan)">⚡ XP-Booster</span>
+    <span class="pill" style="--pc:var(--magenta)">🎨 Farbrolle</span>
+    <span class="pill" style="--pc:var(--warn)">⭐ VIP</span>
+    <span class="pill" style="--pc:var(--gruen)">🍀 Glücksbringer</span>
+  </div>
+</section>
+
+<!-- S17 (111–118s) · XP -->
+<section class="scene" style="--dl:111s;--dur:7s">
+  <p class="kick c" style="animation-delay:111.4s">LEVELSYSTEM</p>
+  <div class="meter" style="--w:84%"><i style="background:linear-gradient(90deg,var(--cyan),var(--magenta))"></i></div>
+  <div class="sub">Nachrichten-XP · Voice-XP · Rollen-Multiplikatoren</div>
+</section>
+
+<!-- S18 (118–124s) · LEVEL-UP -->
+<section class="scene" style="--dl:118s;--dur:6s">
+  <div class="rays" style="opacity:.9"></div>
+  <h2 class="flash" style="--dl:118s;font-size:8vmin">🎉 LEVEL UP!</h2>
+</section>
+
+<!-- S19 (124–130s) · RANK -->
+<section class="scene" style="--dl:124s;--dur:6s">
+  <div class="neonbox" style="--c:var(--indigo);width:min(60vmin,560px)">
+    <div style="display:flex;justify-content:space-between;font-size:2vmin"><b>🏅 Rang-Karte</b><span style="color:var(--dim)">Level 24</span></div>
+    <div class="meter" style="--dl:124s;--w:68%;margin-top:1vmin"><i style="background:linear-gradient(90deg,var(--cyan),var(--magenta))"></i></div>
+    <div class="sub" style="font-size:1.4vmin">3 Kartengrößen · Live-Fortschritt</div>
+  </div>
+</section>
+
+<!-- S20 (130–136s) · BOOSTER -->
+<section class="scene" style="--dl:130s;--dur:6s">
+  <h2 class="flash" style="--dl:130s;font-size:8vmin">⚡ <em>×2 XP</em></h2>
+  <p class="sub">Serverweite Booster aus der Kasse · persönliche Boosts · Rollen-Multiplikatoren</p>
+</section>
+
+<!-- S21 (136–143s) · TICKETS -->
+<section class="scene" style="--dl:136s;--dur:7s">
+  <p class="kick c" style="animation-delay:136.4s">TICKET-SYSTEM</p>
+  <div class="pillrow" style="--dl:136s">
+    <span class="pill" style="--pc:var(--cyan)">🛟 Support</span>
+    <span class="pill" style="--pc:var(--warn)">🐞 Bug</span>
+    <span class="pill" style="--pc:var(--rot)">⚖️ Beschwerde</span>
+  </div>
+  <p class="sub">Private Kanäle · HTML-Transkripte · im Dashboard lesbar</p>
+</section>
+
+<!-- S22 (143–149s) · GIVEAWAY -->
+<section class="scene" style="--dl:143s;--dur:6s" id="szConfetti">
+  <h2 class="flash" style="--dl:143s;font-size:6.4vmin">🎁 GIVEAWAY</h2>
+  <p class="sub">Button-Teilnahme · automatische Ziehung · Reroll</p>
+</section>
+
+<!-- S23 (149–156s) · KI-CHAT -->
+<section class="scene" style="--dl:149s;--dur:7s">
+  <p class="kick i" style="animation-delay:149.4s">LOKALE KI · OLLAMA</p>
+  <div class="typing">
+    <div style="--d:150.4s">▸ Frage: „Erzähl einen Witz!"</div>
+    <div style="--d:151.4s">▸ Denke lokal nach … kein Cloud-Server</div>
+    <div style="--d:152.4s">▸ Antwort bereit ✓</div>
+  </div>
+</section>
+
+<!-- S24 (156–163s) · DASHBOARD -->
+<section class="scene" style="--dl:156s;--dur:7s">
+  <p class="kick c" style="animation-delay:156.4s">DAS DASHBOARD</p>
+  <div class="tiles">
+    <div class="tile"><small>Mitglieder</small><b>1.284</b></div>
+    <div class="tile"><small>Nachrichten</small><b>9.317</b></div>
+    <div class="tile"><small>Erkennungen</small><b>112</b></div>
+    <div class="tile"><small>Kasse</small><b>12.600</b></div>
+  </div>
+</section>
+
+<!-- S25 (163–171s) · DESIGN-EDITOR -->
+<section class="scene" style="--dl:163s;--dur:8s">
+  <p class="kick m" style="animation-delay:163.4s">DESIGN-EDITOR</p>
+  <h2 style="font-size:3.8vmin" id="farbText">Jede Farbe. <em>Jedes Licht.</em> Sofort.</h2>
+  <div class="pillrow">
+    <span class="pill" style="--pc:var(--cyan);animation:farbCycle 4s linear infinite">GLOW</span>
+    <span class="pill" style="--pc:var(--magenta);animation:farbCycle 4s linear .6s infinite">LICHT</span>
+    <span class="pill" style="--pc:var(--gruen);animation:farbCycle 4s linear 1.2s infinite">PARTIKEL</span>
+    <span class="pill" style="--pc:var(--warn);animation:farbCycle 4s linear 1.8s infinite">VIGNETTE</span>
+  </div>
+  <style>@keyframes farbCycle{to{filter:hue-rotate(360deg)}}</style>
+</section>
+
+<!-- S26 (171–178s) · 100% LOKAL -->
+<section class="scene" style="--dl:171s;--dur:7s">
+  <div class="bigz">
+    <div class="z" style="--d:171.8s"><div class="zahl">100%</div><small>lokal</small></div>
+    <div class="z" style="--d:172.2s"><div class="zahl">0 €</div><small>cloud</small></div>
+    <div class="z" style="--d:172.6s"><div class="zahl">24/7</div><small>online</small></div>
+  </div>
+</section>
+
+<!-- S27 (178–184s) · SUPER SUPPORT -->
+<section class="scene" style="--dl:178s;--dur:6s">
+  <div class="neonbox" style="--c:var(--gruen);display:flex;align-items:center;gap:1.6vmin">
+    <span style="width:1.6vmin;height:1.6vmin;border-radius:50%;background:var(--gruen);box-shadow:0 0 14px var(--gruen)"></span>
+    <b style="font-size:2.3vmin">💬 SUPER SUPPORT auf GitHub</b>
+  </div>
+</section>
+
+<!-- S28 (184–191s) · INSTALLATION -->
+<section class="scene" style="--dl:184s;--dur:7s">
+  <p class="kick c" style="animation-delay:184.4s">INSTALLATION IN 2 MINUTEN</p>
+  <div class="neonbox" style="--c:var(--indigo);font-family:ui-monospace,monospace;font-size:1.9vmin;text-align:left">
+    pkg install nodejs-lts<br>npm install<br>node index.js ✓
+  </div>
+</section>
+
+<!-- S29 (191–198s) · OPEN SOURCE -->
+<section class="scene" style="--dl:191s;--dur:7s">
+  <h2 class="flash" style="--dl:191s">OPEN SOURCE.<br><em>VON DER COMMUNITY, FÜR DIE COMMUNITY.</em></h2>
+</section>
+
+<!-- S30 (198–205s) · GLITCH-MOMENT -->
+<section class="scene" style="--dl:198s;--dur:7s">
+  <h2 class="glitch flash" style="--dl:198s;font-size:6.4vmin" data-t="LUMIOX">LUMIOX</h2>
+  <p class="sub">Kleiner Teaser: Ein feature ist versteckt. Finde es. 😉</p>
+</section>
+
+<!-- S31 (205–211s) · DANKE -->
+<section class="scene" style="--dl:205s;--dur:6s">
+  <div class="burst go"></div>
+  <h2 class="flash" style="--dl:205s;font-size:6.4vmin">SEI DABEI.</h2>
+</section>
+
+<!-- S32 (211–227s) · FINALE -->
+<section class="scene last" style="--dl:211s;--dur:16s">
+  <div class="rays" style="opacity:.7"></div>
+  <h2 style="font-size:9vmin;letter-spacing:.04em">LUMIO<span style="background:linear-gradient(120deg,var(--cyan),var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent">X</span></h2>
+  <p class="kick c" style="animation-delay:212.5s">LIGHT · DATA · POSSIBILITIES</p>
+  <div class="soon" style="font-size:5.4vmin;margin-top:1.4vmin"><span class="a">COMING</span> <span class="b">SOON</span></div>
+  <div class="cta-pill">github.com/Seekseek174/lumiox</div>
+  <button class="cta-btn">⭐ Star auf GitHub</button>
+  <p class="sub">Made by ginizw · Super Support · läuft auf deinem eigenen Gerät</p>
+</section>
+
+</div>
+<button id="replay">▶ Erneut abspielen</button>
+
+<script>
+// Sternenstaub
+const c = document.getElementById('bg'), x = c.getContext('2d');
+let W, H, st = [];
+function init(){ W = c.width = innerWidth; H = c.height = innerHeight;
+  st = Array.from({length: 240}, () => ({ x: Math.random()*W, y: Math.random()*H, r: .4 + Math.random()*1.3, p: Math.random()*Math.PI*2, s: .3 + Math.random()*.8 })); }
+init(); addEventListener('resize', init);
+(function loop(){ x.clearRect(0,0,W,H);
+  for (const s of st) { s.p += .02*s.s; x.globalAlpha = .18 + .45*Math.abs(Math.sin(s.p));
+    x.fillStyle = '#cfd8ff'; x.beginPath(); x.arc(s.x, s.y, s.r, 0, 7); x.fill(); }
+  x.globalAlpha = 1; requestAnimationFrame(loop); })();
+
+// Zähler: Commands (Szene 4, startet ~22.5s)
+setTimeout(function z(){ const el = document.getElementById('cmdZahl'); if (!el) return;
+  const t0 = performance.now();
+  (function schritt(t){ const p = Math.min(1,(t-t0)/1800);
+    el.textContent = Math.round(82*(1-Math.pow(1-p,3))) + '+';
+    if (p<1) requestAnimationFrame(schritt); })(t0); }, 22500);
+
+// Zähler: Kasse (Szene 14, ~91.5s)
+setTimeout(function(){ const el = document.getElementById('kasseZahl'); if (!el) return;
+  const t0 = performance.now();
+  (function schritt(t){ const p = Math.min(1,(t-t0)/2000);
+    el.textContent = Math.round(12600*(1-Math.pow(1-p,3))).toLocaleString('de-DE');
+    if (p<1) requestAnimationFrame(schritt); })(t0); }, 91500);
+
+// Münzen-Regen (Szene 11)
+setTimeout(function(){ const sz = document.getElementById('szMuenzen'); if (!sz) return;
+  for (let i = 0; i < 26; i++) { const sp = document.createElement('span');
+    sp.className = 'confetti'; sp.textContent = Math.random() < .5 ? '🪙' : '💰';
+    sp.style.left = Math.random()*100 + 'vw'; sp.style.setProperty('--d', (Math.random()*2.4) + 's');
+    sp.style.zIndex = 5; sz.appendChild(sp); } }, 69500);
+
+// Konfetti (Szene 22 Giveaway)
+setTimeout(function(){ const sz = document.getElementById('szConfetti'); if (!sz) return;
+  const zeichen = ['🎉','🎊','✨','🥳','🎁'];
+  for (let i = 0; i < 30; i++) { const sp = document.createElement('span');
+    sp.className = 'confetti'; sp.textContent = zeichen[i % zeichen.length];
+    sp.style.left = Math.random()*100 + 'vw'; sp.style.setProperty('--d', (Math.random()*2) + 's');
+    sp.style.zIndex = 5; sz.appendChild(sp); } }, 143800);
+
+// Neon-Pillrow in S16: --dl Attribute korrigieren (rein-Animation braucht dl am Element)
+document.querySelectorAll('.pillrow').forEach(function(p){ p.style.animationDelay = (parseFloat(p.parentElement.style.getPropertyValue('--dl')||0)+1)+'s,'+(parseFloat(p.parentElement.style.getPropertyValue('--dl')||0))+'s'; });
+
+setTimeout(() => document.getElementById('replay').classList.add('show'), 224000);
+document.getElementById('replay').addEventListener('click', () => location.reload());
+</script>
+</body>
+</html>

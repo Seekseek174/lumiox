@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>LUMIOX – EMBED STUDIO</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--cyan:#22d3ee;--indigo:#818cf8;--magenta:#e879f9;--gruen:#34d399;--warn:#fbbf24;--text:#eef1f7;--dim:#8b93a7;--card:rgba(8,11,22,.82)}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:#02030a;color:var(--text);font-family:'Inter',system-ui,sans-serif;overflow:hidden}
+#bg{position:fixed;inset:0;z-index:0}
+.vig{position:fixed;inset:0;z-index:40;pointer-events:none;background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,.8))}
+.stage{position:fixed;inset:0;z-index:10}
+.scene{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.8vmin;opacity:0;animation:sz var(--dur) ease var(--dl) forwards;padding:4vmin;text-align:center}
+@keyframes sz{0%{opacity:0;transform:scale(.97)}7%{opacity:1;transform:none}88%{opacity:1}100%{opacity:0;visibility:hidden}}
+.scene.last{animation-name:szEnde}
+@keyframes szEnde{0%{opacity:0;transform:scale(1.03)}6%{opacity:1;transform:none}100%{opacity:1}}
+.kick{font-size:1.7vmin;letter-spacing:.55em;text-transform:uppercase;opacity:0;animation:rein .7s ease calc(var(--dl) + .4s) forwards}
+.kick.c{color:var(--cyan)}.kick.m{color:var(--magenta)}.kick.g{color:var(--gruen)}
+@keyframes rein{to{opacity:1}}
+h2{font-size:5.2vmin;font-weight:800;line-height:1.16}
+h2 em{font-style:normal;background:linear-gradient(120deg,var(--cyan),var(--indigo) 50%,var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent}
+h2.flash{opacity:0;animation:flashIn .5s ease calc(var(--dl) + .3s) forwards}
+@keyframes flashIn{from{opacity:0;filter:blur(12px)}to{opacity:1;filter:none}}
+.sub{color:var(--dim);font-size:1.9vmin}
+.sweep{position:absolute;top:0;bottom:0;width:20vw;pointer-events:none;opacity:0;background:linear-gradient(90deg,transparent,rgba(34,211,238,.22),rgba(232,121,249,.28),transparent);filter:blur(6px)}
+.sweep.go{animation:swGo 1.3s ease var(--d) forwards}
+@keyframes swGo{0%{opacity:.9;left:-25vw}100%{opacity:0;left:110vw}}
+/* ── Discord-Mockup ── */
+.dmsg{width:min(76vmin,740px);text-align:left;opacity:0;animation:rein .55s ease var(--t) forwards}
+.dhead{display:flex;align-items:center;gap:1.2vmin;margin-bottom:1.1vmin}
+.dava{width:4.6vmin;height:4.6vmin;border-radius:50%;background:linear-gradient(135deg,var(--cyan),var(--magenta));box-shadow:0 0 16px rgba(34,211,238,.4)}
+.dname{font-weight:700;font-size:2.1vmin}
+.dbot{font-size:1.2vmin;background:var(--indigo);color:#fff;padding:.2vmin .9vmin;border-radius:.6vmin;font-weight:700}
+.dcard{position:relative;background:rgba(6,9,20,.75);border:1px solid rgba(255,255,255,.06);border-radius:1.1vmin;padding:1.8vmin;display:flex;gap:1.6vmin;overflow:hidden}
+.dbar{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(180deg,var(--cyan),var(--magenta));animation:barW .7s ease 17.4s forwards}
+@keyframes barW{to{width:.55vmin}}
+.dmain{flex:1;min-width:0}
+.dthumb{width:9vmin;height:9vmin;border-radius:.9vmin;background:linear-gradient(135deg,#1e293b,#334155);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:3.4vmin;opacity:0;animation:rein .5s ease 27.8s forwards}
+.dpart{opacity:0;animation:rein .5s ease var(--t) forwards}
+.dauthor{display:flex;align-items:center;gap:.9vmin;margin-bottom:.9vmin}
+.dauthor .ai{width:2.6vmin;height:2.6vmin;border-radius:50%;background:rgba(129,140,248,.3);display:flex;align-items:center;justify-content:center;font-size:1.3vmin}
+.dauthor b{font-size:1.7vmin}
+.dtitle{font-size:2.5vmin;font-weight:700;margin-bottom:.9vmin}
+.ddesc{font-size:1.8vmin;color:#c9cfdb;line-height:1.55;margin-bottom:1.2vmin}
+.dfields{display:flex;flex-wrap:wrap;gap:1.2vmin;margin-bottom:1.2vmin}
+.dfield{width:calc(33.3% - .8vmin);background:rgba(255,255,255,.04);border-radius:.7vmin;padding:1vmin;opacity:0;animation:rein .45s ease var(--t) forwards}
+.dfield b{display:block;font-size:1.4vmin;margin-bottom:.3vmin}
+.dfield span{font-size:1.25vmin;color:var(--dim)}
+.dfoot{display:flex;align-items:center;gap:.9vmin;color:var(--dim);font-size:1.35vmin;opacity:0;animation:rein .5s ease 30.2s forwards}
+.dfoot .fi{width:2.2vmin;height:2.2vmin;border-radius:50%;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-size:1.1vmin}
+.cnt{font-size:1.25vmin;font-family:ui-monospace,monospace;color:var(--dim);opacity:0;animation:rein .4s ease var(--t) forwards}
+.cnt b{color:var(--gruen)}
+.livechip{display:inline-flex;align-items:center;gap:.8vmin;margin-top:1.6vmin;font-size:1.6vmin;font-weight:700;color:var(--gruen);border:1px solid rgba(52,211,153,.5);border-radius:99px;padding:.7vmin 1.8vmin;opacity:0;animation:rein .5s ease 32.4s forwards}
+.livechip .d{width:1.2vmin;height:1.2vmin;border-radius:50%;background:var(--gruen);box-shadow:0 0 10px var(--gruen);animation:pp 1.2s infinite alternate}
+@keyframes pp{to{box-shadow:0 0 22px var(--gruen)}}
+/* ── Farb-Szene ── */
+.farbdot{width:16vmin;height:16vmin;border-radius:50%;background:#5865F2;filter:blur(1px);animation:hueDreh 4s linear infinite, glowP 2s ease-in-out infinite alternate;box-shadow:0 0 60px currentColor}
+@keyframes hueDreh{to{filter:hue-rotate(360deg)}}
+@keyframes glowP{from{transform:scale(1)}to{transform:scale(1.12)}}
+.bignum{font-size:9vmin;font-weight:800;background:linear-gradient(120deg,var(--cyan),var(--indigo),var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent}
+.bigrow{display:flex;gap:5vmin;flex-wrap:wrap;justify-content:center;opacity:0;animation:rein .6s ease calc(var(--dl) + .8s) forwards}
+.bigrow .b{opacity:0;animation:rein .5s ease var(--d) forwards}
+.bigrow small{display:block;color:var(--dim);letter-spacing:.2em;text-transform:uppercase;font-size:1.5vmin;margin-top:.4vmin}
+/* ── Send-Szene ── */
+.sendbox{width:min(56vmin,540px);background:var(--card);border:1px solid rgba(255,255,255,.14);border-radius:1.4vmin;padding:2.2vmin;text-align:left;opacity:0;animation:rein .6s ease calc(var(--dl) + .8s) forwards}
+.selmock{display:flex;justify-content:space-between;align-items:center;background:rgba(8,12,28,.6);border:1px solid rgba(127,127,127,.3);border-radius:.9vmin;padding:1.2vmin 1.6vmin;font-size:1.9vmin;margin-bottom:1.4vmin}
+.selmock span{color:var(--dim);font-size:1.4vmin}
+.sendbtn{width:100%;text-align:center;background:linear-gradient(120deg,var(--cyan),var(--indigo),var(--magenta));color:#fff;font-weight:700;font-size:2vmin;border:none;border-radius:.9vmin;padding:1.4vmin;animation:puls 1.5s ease-in-out infinite}
+@keyframes puls{0%,100%{box-shadow:0 0 16px rgba(34,211,238,.45)}50%{box-shadow:0 0 40px rgba(232,121,249,.65)}}
+.gesendet{display:flex;align-items:center;gap:1.2vmin;margin-top:1.4vmin;color:var(--gruen);font-weight:700;font-size:1.9vmin;opacity:0;animation:rein .5s ease 63.5s forwards}
+.gesendet .h{width:3vmin;height:3vmin;border-radius:50%;background:rgba(52,211,153,.2);border:2px solid var(--gruen);display:flex;align-items:center;justify-content:center}
+.cta-pill{font-family:ui-monospace,monospace;font-size:2.3vmin;background:var(--card);border:1px solid rgba(255,255,255,.18);padding:1.4vmin 3vmin;border-radius:99px;opacity:0;animation:rein .8s ease calc(var(--dl) + 2.8s) forwards}
+.cta-btn{font-size:2.6vmin;font-weight:700;color:#fff;background:linear-gradient(120deg,var(--cyan),var(--indigo),var(--magenta));border:none;padding:1.9vmin 4.4vmin;border-radius:99px;animation:puls 1.5s ease-in-out infinite;opacity:0;animation:puls 1.5s ease-in-out infinite,rein .6s ease calc(var(--dl) + 3.6s) forwards}
+#replay{position:fixed;bottom:3vmin;left:50%;transform:translateX(-50%);z-index:60;opacity:0;pointer-events:none;transition:.5s;background:var(--card);color:var(--text);border:1px solid rgba(255,255,255,.2);padding:1.2vmin 3vmin;border-radius:99px;font-size:2vmin;cursor:pointer;font-family:inherit}
+#replay.show{opacity:.9;pointer-events:auto}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+<div class="vig"></div>
+<div class="stage">
+
+<!-- S1 (0–8s) -->
+<section class="scene" style="--dl:0s;--dur:8.2s">
+  <div class="sweep go" style="--d:.4s"></div>
+  <h2 class="flash" style="--dl:0s;font-size:9.6vmin">EMBED <em>STUDIO</em></h2>
+  <p class="kick c" style="animation-delay:1.8s">LUMIOX · VERSION 0.8</p>
+</section>
+
+<!-- S2 (8.2–15.5s) -->
+<section class="scene" style="--dl:8.2s;--dur:7.4s">
+  <h2 class="flash" style="--dl:8.2s">Baue Discord-Embeds<br><em>wie ein Profi.</em></h2>
+  <p class="sub">Ohne eine Zeile Code. Mit Live-Vorschau. Direkt aus dem Dashboard.</p>
+</section>
+
+<!-- S3 (15.5–39s) · LIVE-BUILD -->
+<section class="scene" style="--dl:15.5s;--dur:24s">
+  <p class="kick c" style="animation-delay:15.9s">LIVE-BAUKASTEN</p>
+  <div class="dmsg" style="--t:16.6s">
+    <div class="dhead"><div class="dava"></div><span class="dname">Lumiox</span><span class="dbot">BOT</span></div>
+    <div class="dcard">
+      <div class="dbar"></div>
+      <div class="dmain">
+        <div class="dauthor dpart" style="--t:18.4s"><div class="ai">🌐</div><b>Dein Server · ankündigungen</b></div>
+        <div class="dtitle dpart" style="--t:19.8s">🎉 Server-Update 0.8 ist da!</div>
+        <div class="ddesc dpart" style="--t:21.6s">Das Embed-Studio ist live – baue Ankündigungen, Regeln &amp; Infos direkt im Dashboard mit echter Vorschau.</div>
+        <div class="dfields">
+          <div class="dfield" style="--t:24.6s"><b>📅 Wann?</b><span>Heute, 20:00 Uhr</span></div>
+          <div class="dfield" style="--t:25.4s"><b>🆕 Neu?</b><span>Embed-Studio</span></div>
+          <div class="dfield" style="--t:26.2s"><b>🐛 Fixes</b><span>12 Stück</span></div>
+        </div>
+        <div class="dfoot"><span class="fi">⭐</span><span>Lumiox · heute</span></div>
+      </div>
+      <div class="dthumb">🖼️</div>
+    </div>
+    <div style="display:flex;gap:1.2vmin;margin-top:1.2vmin">
+      <span class="cnt" style="--t:31.4s">Titel <b>27/256</b></span>
+      <span class="cnt" style="--t:31.9s">Text <b>118/4096</b></span>
+      <span class="cnt" style="--t:32.4s">Gesamt <b>203/6000</b></span>
+    </div>
+    <div class="livechip"><span class="d"></span>LIVE-VORSCHAU</div>
+  </div>
+</section>
+
+<!-- S4 (39.5–48s) · FARBEN -->
+<section class="scene" style="--dl:39.5s;--dur:8.5s">
+  <div class="farbdot"></div>
+  <div class="bignum">16.777.216</div>
+  <p class="kick m" style="animation-delay:40.5s">FARBEN · FARBPICKER · SOFORT-VORSCHAU</p>
+</section>
+
+<!-- S5 (48.5–57s) · LIMITS -->
+<section class="scene" style="--dl:48.5s;--dur:8.5s">
+  <p class="kick w" style="animation-delay:48.9s">DISCORD-LIMITS EINGEBAUT</p>
+  <div class="bigrow">
+    <div class="b" style="--d:49.5s"><div class="bignum" style="font-size:6.4vmin">256</div><small>Titel</small></div>
+    <div class="b" style="--d:49.9s"><div class="bignum" style="font-size:6.4vmin">4096</div><small>Text</small></div>
+    <div class="b" style="--d:50.3s"><div class="bignum" style="font-size:6.4vmin">25</div><small>Felder</small></div>
+    <div class="b" style="--d:50.7s"><div class="bignum" style="font-size:6.4vmin">6000</div><small>Gesamt</small></div>
+  </div>
+  <p class="sub">Live-Zähler an jedem Eingabefeld – nie wieder raten, warum Discord meckert.</p>
+</section>
+
+<!-- S6 (57.5–67s) · SENDEN -->
+<section class="scene" style="--dl:57.5s;--dur:9.8s">
+  <p class="kick g" style="animation-delay:57.9s">DIREKTVERSAND</p>
+  <div class="sendbox">
+    <div class="selmock">📣 ankündigungen <span>▾</span></div>
+    <div class="sendbtn">📤 In Kanal senden</div>
+    <div class="gesendet"><span class="h">✓</span> Zugestellt in #ankündigungen – mit Rechte-Prüfung</div>
+  </div>
+</section>
+
+<!-- S7 (67.5–74.5s) · ENTWÜRFE -->
+<section class="scene" style="--dl:67.5s;--dur:7s">
+  <p class="kick c" style="animation-delay:67.9s">ENTWÜRFE &amp; EXPORT</p>
+  <h2 class="flash" style="--dl:67.5s;font-size:4.2vmin">💾 Speichern · Laden · <em>JSON-Export</em></h2>
+  <p class="sub">Baue einmal, verwende überall – auch für Webhooks.</p>
+</section>
+
+<!-- S8 (74.5–85s) · FINALE -->
+<section class="scene last" style="--dl:74.5s;--dur:11s">
+  <h2 style="font-size:8.4vmin;letter-spacing:.04em">LUMIO<span style="background:linear-gradient(120deg,var(--cyan),var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent">X</span></h2>
+  <p class="kick c" style="animation-delay:75.8s">EMBED STUDIO · VERSION 0.8 · JETZT IM DASHBOARD</p>
+  <div class="cta-pill">github.com/Seekseek174/lumiox</div>
+  <button class="cta-btn" style="--dl:74.5s">⭐ Star auf GitHub</button>
+</section>
+</div>
+
+<button id="replay">▶ Erneut abspielen</button>
+<script>
+const c = document.getElementById('bg'), x = c.getContext('2d');
+let W, H, st = [];
+function init(){ W = c.width = innerWidth; H = c.height = innerHeight;
+  st = Array.from({length: 220}, () => ({ x: Math.random()*W, y: Math.random()*H, r: .4 + Math.random()*1.3, p: Math.random()*Math.PI*2, s: .3 + Math.random()*.8 })); }
+init(); addEventListener('resize', init);
+(function loop(){ x.clearRect(0,0,W,H);
+  for (const s of st) { s.p += .02*s.s; x.globalAlpha = .16 + .42*Math.abs(Math.sin(s.p));
+    x.fillStyle = '#cfd8ff'; x.beginPath(); x.arc(s.x, s.y, s.r, 0, 7); x.fill(); }
+  x.globalAlpha = 1; requestAnimationFrame(loop); })();
+setTimeout(() => document.getElementById('replay').classList.add('show'), 82500);
+document.getElementById('replay').addEventListener('click', () => location.reload());
+</script>
+</body>
+</html>

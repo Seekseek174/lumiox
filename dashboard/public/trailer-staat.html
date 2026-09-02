@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>LUMIOX – DER STAAT</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@800;900&display=swap" rel="stylesheet">
+<style>
+:root{--cyan:#22d3ee;--magenta:#e879f9;--indigo:#818cf8;--rot:#f43f5e;--gruen:#34d399;--warn:#fbbf24;--gold:#f1c40f}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:#02030a;color:#eef1f7;overflow:hidden;font-family:'Inter',sans-serif}
+#bg{position:fixed;inset:0;z-index:0}
+.vig{position:fixed;inset:0;z-index:40;box-shadow:inset 0 0 20vmin rgba(0,0,0,.85);pointer-events:none}
+.scene{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:2.2vmin;padding:5vmin;text-align:center}
+.scene.on{display:flex;animation:sIn .4s cubic-bezier(.3,0,.7,1)}
+@keyframes sIn{0%{transform:scale(1.22)}60%{transform:scale(1.04)}100%{transform:scale(1.1)}}
+.kick{font-size:1.8vmin;letter-spacing:.55em;text-transform:uppercase;opacity:0;animation:rein .8s ease calc(var(--t) + .4s) forwards}
+.kick.g{color:var(--gold)}.kick.r{color:var(--rot)}.kick.b{color:var(--cyan)}.kick.gr{color:var(--gruen)}
+@keyframes rein{to{opacity:1}}
+h2{font-size:5.6vmin;font-weight:900;line-height:1.15}
+h2 em{font-style:normal;background:linear-gradient(120deg,var(--gold),var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:#8b93a7;font-size:2vmin}
+.waage{position:relative;width:46vmin;height:4vmin}
+.waage .balken{position:absolute;top:50%;width:100%;height:.8vmin;background:rgba(255,255,255,.15);border-radius:99vmin}
+.waage .links,.waage .rechts{position:absolute;top:calc(50% - 2.4vmin);width:26vmin;height:5vmin;border-radius:2vmin;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:2.2vmin}
+.waage .links{left:-8vmin;background:rgba(241,196,15,.2);border:2px solid var(--gold);color:var(--gold);animation:wS 2.2s ease-in-out infinite alternate}
+.waage .rechts{right:-8vmin;background:rgba(244,63,94,.18);border:2px solid var(--rot);color:var(--rot);animation:wS 2.2s ease-in-out infinite alternate-reverse}
+@keyframes wS{from{transform:translateY(-1.2vmin)}to{transform:translateY(1.2vmin)}}
+.spiele{display:grid;grid-template-columns:repeat(2,26vmin);gap:2vmin}
+.sp{background:rgba(14,18,36,.95);border:2px solid var(--cyan);border-radius:2vmin;padding:2.4vmin;font-weight:800;font-size:2.2vmin;box-shadow:0 0 30px rgba(34,211,238,.25);animation:spIn .6s cubic-bezier(.22,1,.36,1) var(--d) both}
+.sp .ico{font-size:6vmin;display:block;margin-bottom:.8vmin}
+@keyframes spIn{from{opacity:0;transform:rotateX(70deg) translateZ(-60px)}to{opacity:1;transform:none}}
+.sirene{position:absolute;inset:0;z-index:30;pointer-events:none;opacity:0}
+.sirene.blau{background:radial-gradient(circle at 20% 20%,rgba(34,211,238,.35),transparent 55%);animation:sir .5s steps(2) infinite}
+.sirene.rot{background:radial-gradient(circle at 80% 30%,rgba(244,63,94,.35),transparent 55%);animation:sir .5s steps(2) .25s infinite}
+@keyframes sir{0%,100%{opacity:.15}50%{opacity:.7}}
+.quote{font-size:9vmin;font-weight:900;color:var(--gruen);text-shadow:0 0 40px rgba(52,211,153,.6)}
+.ticker{width:80vmin;overflow:hidden;border-top:2px solid rgba(255,255,255,.15);border-bottom:2px solid rgba(255,255,255,.15);padding:1.6vmin 0}
+.ticker div{display:flex;gap:5vmin;animation:tk 12s linear infinite;font-family:ui-monospace,monospace;font-size:2.4vmin;white-space:nowrap}
+@keyframes tk{to{transform:translateX(-50%)}}
+.up{color:var(--gruen)}.down{color:var(--rot)}
+.karten{display:grid;grid-template-columns:repeat(3,24vmin);gap:2.4vmin;perspective:900px}
+.k{background:rgba(14,18,36,.95);border:1px solid rgba(255,255,255,.14);border-radius:2vmin;padding:2.4vmin;animation:kIn .7s cubic-bezier(.22,1,.36,1) var(--d) both}
+.k .ico{font-size:5.4vmin}.k b{display:block;margin-top:.8vmin;font-size:2vmin}.k small{color:#8b93a7;font-size:1.5vmin}
+@keyframes kIn{from{opacity:0;transform:rotateY(65deg) translateZ(-120px)}to{opacity:1;transform:none}}
+.defizit{font-size:7vmin;font-weight:900;color:var(--rot);text-shadow:0 0 34px rgba(244,63,94,.7);animation:blink .8s steps(2) infinite}
+@keyframes blink{50%{opacity:.35}}
+.soon{font-size:8.5vmin;font-weight:900;letter-spacing:.08em}
+.soon .a{color:var(--gold);text-shadow:0 1px 0 #8a6d00,0 2px 0 #6d5500,0 3px 0 #513f00,0 4px 0 #342800,0 8px 30px rgba(241,196,15,.55)}
+.soon .b{color:var(--magenta);text-shadow:0 1px 0 #9d174d,0 2px 0 #7f1240,0 3px 0 #610e33,0 4px 0 #430a25,0 8px 30px rgba(232,121,249,.55)}
+.cta-pill{font-family:ui-monospace,monospace;font-size:2.3vmin;background:rgba(14,18,36,.92);border:1px solid rgba(255,255,255,.2);padding:1.4vmin 3vmin;border-radius:99vmin;opacity:0;animation:rein .8s ease calc(var(--t) + 2.6s) forwards}
+.cta-btn{font-size:2.6vmin;font-weight:900;color:#fff;background:linear-gradient(120deg,var(--gold),var(--magenta));border:none;padding:1.9vmin 4.4vmin;border-radius:99vmin;animation:puls 1.4s ease-in-out infinite}
+@keyframes puls{0%,100%{box-shadow:0 0 18px rgba(241,196,15,.5)}50%{box-shadow:0 0 44px rgba(232,121,249,.75)}}
+#replay{position:fixed;bottom:3vmin;left:50%;transform:translateX(-50%);z-index:60;opacity:0;pointer-events:none;transition:.5s;background:rgba(14,18,36,.92);color:#fff;border:1px solid rgba(255,255,255,.2);padding:1.2vmin 3vmin;border-radius:99vmin;font-size:2vmin;cursor:pointer;font-family:inherit}
+#replay.show{opacity:.9;pointer-events:auto}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+<div class="vig"></div>
+
+<!-- S1 0–7s -->
+<div class="scene" data-t="0">
+  <div class="kick g" style="--t:0.4s">LUMIOX 0.8.43e · SEHR GROSSES UPDATE</div>
+  <h2 style="font-size:8vmin">DER <em>STAAT</em></h2>
+  <p class="sub">Wirtschaft mit Konsequenzen. Steuern mit Zähnen. Eine Polizei, die zuschlägt.</p>
+</div>
+
+<!-- S2 7–15s · WAEGE -->
+<div class="scene" data-t="7">
+  <div class="waage"><div class="balken"></div>
+    <div class="links">DU ZAHLST</div>
+    <div class="rechts">DER STAAT SAGT DANKE</div>
+  </div>
+  <h2 style="font-size:3.6vmin;margin-top:3vmin">Steuer-Umlage: bis <em>100 %</em> fließen in die <span style="color:var(--gold)">Staatskasse</span></h2>
+</div>
+
+<!-- S3 15–26s · STEUERERKLAERUNG SPIELE -->
+<div class="scene" data-t="15">
+  <p class="kick b" style="--t:15.4s">MONATLICHE STEUERERKLÄRUNG</p>
+  <h2 style="font-size:3.8vmin">Als Mini-Spiele. <em>Wählbar. Einstellbar.</em></h2>
+  <div class="spiele">
+    <div class="sp" style="--d:16.2s"><span class="ico">🧮</span>Steuer-Mathe</div>
+    <div class="sp" style="--d:16.7s"><span class="ico">⏱️</span>Blitz-Rechnen</div>
+    <div class="sp" style="--d:17.2s"><span class="ico">🍀</span>Ehrlichkeits-Wurf</div>
+    <div class="sp" style="--d:17.7s"><span class="ico">🧠</span>Memory-Zahl</div>
+  </div>
+  <p class="sub">Verpasst? → 🚔 Hinterziehungs-Verdacht.</p>
+</div>
+
+<!-- S4 26–34s · POLIZEI/SIRENE -->
+<div class="scene" data-t="26">
+  <div class="sirene blau"></div><div class="sirene rot"></div>
+  <div class="quote" id="quoteZahl">25%</div>
+  <p class="kick r" style="--t:26.5s;animation-delay:26.9s">FANGQUOTE BEI STEUERHINTERZIEHUNG</p>
+  <p class="sub" style="opacity:0;animation:rein .8s ease 29.5s forwards">Je besser die Wache gefördert wird, desto härter schlägt die Fahndung zu.</p>
+</div>
+
+<!-- S5 34–42s · BOURSE TICKER -->
+<div class="scene" data-t="34">
+  <p class="kick b" style="--t:34.4s">DIE LUMIOX-BÖRSE</p>
+  <div class="ticker"><div>
+    <span>LUMX <b class="up">▲ 104,2</b></span><span>MEME <b class="down">▼ 41,8</b></span>
+    <span>PIZA <b class="up">▲ 31,5</b></span><span>ROKT <b class="up">▲ 79,9</b></span>
+    <span>GEIST <b class="down">▼ 58,1</b></span>
+    <span>LUMX <b class="up">▲ 104,2</b></span><span>MEME <b class="down">▼ 41,8</b></span>
+    <span>PIZA <b class="up">▲ 31,5</b></span><span>ROKT <b class="up">▲ 79,9</b></span>
+    <span>GEIST <b class="down">▼ 58,1</b></span>
+  </div></div>
+  <p class="sub">Stündliche Kurse · Depot · Reichtum in Echtzeit (/boerse)</p>
+</div>
+
+<!-- S6 42–52s · KREDIT/IMMO/KLAUEN -->
+<div class="scene" data-t="42">
+  <div class="karten">
+    <div class="k" style="--d:.2s"><span class="ico">🏦</span><b>Kredite</b><small>Tageszinsen · Auto-Einzug · /kredit</small></div>
+    <div class="k" style="--d:.7s"><span class="ico">🏠</span><b>Immobilien</b><small>4 Stufen · passive Miete · /immobilie</small></div>
+    <div class="k" style="--d:1.2s"><span class="ico">🥷</span><b>Shop-Klau</b><small>Risiko & Strafe · /klauen</small></div>
+  </div>
+  <p class="sub">Kredite zahlt der Staat aus – Mieten zahlt der Staat zurück. Ein echter Kreislauf.</p>
+</div>
+
+<!-- S7 52–60s · DEFIZIT -->
+<div class="scene" data-t="52">
+  <div class="defizit">⚠️ STAATSDEFIZIT</div>
+  <p class="sub">Geht die Kasse ins Minus, alarmiert Lumiox deinen Ankündigungskanal. Wer rettet den Staat?</p>
+</div>
+
+<!-- S8 60–72s · FINALE -->
+<div class="scene" data-t="60">
+  <div class="soon"><span class="a">0.8.43e</span> <span class="b">JETZT</span></div>
+  <p class="kick g" style="--t:61.5s">SEHR GROSSES UPDATE · LIVE IM DASHBOARD</p>
+  <div class="cta-pill" style="--t:60s">github.com/Seekseek174/lumiox</div>
+  <button class="cta-btn">🚔 Jetzt Steuern zahlen</button>
+  <p class="sub" style="margin-top:1vmin">Made by ginizw · Open Alpha</p>
+</div>
+
+<button id="replay">▶ Nochmal</button>
+<script>
+const cv = document.getElementById('bg'), cx = cv.getContext('2d');
+let W, H, st = [];
+function init(){ W = cv.width = innerWidth; H = cv.height = innerHeight;
+  st = Array.from({length:200},()=>({x:Math.random()*W,y:Math.random()*H,r:.5+Math.random()*1.3,p:Math.random()*6.28,s:.4+Math.random()})); }
+init(); addEventListener('resize', init);
+(function loop(){ cx.clearRect(0,0,W,H);
+  for (const s of st) { s.p += .028*s.s; cx.globalAlpha = .16+.45*Math.abs(Math.sin(s.p));
+    cx.fillStyle = '#cfd8ff'; cx.beginPath(); cx.arc(s.x,s.y,s.r,0,7); cx.fill(); }
+  cx.globalAlpha = 1; requestAnimationFrame(loop); })();
+
+const PLAN = [...document.querySelectorAll('.scene')].map(el=>({el,start:parseFloat(el.dataset.t)})).sort((a,b)=>a.start-b.start);
+const T0 = performance.now(), ENDE = 72;
+function akt(sek){ let a=null; for (const p of PLAN) if (sek>=p.start) a=p; return a; }
+let qAnim = false;
+(function rahmen(now){
+  const sek = (now-T0)/1000;
+  const a = akt(sek);
+  for (const p of PLAN) {
+    const soll = p===a;
+    if (soll && !p.el.classList.contains('on')) p.el.classList.add('on');
+    if (!soll && p.el.classList.contains('on')) p.el.classList.remove('on');
+  }
+  if (a && !qAnim && a.el.querySelector('#quoteZahl')) {
+    qAnim = true;
+    const el = document.getElementById('quoteZahl'), t0 = performance.now();
+    (function z(t){ const p2 = Math.min(1,(t-t0)/1200);
+      el.textContent = Math.round(25 + 30*(1-Math.pow(1-p2,3))) + '%';
+      if (p2<1) requestAnimationFrame(z); })(t0);
+  }
+  if (sek < ENDE) requestAnimationFrame(rahmen);
+  else document.getElementById('replay').classList.add('show');
+})(performance.now());
+document.getElementById('replay').addEventListener('click',()=>location.reload());
+</script>
+</body>
+</html>

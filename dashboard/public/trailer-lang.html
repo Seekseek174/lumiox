@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>LUMIOX – Der große Trailer</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--cyan:#22d3ee;--indigo:#818cf8;--magenta:#e879f9;--text:#eef1f7;--dim:#94a3b8;--panel:rgba(13,17,33,.92);--line:rgba(255,255,255,.1)}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#05060d;color:var(--text);font-family:'Inter',system-ui,sans-serif;overflow:hidden}
+#sterne{position:fixed;inset:0;z-index:0}
+.blob{position:fixed;border-radius:50%;filter:blur(90px);opacity:.5;z-index:0;animation:drift 22s ease-in-out infinite alternate}
+.b1{width:55vmax;height:55vmax;background:radial-gradient(circle,#0e7490,transparent 65%);top:-20%;left:-15%}
+.b2{width:50vmax;height:50vmax;background:radial-gradient(circle,#be123c,transparent 65%);bottom:-25%;right:-15%;animation-duration:28s}
+.b3{width:40vmax;height:40vmax;background:radial-gradient(circle,#4c1d95,transparent 65%);bottom:-10%;left:30%;animation-duration:34s}
+@keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(4%,-6%) scale(1.15)}}
+.stage{position:fixed;inset:0;z-index:2}
+.scene{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2.2vmin;opacity:0;padding:4vmin;text-align:center;animation:szene var(--dur) ease var(--delay) forwards}
+@keyframes szene{0%{opacity:0;transform:scale(.985)}6%{opacity:1;transform:none}88%{opacity:1}100%{opacity:0;visibility:hidden}}
+.scene.last{animation-name:szeneEnde}
+@keyframes szeneEnde{0%{opacity:0;transform:scale(.985)}7%{opacity:1;transform:none}100%{opacity:1}}
+.kicker{font-size:2vmin;letter-spacing:.45em;color:var(--cyan);text-transform:uppercase}
+h2.big{font-size:6vmin;font-weight:800;line-height:1.15}
+h2.big em{font-style:normal;background:linear-gradient(120deg,var(--cyan),var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--dim);font-size:2.3vmin}
+/* Logo-Szene */
+.ring{filter:drop-shadow(0 0 14px rgba(34,211,238,.55))}
+.ring .pfad{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 2s ease .2s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.ring .balken{opacity:0;animation:rein .5s ease 1.9s forwards}
+@keyframes rein{to{opacity:1}}
+.wordmark{font-size:11vmin;font-weight:800;display:flex;line-height:1}
+.wordmark span{opacity:0;animation:buch .6s cubic-bezier(.22,1,.36,1) forwards;animation-delay:calc(2s + var(--i)*90ms)}
+@keyframes buch{from{opacity:0;transform:translateY(3vmin);filter:blur(8px)}to{opacity:1;transform:none;filter:none}}
+.wordmark .x{background:linear-gradient(120deg,var(--cyan),var(--indigo) 55%,var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent}
+.tagline{font-size:1.9vmin;color:var(--dim);opacity:0;animation:tg 1.4s ease 3.4s forwards}
+@keyframes tg{from{opacity:0;letter-spacing:.1em}to{opacity:1;letter-spacing:.5em}}
+/* Feature-Karten */
+.feats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2vmin;max-width:82vmin}
+.feat{background:var(--panel);border:1px solid var(--line);border-radius:1.8vmin;padding:2.4vmin 1.8vmin;opacity:0;animation:fIn .7s cubic-bezier(.22,1,.36,1) forwards;animation-delay:calc(var(--delay) + .8s + var(--i)*.55s)}
+.feat:nth-child(even){animation-name:fIn2}
+.feat .ico{font-size:4.6vmin}.feat b{display:block;margin-top:.8vmin;font-size:2.3vmin}
+.feat small{color:var(--dim);font-size:1.6vmin}
+@keyframes fIn{from{opacity:0;transform:translateY(4vmin) scale(.94)}to{opacity:1;transform:none}}
+@keyframes fIn2{from{opacity:0;transform:translateY(-4vmin) scale(.94)}to{opacity:1;transform:none}}
+/* ── Dashboard-Mockup ── */
+.dash{width:min(88vmin,940px);background:var(--panel);border:1px solid var(--line);border-radius:2vmin;display:grid;grid-template-columns:13vmin 1fr;gap:1.4vmin;padding:1.4vmin;opacity:0;animation:fIn 1s ease calc(var(--delay) + .8s) forwards;text-align:left}
+.dside{background:rgba(255,255,255,.04);border-radius:1.4vmin;padding:1.2vmin;display:flex;flex-direction:column;gap:1vmin}
+.dside i{display:block;height:1.1vmin;border-radius:99px;background:rgba(255,255,255,.14)}
+.dside i.a{background:linear-gradient(90deg,var(--cyan),var(--indigo));width:80%}
+.dmain{display:flex;flex-direction:column;gap:1.2vmin}
+.dtop{display:flex;gap:1vmin;align-items:center;font-size:1.6vmin;color:var(--dim)}
+.dtop b{color:var(--text);font-size:1.9vmin;margin-right:auto}
+.chip{background:rgba(255,255,255,.06);border:1px solid var(--line);padding:.5vmin 1.2vmin;border-radius:99px}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2vmin}
+.tile{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:1.2vmin;padding:1.4vmin}
+.tile small{color:var(--dim);font-size:1.3vmin;display:block}
+.tile b{font-size:2.8vmin;font-weight:800;background:linear-gradient(120deg,var(--cyan),var(--indigo));-webkit-background-clip:text;background-clip:text;color:transparent}
+.tile b.rot{background:linear-gradient(120deg,var(--magenta),#f43f5e);-webkit-background-clip:text;background-clip:text}
+/* ── KI-Scan-Szene ── */
+.chat{width:min(80vmin,780px);display:flex;flex-direction:column;gap:1.6vmin;text-align:left}
+.bubble{background:var(--panel);border:1px solid var(--line);border-radius:1.6vmin;padding:1.6vmin 2vmin;font-size:2.2vmin;opacity:0;animation:rein .6s ease var(--d) forwards}
+.bubble small{color:var(--dim);display:block;font-size:1.5vmin;margin-bottom:.5vmin}
+.scan{height:.4vmin;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden;opacity:0;animation:rein .4s ease 2.4s forwards}
+.scan i{display:block;height:100%;width:0;background:linear-gradient(90deg,transparent,var(--cyan),var(--magenta),transparent);animation:scan 1.9s ease 2.7s forwards}
+@keyframes scan{to{width:100%}}
+.detekt{background:var(--panel);border:1px solid rgba(244,63,94,.5);border-radius:1.8vmin;padding:2vmin;opacity:0;animation:fIn .7s cubic-bezier(.22,1,.36,1) 4.9s forwards;text-align:left}
+.detekt h4{font-size:2.2vmin;margin-bottom:1vmin}
+.detekt h4 span{color:var(--magenta)}
+.dbar{height:1.4vmin;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden;margin:.8vmin 0}
+.dbar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--warn),var(--magenta));animation:barfuell 1.3s ease 5.6s forwards}
+@keyframes barfuell{to{width:60%}}
+.dmeta{font-size:1.7vmin;color:var(--dim);line-height:1.7}
+.badge{display:inline-block;padding:.4vmin 1.2vmin;border-radius:99px;font-size:1.5vmin;background:rgba(244,63,94,.18);color:#fda4af;margin-right:.6vmin}
+.badge.g{background:rgba(52,211,153,.16);color:#6ee7b7}
+/* ── Wirtschafts-Szene ── */
+.emb{width:min(74vmin,700px);background:var(--panel);border:1px solid var(--line);border-radius:2vmin;padding:2.2vmin;text-align:left;opacity:0;animation:fIn .8s ease calc(var(--delay) + .8s) forwards}
+.emb h4{font-size:2.4vmin;margin-bottom:1.4vmin}
+.zeile{display:flex;justify-content:space-between;font-size:2vmin;padding:1vmin 0;border-bottom:1px solid var(--line);opacity:0;animation:rein .5s ease calc(var(--delay) + 2s + var(--i)*.7s) forwards}
+.zeile b{color:var(--cyan)}
+.zeile b.rot{color:#fda4af}
+.ausz{font-size:2.8vmin;font-weight:800;margin-top:1.4vmin;opacity:0;animation:rein .6s ease calc(var(--delay) + 5s) forwards}
+.ausz b{color:var(--cyan)}
+.kasse{margin-top:1.6vmin;font-size:1.8vmin;color:var(--dim);opacity:0;animation:rein .6s ease calc(var(--delay) + 5.8s) forwards}
+.kasse b{color:#6ee7b7}
+/* ── Design-Szene ── */
+.design{width:min(78vmin,760px);display:grid;grid-template-columns:1fr 1fr;gap:2vmin;align-items:stretch}
+.fslider{margin:2vmin 0}
+.fslider small{color:var(--dim);font-size:1.5vmin;display:block;margin-bottom:.7vmin}
+.track{position:relative;height:1vmin;background:rgba(255,255,255,.12);border-radius:99px}
+.track i{position:absolute;top:50%;transform:translateY(-50%);width:2.2vmin;height:2.2vmin;border-radius:50%;background:#fff;border:.4vmin solid var(--cyan)}
+.track i.k1{left:18%;animation:k1 3.5s ease-in-out infinite alternate}
+.track i.k2{left:55%;animation:k2 2.8s ease-in-out infinite alternate}
+.track i.k3{left:40%;animation:k1 4.2s ease-in-out infinite alternate-reverse}
+@keyframes k1{to{left:78%}}
+@keyframes k2{to{left:22%}}
+.farbe{border-radius:1.8vmin;border:1px solid var(--line);background:linear-gradient(140deg,#0e7490,#1a1033 55%,#be123c);animation:hueDreh 6s linear infinite;min-height:100%}
+@keyframes hueDreh{to{filter:hue-rotate(360deg)}}
+/* Zahlen + CTA */
+.zahlen{display:flex;gap:6vmin}
+.zahl{opacity:0;animation:rein .8s cubic-bezier(.22,1,.36,1) forwards;animation-delay:calc(var(--delay) + var(--i)*.4s)}
+.zahl b{font-size:9vmin;font-weight:800;background:linear-gradient(120deg,var(--cyan),var(--indigo),var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent}
+.zahl small{display:block;color:var(--dim);font-size:2vmin;letter-spacing:.2em;text-transform:uppercase;margin-top:.6vmin}
+.cta-klein{font-size:5vmin;font-weight:800;letter-spacing:.1em}
+.cta-pill{font-family:ui-monospace,monospace;font-size:2.4vmin;background:var(--panel);border:1px solid var(--line);padding:1.4vmin 2.8vmin;border-radius:99px}
+.cta-btn{font-size:2.6vmin;font-weight:700;color:#fff;background:linear-gradient(120deg,var(--cyan),var(--indigo),var(--magenta));border:none;padding:1.8vmin 4vmin;border-radius:99px;animation:puls 1.6s ease-in-out infinite}
+@keyframes puls{0%,100%{box-shadow:0 0 18px rgba(34,211,238,.45)}50%{box-shadow:0 0 40px rgba(232,121,249,.6)}}
+.support{display:flex;align-items:center;gap:1.4vmin;background:var(--panel);border:1px solid rgba(52,211,153,.4);border-radius:99px;padding:1.2vmin 2.6vmin;font-size:2vmin;opacity:0;animation:rein .8s ease calc(var(--delay) + 3s) forwards}
+.support .dot{width:1.4vmin;height:1.4vmin;border-radius:50%;background:#34d399;box-shadow:0 0 10px #34d399;animation:puls 1.4s infinite}
+#replay{position:fixed;bottom:4vmin;left:50%;transform:translateX(-50%);z-index:9;opacity:0;pointer-events:none;transition:opacity .5s;background:var(--panel);color:var(--text);border:1px solid var(--line);padding:1.2vmin 3vmin;border-radius:99px;font-size:2vmin;cursor:pointer;font-family:inherit}
+#replay.show{opacity:.9;pointer-events:auto}
+</style>
+</head>
+<body>
+<canvas id="sterne"></canvas>
+<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+
+<div class="stage">
+  <!-- Szene 1 (0–6,5 s): Logo -->
+  <section class="scene" style="--delay:0s;--dur:6.6s">
+    <svg class="ring" viewBox="0 0 220 220" style="width:19vmin;height:19vmin">
+      <defs><linearGradient id="g" x1="20%" y1="0%" x2="80%" y2="100%">
+        <stop offset="0%" stop-color="#22d3ee"/><stop offset="55%" stop-color="#818cf8"/><stop offset="100%" stop-color="#e879f9"/>
+      </linearGradient></defs>
+      <circle class="pfad" cx="110" cy="110" r="70" fill="none" stroke="url(#g)" stroke-width="12" stroke-linecap="round" pathLength="1"/>
+      <g class="balken" fill="url(#g)">
+        <rect x="160" y="58" width="26" height="10" rx="5"/><rect x="167" y="80" width="23" height="10" rx="5"/>
+        <rect x="170" y="100" width="22" height="10" rx="5"/><rect x="167" y="120" width="23" height="10" rx="5"/>
+        <rect x="160" y="142" width="26" height="10" rx="5"/>
+      </g>
+    </svg>
+    <h1 class="wordmark"><span style="--i:0">L</span><span style="--i:1">u</span><span style="--i:2">m</span><span style="--i:3">i</span><span style="--i:4">o</span><span class="x" style="--i:5">x</span></h1>
+    <p class="tagline">LIGHT. DATA. POSSIBILITIES.</p>
+  </section>
+
+  <!-- Szene 2 (6,6–10,4 s): Was ist Lumiox -->
+  <section class="scene" style="--delay:6.6s;--dur:3.9s">
+    <p class="kicker">Was ist Lumiox?</p>
+    <h2 class="big">Ein Discord-Bot.<br><em>Komplett auf deinem Gerät.</em></h2>
+    <p class="sub">Keine Cloud. Keine Kosten. Deine Daten bleiben bei dir.</p>
+  </section>
+
+  <!-- Szene 3 (10,4–17,4 s): Features -->
+  <section class="scene" style="--delay:10.4s;--dur:7s">
+    <div class="feats">
+      <div class="feat" style="--i:0"><div class="ico">🧠</div><b>Moderation</b><small>Sentinel-Engine erkennt Beleidigungen, Mobbing & Hetze</small></div>
+      <div class="feat" style="--i:1"><div class="ico">🏛️</div><b>Steuersystem</b><small>Einkommen-, Vermögens- & Transaktionssteuer</small></div>
+      <div class="feat" style="--i:2"><div class="ico">💰</div><b>Wirtschaft</b><small>Shop, Gambling, Lotterie, Serverkasse</small></div>
+      <div class="feat" style="--i:3"><div class="ico">⭐</div><b>Levelsystem</b><small>XP, Boosts, Rollen-Belohnungen</small></div>
+      <div class="feat" style="--i:4"><div class="ico">🛡️</div><b>Auto-Mod</b><small>Anti-Raid, Anti-Nuke, Spam-Schutz</small></div>
+      <div class="feat" style="--i:5"><div class="ico">🎨</div><b>Glass-Dashboard</b><small>Alles einstellbar, live, ohne Neustart</small></div>
+    </div>
+  </section>
+
+  <!-- Szene 4 (17,4–28,5 s): Dashboard-Demo -->
+  <section class="scene" style="--delay:17.4s;--dur:11.2s">
+    <p class="kicker">Das Dashboard</p>
+    <div class="dash">
+      <div class="dside"><i class="a"></i><i></i><i style="width:70%"></i><i style="width:85%"></i><i style="width:60%"></i><i style="width:75%"></i><i style="width:50%"></i></div>
+      <div class="dmain">
+        <div class="dtop"><b>🟢 Lumiox – Übersicht</b><span class="chip">Ping 42 ms</span><span class="chip">Uptime 3 Tg.</span></div>
+        <div class="tiles">
+          <div class="tile"><small>Mitglieder</small><b class="cnt" data-z="1284">0</b></div>
+          <div class="tile"><small>Nachrichten heute</small><b class="cnt" data-z="9317">0</b></div>
+          <div class="tile"><small>Verwarnungen</small><b class="cnt" data-z="37">0</b></div>
+          <div class="tile"><small>KI-Erkennungen</small><b class="cnt rot" data-z="112">0</b></div>
+          <div class="tile"><small>Steuereinnahmen</small><b class="cnt" data-z="48210">0</b></div>
+          <div class="tile"><small>Serverkasse</small><b class="cnt" data-z="12600">0</b></div>
+          <div class="tile"><small>Geldmenge</small><b class="cnt" data-z="892400">0</b></div>
+          <div class="tile"><small>RAM (Prozess)</small><b>64 MB</b></div>
+        </div>
+      </div>
+    </div>
+    <p class="sub">Alle Zahlen live – Moderation, Wirtschaft, Server – auf einen Blick.</p>
+  </section>
+
+  <!-- Szene 5 (28,5–41 s): KI-Scan-Demo -->
+  <section class="scene" style="--delay:28.5s;--dur:12.5s">
+    <p class="kicker">KI-Moderation in Aktion</p>
+    <div class="chat">
+      <div class="bubble" style="--d:1s"><small>Nutzer_47 · #allgemein</small>„du bist so dumm, niemand braucht dich hier"</div>
+      <div class="scan"><i></i></div>
+      <div class="detekt">
+        <h4>🚨 <span>Verstoß erkannt</span> · Sentinel-Engine</h4>
+        <div class="dbar"><i></i></div>
+        <div class="dmeta">
+          <span class="badge">Kategorie: Mobbing</span><span class="badge">Schweregrad: 6/10</span><span class="badge g">Aktion: Verwarnung + Protokoll</span><br>
+          Ausgrenzung + gerichtete Beleidigung · Eskalation: wiederholtes Muster gegen dieselbe Person
+        </div>
+      </div>
+    </div>
+    <p class="sub">Erkennt auch Umgehungsversuche, Wiederholungstäter & Mobbing im Verlauf – einstellbar von „Entspannt" bis „Paranoid".</p>
+  </section>
+
+  <!-- Szene 6 (41–51,5 s): Wirtschaft & Steuern -->
+  <section class="scene" style="--delay:41s;--dur:10.6s">
+    <p class="kicker">Wirtschaft mit echtem Steuersystem</p>
+    <div class="emb">
+      <h4>💼 /work – Schicht erledigt: Programmierer/in</h4>
+      <div class="zeile" style="--i:0"><span>Lohn (brutto)</span><b>180 🪙</b></div>
+      <div class="zeile" style="--i:1"><span>Einkommensteuer (10 %)</span><b class="rot">−18 🪙 → Serverkasse</b></div>
+      <div class="zeile" style="--i:2"><span>Streak-Bonus (Tag 5)</span><b>+100 🪙</b></div>
+      <div class="ausz">Auszahlung: <b>262 🪙</b></div>
+      <div class="kasse">🏛️ Serverkasse: <b id="kasseZahl">12.600</b> 🪙 · finanziert Lotterie-Jackpots & XP-Booster · eigene Steuerklassen pro Mitglied möglich</div>
+    </div>
+  </section>
+
+  <!-- Szene 7 (51,5–59,5 s): Design-Editor -->
+  <section class="scene" style="--delay:51.5s;--dur:8s">
+    <p class="kicker">Design-Editor – alles live</p>
+    <div class="design">
+      <div>
+        <div class="fslider"><small>Ambient-Licht-Intensität</small><div class="track"><i class="k1"></i></div></div>
+        <div class="fslider"><small>Partikel-Dichte</small><div class="track"><i class="k2"></i></div></div>
+        <div class="fslider"><small>Glow-Radius</small><div class="track"><i class="k3"></i></div></div>
+      </div>
+      <div class="farbe"></div>
+    </div>
+    <p class="sub">Farben, Licht, Partikel, Animationen – jeder Regler wirkt sofort. Ohne Reload.</p>
+  </section>
+
+  <!-- Szene 8 (59,5–64 s): Zahlen -->
+  <section class="scene" style="--delay:59.5s;--dur:4.6s">
+    <div class="zahlen">
+      <div class="zahl" style="--i:0"><b>70+</b><small>Befehle</small></div>
+      <div class="zahl" style="--i:1"><b>100 %</b><small>lokal</small></div>
+      <div class="zahl" style="--i:2"><b>0 €</b><small>Cloud</small></div>
+    </div>
+  </section>
+
+  <!-- Szene 9 (64 s – Ende): CTA + Super Support -->
+  <section class="scene last" style="--delay:64s;--dur:10s">
+    <div class="cta-klein">LUMIO<span style="background:linear-gradient(120deg,var(--cyan),var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent">X</span></div>
+    <p class="tagline" style="animation-delay:65s">LIGHT. DATA. POSSIBILITIES.</p>
+    <div class="support"><span class="dot"></span>💬 <b>Super Support</b>&nbsp;– Issues, Anleitungen & schnelle Hilfe direkt auf GitHub</div>
+    <div class="cta-pill" style="margin-top:1.5vmin">github.com/Seekseek174/lumiox</div>
+    <button class="cta-btn">⬇ Jetzt kostenlos herunterladen</button>
+    <p class="sub" style="margin-top:1vmin">Made by ginizw · Installation in 2 Minuten</p>
+  </section>
+</div>
+
+<button id="replay">▶ Erneut abspielen</button>
+
+<script>
+// Sternenhimmel
+const c = document.getElementById('sterne'), x = c.getContext('2d');
+let S = [];
+function groesse(){ c.width = innerWidth; c.height = innerHeight;
+  S = Array.from({length: 90}, () => ({ x: Math.random()*c.width, y: Math.random()*c.height,
+    r: .5 + Math.random()*1.4, p: Math.random()*Math.PI*2, s: .4 + Math.random()*.9 })); }
+groesse(); addEventListener('resize', groesse);
+(function loop(){ x.clearRect(0,0,c.width,c.height);
+  for (const s of S) { s.p += .02*s.s; x.globalAlpha = .25 + .55*Math.abs(Math.sin(s.p));
+    x.fillStyle = '#cfd8ff'; x.beginPath(); x.arc(s.x, s.y, s.r, 0, 7); x.fill(); }
+  x.globalAlpha = 1; requestAnimationFrame(loop); })();
+
+// Dashboard-Zahlen hochzählen (Szene 4 startet bei 17,4 s + 1,8 s Karten-Verzögerung)
+setTimeout(() => {
+  document.querySelectorAll('.cnt').forEach((el) => {
+    const ziel = parseInt(el.dataset.z, 10);
+    const t0 = performance.now();
+    const step = (t) => { const p = Math.min(1, (t - t0) / 2400);
+      el.textContent = Math.round(ziel * (1 - Math.pow(1 - p, 3))).toLocaleString('de-DE');
+      if (p < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  });
+}, 19200);
+
+// Serverkasse tickt hoch (Szene 6)
+setTimeout(() => {
+  const el = document.getElementById('kasseZahl');
+  if (!el) return;
+  let stand = 12600;
+  const iv = setInterval(() => { stand += 18; el.textContent = stand.toLocaleString('de-DE'); }, 350);
+  setTimeout(() => clearInterval(iv), 6000);
+}, 47500);
+
+// Replay-Knopf am Ende
+setTimeout(() => document.getElementById('replay').classList.add('show'), 73500);
+document.getElementById('replay').addEventListener('click', () => location.reload());
+</script>
+</body>
+</html>

@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>LUMIOX – Sentinel: Wächter des Chats</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--cyan:#22d3ee;--indigo:#818cf8;--magenta:#e879f9;--rot:#f43f5e;--warn:#fbbf24;--ok:#34d399;
+      --text:#eef1f7;--dim:#8b93a7;--panel:rgba(10,14,26,.94);--line:rgba(255,255,255,.1)}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#000;color:var(--text);font-family:'Inter',system-ui,sans-serif;overflow:hidden;cursor:none}
+/* ── Cinema-Rahmen ── */
+#balkenOben,#balkenUnten{position:fixed;left:0;width:100%;height:0;background:#000;z-index:50;transition:height 2.5s ease}
+#balkenOben{top:0}#balkenUnten{bottom:0}
+body.cinema #balkenOben,body.cinema #balkenUnten{height:7vh}
+#korn{position:fixed;inset:0;z-index:51;pointer-events:none;opacity:.5;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+  animation:korn .35s steps(4) infinite}
+@keyframes korn{0%{transform:translate(0,0)}25%{transform:translate(-2%,1%)}50%{transform:translate(1%,-2%)}75%{transform:translate(-1%,-1%)}100%{transform:translate(0,0)}}
+#vig{position:fixed;inset:0;z-index:49;pointer-events:none;background:radial-gradient(ellipse at center,transparent 52%,rgba(0,0,0,.75) 100%)}
+#flash{position:fixed;inset:0;z-index:60;pointer-events:none;background:#fff;opacity:0}
+#rot{position:fixed;inset:0;z-index:48;pointer-events:none;opacity:0;background:radial-gradient(ellipse at center,transparent 40%,rgba(244,63,94,.28) 100%);transition:opacity 1s}
+#sweep{position:fixed;top:0;bottom:0;width:26vw;z-index:47;pointer-events:none;opacity:0;
+  background:linear-gradient(90deg,transparent,rgba(34,211,238,.22),rgba(129,140,248,.3),rgba(232,121,249,.22),transparent);filter:blur(4px)}
+/* ── Bühne ── */
+.stage{position:fixed;inset:0;z-index:10}
+.scene{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2vmin;opacity:0;padding:5vmin;text-align:center;animation:sz var(--dur) ease var(--dl) forwards}
+@keyframes sz{0%{opacity:0;transform:scale(1.04)}6%{opacity:1;transform:scale(1)}90%{opacity:1}100%{opacity:0;visibility:hidden}}
+.scene.last{animation-name:szEnde}
+@keyframes szEnde{0%{opacity:0;transform:scale(1.04)}7%{opacity:1;transform:none}100%{opacity:1}}
+.kick{font-size:1.8vmin;letter-spacing:.6em;color:var(--cyan);text-transform:uppercase;opacity:0;animation:rein 1s ease calc(var(--dl) + .4s) forwards}
+.kick.rot{color:var(--rot)}.kick.rot2{color:var(--warn)}
+@keyframes rein{to{opacity:1}}
+h2.big{font-size:6.2vmin;font-weight:800;line-height:1.18;text-shadow:0 0 40px rgba(34,211,238,.25)}
+h2.big em{font-style:normal;background:linear-gradient(120deg,var(--cyan),var(--indigo) 50%,var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--dim);font-size:2.2vmin}
+/* ── Kinointro ── */
+#intro{position:fixed;inset:0;z-index:70;display:flex;align-items:center;justify-content:center;background:#000}
+#intro span{font-size:16vmin;font-weight:800;opacity:0;color:var(--text);text-shadow:0 0 60px rgba(34,211,238,.5);animation:cnt .9s ease forwards}
+@keyframes cnt{0%{opacity:0;transform:scale(1.6);filter:blur(14px)}25%{opacity:1;transform:scale(1);filter:blur(0)}80%{opacity:1}100%{opacity:0}}
+/* ── S1 Chaos ── */
+#chaos{position:fixed;inset:0;z-index:11;pointer-events:none}
+.tox{position:absolute;font-size:2.6vmin;font-weight:600;color:#fda4af;opacity:0;animation:toxFly 3.4s ease var(--d) forwards;text-shadow:0 0 24px rgba(244,63,94,.6)}
+@keyframes toxFly{0%{opacity:0;transform:translateY(4vmin) rotate(var(--r))}18%{opacity:1}70%{opacity:.85}100%{opacity:0;transform:translateY(-6vmin) rotate(var(--r)) scale(1.12)}}
+/* ── S2 Logo ── */
+.wordmark{font-size:12vmin;font-weight:800;display:flex;line-height:1}
+.wordmark span{opacity:0;animation:buch .55s cubic-bezier(.22,1,.36,1) forwards;animation-delay:calc(1.6s + var(--i)*.11s)}
+@keyframes buch{from{opacity:0;transform:translateY(4vmin) scale(1.3);filter:blur(12px)}to{opacity:1;transform:none;filter:none}}
+.wordmark .x{background:linear-gradient(120deg,var(--cyan),var(--indigo) 55%,var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent}
+.ringx{width:17vmin;height:17vmin;filter:drop-shadow(0 0 18px rgba(34,211,238,.55))}
+.ringx .pf{stroke-dasharray:1;stroke-dashoffset:1;animation:drw 1.7s ease .5s forwards}
+@keyframes drw{to{stroke-dashoffset:0}}
+.ringx .bl{opacity:0;animation:rein .4s ease 2.1s forwards}
+/* ── S3 Sentinel-Schwarm ── */
+.augen{display:flex;gap:2.4vmin;opacity:0;animation:rein 1.2s ease calc(var(--dl) + 1s) forwards}
+.auge{width:9vmin;height:9vmin;border-radius:50%;border:.4vmin solid var(--cyan);display:flex;align-items:center;justify-content:center;position:relative;background:rgba(34,211,238,.06);box-shadow:0 0 26px rgba(34,211,238,.3),inset 0 0 18px rgba(34,211,238,.15);animation:augePuls 2.2s ease-in-out infinite}
+.auge:nth-child(2){animation-delay:.4s}.auge:nth-child(3){animation-delay:.8s}
+@keyframes augePuls{0%,100%{box-shadow:0 0 18px rgba(34,211,238,.25)}50%{box-shadow:0 0 44px rgba(34,211,238,.55)}}
+.auge::after{content:'';width:2.6vmin;height:2.6vmin;border-radius:50%;background:var(--cyan);box-shadow:0 0 16px var(--cyan);animation:blinz 4.5s infinite}
+@keyframes blinz{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.05)}}
+/* ── S4 Scan-Demo ── */
+.chatline{background:var(--panel);border:1px solid var(--line);border-left:.5vmin solid var(--rot);border-radius:1.4vmin;padding:1.8vmin 2.4vmin;font-size:2.7vmin;font-weight:600;opacity:0;animation:rein .5s ease calc(var(--dl) + 1s) forwards;position:relative;overflow:hidden;width:min(78vmin,820px)}
+.chatline small{display:block;color:var(--dim);font-weight:400;font-size:1.4vmin;margin-bottom:.6vmin}
+.scannline{position:absolute;bottom:0;left:0;height:.5vmin;width:0;background:linear-gradient(90deg,transparent,var(--cyan),var(--magenta),transparent);box-shadow:0 0 14px var(--cyan);animation:scan 1.7s cubic-bezier(.4,0,.6,1) calc(var(--dl) + 1.7s) forwards}
+@keyframes scan{0%{width:0}55%{width:60%}100%{width:100%}}
+.verdikt{display:flex;gap:1.2vmin;align-items:center;opacity:0;animation:verdik 0.01s linear calc(var(--dl) + 3.5s) forwards}
+@keyframes verdik{to{opacity:1}}
+.sg-wrap{flex:1;max-width:52vmin}
+.sg-label{display:flex;justify-content:space-between;font-size:1.7vmin;color:var(--dim);margin-bottom:.8vmin}
+.sg-label b{color:var(--rot);font-size:2.4vmin}
+.sg{height:1.8vmin;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden}
+.sg i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--warn),var(--rot) 70%);box-shadow:0 0 18px rgba(244,63,94,.5);animation:sgf 1.2s cubic-bezier(.22,1,.36,1) calc(var(--dl) + 3.7s) forwards}
+@keyframes sgf{to{width:74%}}
+.pills{display:flex;gap:.8vmin;flex-wrap:wrap;opacity:0;animation:rein .6s ease calc(var(--dl) + 4.4s) forwards}
+.pill{font-size:1.6vmin;padding:.6vmin 1.6vmin;border-radius:99px;border:1px solid var(--line);background:rgba(255,255,255,.05)}
+.pill.r{border-color:rgba(244,63,94,.5);background:rgba(244,63,94,.14);color:#fda4af}
+.pill.g{border-color:rgba(52,211,153,.5);background:rgba(52,211,153,.12);color:#6ee7b7}
+/* ── S5 Mobbing-Timeline ── */
+.timeline{width:min(80vmin,860px);display:flex;flex-direction:column;gap:1.6vmin}
+.tl-item{display:flex;align-items:center;gap:1.6vmin;opacity:0;animation:tlrein .5s ease var(--d) forwards}
+@keyframes tlrein{from{opacity:0;transform:translateX(-3vmin)}to{opacity:1;transform:none}}
+.tl-zeit{font-size:1.6vmin;color:var(--dim);min-width:8vmin;text-align:right}
+.tl-bubble{flex:1;background:var(--panel);border:1px solid var(--line);border-radius:1.2vmin;padding:1.2vmin 1.8vmin;font-size:2vmin;text-align:left}
+.tl-bubble small{color:var(--dim);display:block;font-size:1.3vmin}
+.tl-mark{width:2.4vmin;height:2.4vmin;border-radius:50%;background:rgba(255,255,255,.1);border:2px solid var(--warn);flex-shrink:0;box-shadow:0 0 10px rgba(251,191,36,.4)}
+.tl-item.final .tl-mark{background:var(--rot);border-color:var(--rot);box-shadow:0 0 22px var(--rot);animation:treffer .5s ease infinite alternate}
+@keyframes treffer{to{transform:scale(1.35)}}
+.tl-item.final .tl-bubble{border-color:var(--rot);background:rgba(244,63,94,.1);animation:shake .45s ease 3}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-.7vmin)}75%{transform:translateX(.7vmin)}}
+.mobbLabel{font-size:3.4vmin;font-weight:800;letter-spacing:.2em;color:var(--rot);opacity:0;animation:mobbin .6s cubic-bezier(.22,1,.36,1) calc(var(--dl) + 8.2s) forwards;text-shadow:0 0 34px rgba(244,63,94,.7)}
+@keyframes mobbin{from{opacity:0;transform:scale(2.2);filter:blur(10px)}to{opacity:1;transform:none;filter:none}}
+/* ── S6 Skala ── */
+.skala{display:flex;flex-direction:column;gap:1.4vmin;width:min(70vmin,700px)}
+.skala .stufe{display:flex;align-items:center;gap:1.6vmin;opacity:0;animation:rein .45s ease var(--d) forwards}
+.stufe .name{font-size:2vmin;min-width:22vmin;text-align:right;color:var(--dim)}
+.stufe .bar{flex:1;height:2.2vmin;background:rgba(255,255,255,.07);border-radius:99px;overflow:hidden}
+.stufe .bar i{display:block;height:100%;width:0;border-radius:99px;animation:sgeb .7s ease var(--d2) forwards}
+@keyframes sgeb{to{width:var(--w)}}
+.stufe .sgr{font-size:1.7vmin;color:var(--dim);min-width:6vmin}
+/* ── S7 Gehirn ── */
+.gehirn{position:relative;width:44vmin;height:44vmin;opacity:0;animation:rein 1.4s ease calc(var(--dl) + .8s) forwards}
+.gehirn svg{width:100%;height:100%}
+.knoten{position:absolute;width:1.6vmin;height:1.6vmin;border-radius:50%;background:var(--cyan);box-shadow:0 0 14px var(--cyan);animation:knot 2.8s ease-in-out infinite}
+@keyframes knot{0%,100%{transform:scale(1);opacity:.8}50%{transform:scale(1.6);opacity:1}}
+.gedanken{font-family:ui-monospace,monospace;font-size:1.9vmin;color:#67e8f9;text-align:left;width:min(70vmin,700px);min-height:14vmin;opacity:0;animation:rein .8s ease calc(var(--dl) + 2s) forwards;text-shadow:0 0 12px rgba(103,232,249,.35)}
+.gedanken div{opacity:0;animation:rein .4s ease var(--d) forwards}
+/* ── S8 Protokoll ── */
+.karte{background:var(--panel);border:1px solid var(--line);border-radius:1.8vmin;padding:2.4vmin;width:min(76vmin,780px);text-align:left;opacity:0;animation:rein .7s ease calc(var(--dl) + 1.2s) forwards;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.karte h4{font-size:2.3vmin;margin-bottom:1.4vmin}
+.kf{display:flex;justify-content:space-between;font-size:2vmin;padding:1vmin 0;border-bottom:1px solid var(--line);opacity:0;animation:rein .45s ease calc(var(--dl) + 2s + var(--i)*.55s) forwards}
+.kf b{color:var(--cyan)}.kf b.r{color:#fda4af}
+.aktion{margin-top:1.6vmin;font-size:2.2vmin;font-weight:700;color:#6ee7b7;opacity:0;animation:rein .5s ease calc(var(--dl) + 4.6s) forwards}
+/* ── S9 Fallback ── */
+.schild{width:18vmin;height:18vmin;opacity:0;animation:schildrein 1.2s ease calc(var(--dl) + .8s) forwards}
+@keyframes schildrein{from{opacity:0;transform:scale(1.5) rotate(-8deg);filter:blur(8px)}to{opacity:1;transform:none;filter:none}}
+@keyframes schildPuls{0%,100%{filter:drop-shadow(0 0 14px rgba(52,211,153,.4))}50%{filter:drop-shadow(0 0 38px rgba(52,211,153,.8))}}
+/* ── S10 Finale ── */
+.zahlen{display:flex;gap:5.5vmin}
+.zahl{opacity:0;animation:rein .7s cubic-bezier(.22,1,.36,1) forwards;animation-delay:calc(var(--dl) + var(--i)*.4s)}
+.zahl b{font-size:9.5vmin;font-weight:800;background:linear-gradient(120deg,var(--cyan),var(--indigo),var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent}
+.zahl small{display:block;color:var(--dim);font-size:1.9vmin;letter-spacing:.24em;text-transform:uppercase;margin-top:.5vmin}
+.support{display:flex;align-items:center;gap:1.4vmin;background:var(--panel);border:1px solid rgba(52,211,153,.45);border-radius:99px;padding:1.3vmin 2.8vmin;font-size:2vmin;opacity:0;animation:rein .8s ease calc(var(--dl) + 3.4s) forwards}
+.support .dot{width:1.4vmin;height:1.4vmin;border-radius:50%;background:var(--ok);box-shadow:0 0 12px var(--ok);animation:treffer 1.3s infinite alternate}
+.cta-btn{font-size:2.7vmin;font-weight:700;color:#fff;background:linear-gradient(120deg,var(--cyan),var(--indigo),var(--magenta));border:none;padding:2vmin 4.6vmin;border-radius:99px;animation: puls 1.5s ease-in-out infinite}
+@keyframes puls{0%,100%{box-shadow:0 0 20px rgba(34,211,238,.5)}50%{box-shadow:0 0 48px rgba(232,121,249,.7)}}
+.cta-pill{font-family:ui-monospace,monospace;font-size:2.3vmin;background:var(--panel);border:1px solid var(--line);padding:1.4vmin 2.8vmin;border-radius:99px;opacity:0;animation:rein .8s ease calc(var(--dl) + 4.2s) forwards}
+#replay{position:fixed;bottom:9vmin;left:50%;transform:translateX(-50%);z-index:80;opacity:0;pointer-events:none;transition:opacity .6s;background:var(--panel);color:var(--text);border:1px solid var(--line);padding:1.2vmin 3vmin;border-radius:99px;font-size:2vmin;cursor:pointer;font-family:inherit}
+#replay.show{opacity:.92;pointer-events:auto}
+@media (prefers-reduced-motion: reduce){*{animation-duration:.01s!important;animation-delay:0s!important}}
+</style>
+</head>
+<body>
+<div id="intro"></div>
+<div id="balkenOben"></div><div id="balkenUnten"></div>
+<div id="korn"></div><div id="vig"></div><div id="rot"></div><div id="sweep"></div><div id="flash"></div>
+<canvas id="sterne" style="position:fixed;inset:0;z-index:0"></canvas>
+<div class="blob" style="position:fixed;width:60vmax;height:60vmax;border-radius:50%;filter:blur(100px);opacity:.4;z-index:0;background:radial-gradient(circle,#0e7490,transparent 65%);top:-25%;left:-18%"></div>
+<div class="blob" style="position:fixed;width:50vmax;height:50vmax;border-radius:50%;filter:blur(100px);opacity:.35;z-index:0;background:radial-gradient(circle,#4c1d95,transparent 65%);bottom:-25%;right:-15%;animation:drift 26s ease-in-out infinite alternate"></div>
+
+<div class="stage">
+  <!-- S1 · CHAOS (3–11 s) -->
+  <section class="scene" style="--dl:3s;--dur:8.5s;z-index:12">
+    <div id="chaos">
+      <div class="tox" style="--d:3.2s;--r:-4deg;top:16%;left:8%">„du bist so dumm"</div>
+      <div class="tox" style="--d:4.4s;--r:3deg;top:30%;right:10%">„niemand braucht dich hier"</div>
+      <div class="tox" style="--d:5.6s;--r:-2deg;top:52%;left:14%">„verpiss dich"</div>
+      <div class="tox" style="--d:6.8s;--r:5deg;top:64%;right:12%">„halt die fresse!!!"</div>
+      <div class="tox" style="--d:8s;--r:-5deg;top:42%;left:38%">„geh sterben"</div>
+      <div class="tox" style="--d:9.2s;--r:2deg;top:22%;right:30%">„ich hasse dich"</div>
+    </div>
+    <h2 class="big" style="color:#fff">DEIN SERVER.<br><em style="background:linear-gradient(120deg,#fda4af,var(--rot));-webkit-background-clip:text;background-clip:text;color:transparent">3 UHR NACHTS.</em></h2>
+  </section>
+
+  <!-- S2 · LOGO/HELD (11–17 s) -->
+  <section class="scene" style="--dl:11.5s;--dur:5.8s">
+    <svg class="ringx" viewBox="0 0 220 220">
+      <defs><linearGradient id="g2" x1="20%" y1="0%" x2="80%" y2="100%">
+        <stop offset="0%" stop-color="#22d3ee"/><stop offset="55%" stop-color="#818cf8"/><stop offset="100%" stop-color="#e879f9"/>
+      </linearGradient></defs>
+      <circle class="pf" cx="110" cy="110" r="70" fill="none" stroke="url(#g2)" stroke-width="12" stroke-linecap="round" pathLength="1"/>
+      <g class="bl" fill="url(#g2)">
+        <rect x="160" y="58" width="26" height="10" rx="5"/><rect x="167" y="80" width="23" height="10" rx="5"/>
+        <rect x="170" y="100" width="22" height="10" rx="5"/><rect x="167" y="120" width="23" height="10" rx="5"/>
+        <rect x="160" y="142" width="26" height="10" rx="5"/>
+      </g>
+    </svg>
+    <h1 class="wordmark"><span style="--i:0">L</span><span style="--i:1">u</span><span style="--i:2">m</span><span style="--i:3">i</span><span style="--i:4">o</span><span class="x" style="--i:5">x</span></h1>
+    <p class="kick" style="animation-delay:calc(11.5s + 3.6s)">SENTINEL · DER WÄCHTER DEINES CHATS</p>
+  </section>
+
+  <!-- S3 · AUGEN ÖFFNEN (17–22,5 s) -->
+  <section class="scene" style="--dl:17.5s;--dur:5.2s">
+    <div class="augen">
+      <div class="auge"></div><div class="auge"></div><div class="auge"></div>
+    </div>
+    <h2 class="big">Er schaut <em>hin.</em><br>Jede Nachricht. Jeden Winkel.</h2>
+    <p class="sub">Gerichtete Angriffe · Eskalations-Scoring · Muster-Erkennung</p>
+  </section>
+
+  <!-- S4 · SCAN-DEMO (22,5–33 s) -->
+  <section class="scene" style="--dl:22.8s;--dur:10.4s">
+    <p class="kick" style="animation-delay:23.2s">LIVE-SCAN</p>
+    <div class="chatline">
+      <small>Nutzer_47 · #allgemein · gerade eben</small>
+      „du bist so dumm, niemand braucht dich hier, halt die fresse!!!"
+      <div class="scannline"></div>
+    </div>
+    <div class="verdikt">
+      <div class="sg-wrap">
+        <div class="sg-label"><span>Bedrohungs-Analyse · Sentinel-Engine</span><b>SG 7/10</b></div>
+        <div class="sg"><i></i></div>
+      </div>
+    </div>
+    <div class="pills">
+      <span class="pill r">Mobbing-Muster</span><span class="pill r">Gerichtet (+1)</span>
+      <span class="pill r">Ausrufe-Kette (+1)</span><span class="pill">3 Muster erkannt</span>
+      <span class="pill g">→ Verwarnung + Protokoll</span>
+    </div>
+  </section>
+
+  <!-- S5 · MOBBING-TIMELINE (33–45,5 s) -->
+  <section class="scene" style="--dl:33.2s;--dur:12.5s">
+    <p class="kick rot" style="animation-delay:33.6s">ERKENNT, WAS ANDERE ÜBERSEHEN</p>
+    <div class="timeline">
+      <div class="tl-item" style="--d:34.6s"><span class="tl-zeit">20:14</span><span class="tl-mark"></span>
+        <div class="tl-bubble"><small>Nutzer_47 → Opfer_3</small>„bist du wieder da? 🙄"</div></div>
+      <div class="tl-item" style="--d:36.6s"><span class="tl-zeit">20:31</span><span class="tl-mark"></span>
+        <div class="tl-bubble"><small>Nutzer_47 → Opfer_3</small>„warum bist du überhaupt so anstrengend"</div></div>
+      <div class="tl-item" style="--d:38.6s"><span class="tl-zeit">20:52</span><span class="tl-mark"></span>
+        <div class="tl-bubble"><small>Nutzer_47 → Opfer_3</small>„du bist so wertlos"</div></div>
+      <div class="tl-item final" style="--d:41.3s"><span class="tl-zeit">20:53</span><span class="tl-mark"></span>
+        <div class="tl-bubble"><small>Nutzer_47 → Opfer_3</small>„niemand braucht dich hier"</div></div>
+    </div>
+    <div class="mobbLabel">⚠ MOBBING-MUSTER ERKANNT</div>
+    <p class="sub" style="opacity:0;animation:rein .8s ease 42.4s forwards">4 gerichtete Angriffe · 39 Minuten · dieselbe Person · automatisch eskaliert</p>
+  </section>
+
+  <!-- S6 · PARANOID-SKALA (45,5–53 s) -->
+  <section class="scene" style="--dl:45.8s;--dur:7.4s">
+    <p class="kick rot2" style="animation-delay:46.2s">DU BESTIMMST, WIE SCHCHARF ER SCHAUT</p>
+    <div class="skala">
+      <div class="stufe" style="--d:46.6s;--d2:46.8s;--w:34%"><span class="name">😌 Entspannt</span><div class="bar"><i style="background:linear-gradient(90deg,#34d399,#a3e635)"></i></div><span class="sgr">SG ≥ 8</span></div>
+      <div class="stufe" style="--d:47.4s;--d2:47.6s;--w:52%"><span class="name">🙂 Normal</span><div class="bar"><i style="background:linear-gradient(90deg,#34d399,var(--cyan))"></i></div><span class="sgr">SG ≥ 6</span></div>
+      <div class="stufe" style="--d:48.2s;--d2:48.4s;--w:70%"><span class="name">😠 Streng</span><div class="bar"><i style="background:linear-gradient(90deg,var(--cyan),var(--indigo))"></i></div><span class="sgr">SG ≥ 4</span></div>
+      <div class="stufe" style="--d:49s;--d2:49.2s;--w:86%"><span class="name">😡 Sehr streng</span><div class="bar"><i style="background:linear-gradient(90deg,var(--indigo),var(--magenta))"></i></div><span class="sgr">SG ≥ 2</span></div>
+      <div class="stufe" style="--d:49.8s;--d2:50s;--w:100%"><span class="name" style="color:var(--rot)">🔥 Paranoid</span><div class="bar"><i style="background:linear-gradient(90deg,var(--magenta),var(--rot));box-shadow:0 0 16px var(--rot)"></i></div><span class="sgr" style="color:var(--rot)">ALLES</span></div>
+    </div>
+    <p class="sub">+ Wiederholungstäter-Verstärkung · abschaltbare Kategorien</p>
+  </section>
+
+  <!-- S7 · GEHIRN (53–63 s) -->
+  <section class="scene" style="--dl:53.2s;--dur:10s">
+    <p class="kick" style="animation-delay:53.6s">IMMER VERBUNDEN · ODER OFFLINE</p>
+    <div style="display:flex;gap:4vmin;align-items:center;flex-wrap:wrap;justify-content:center">
+      <div class="gehirn">
+        <svg viewBox="0 0 100 100" fill="none">
+          <circle cx="50" cy="50" r="44" stroke="url(#g3)" stroke-width="1.2" opacity=".5"/>
+          <circle cx="50" cy="50" r="30" stroke="url(#g3)" stroke-width="1" opacity=".4"/>
+          <defs><linearGradient id="g3" x1="0" y1="0" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#22d3ee"/><stop offset="100%" stop-color="#e879f9"/></linearGradient></defs>
+        </svg>
+        <span class="knoten" style="top:18%;left:44%"></span>
+        <span class="knoten" style="top:34%;left:74%;animation-delay:.4s"></span>
+        <span class="knoten" style="top:58%;left:82%;animation-delay:.8s"></span>
+        <span class="knoten" style="top:76%;left:52%;animation-delay:1.2s"></span>
+        <span class="knoten" style="top:62%;left:18%;animation-delay:1.6s"></span>
+        <span class="knoten" style="top:32%;left:20%;animation-delay:2s"></span>
+      </div>
+      <div class="gedanken">
+        <div style="--d:56s">▸ analysiere: gerichtete Formulierung erkannt …</div>
+        <div style="--d:57s">▸ Wörterbuch-Gewicht: 5 · Kontext-Verlauf: 2 Treffer …</div>
+        <div style="--d:58s">▸ Eskalation: Wiederholungstäter (+2) · CAPS (+1) …</div>
+        <div style="--d:59s">▸ URTEIL: SG 7 · Kategorie: Mobbing → Protokoll</div>
+        <div style="--d:60s">▸ optional: Ollama-Modell als zweite Meinungs-Instanz</div>
+      </div>
+    </div>
+    <p class="sub">Sentinel läuft offline in Millisekunden. Optional Ollama als Sprachmodell-Instanz – dein Gerät entscheidet.</p>
+  </section>
+
+  <!-- S8 · PROTOKOLL/WAFFE (63–72 s) -->
+  <section class="scene" style="--dl:63.4s;--dur:8.8s">
+    <p class="kick" style="animation-delay:63.8s">DIE WAFFE DEINER MODERATOREN</p>
+    <div class="karte">
+      <h4>⚖️ Mod-Eintrag #347 · KI-Erkennung</h4>
+      <div class="kf" style="--i:0"><span>Benutzer</span><b>Nutzer_47</b></div>
+      <div class="kf" style="--i:1"><span>Kategorie</span><b class="r">Mobbing · SG 7/10</b></div>
+      <div class="kf" style="--i:2"><span>Beweis</span><b>„niemand braucht dich hier"</b></div>
+      <div class="kf" style="--i:3"><span>Begründung</span><b>Ausgrenzung + gerichtete Beleidigung</b></div>
+      <div class="kf" style="--i:4"><span>Ausgeführt</span><b class="r">Verwarnung · Timeout 60 Min. · Mod-Ping</b></div>
+      <div class="aktion">✓ In 0,2 Sekunden erledigt – noch bevor ein Moderator den Chat öffnet</div>
+    </div>
+  </section>
+
+  <!-- S9 · FALLBACK-WACHE (72–79 s) -->
+  <section class="scene" style="--dl:72.2s;--dur:7s">
+    <svg class="schild" viewBox="0 0 24 24" fill="none" style="animation:schildrein 1.2s ease 73s forwards, schildPuls 2s ease-in-out 74.2s infinite">
+      <path d="M12 2L4 5v6c0 5 3.4 9.7 8 11 4.6-1.3 8-6 8-11V5l-8-3z" fill="rgba(52,211,153,.15)" stroke="#34d399" stroke-width="1.6"/>
+      <path d="M9 12l2 2 4-4" stroke="#34d399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <h2 class="big">Fällt eine Instanz aus,<br><em style="background:linear-gradient(120deg,#34d399,var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent">steht die andere Wache.</em></h2>
+    <p class="sub">KI offline? Sentinel übernimmt. Kein Ausfall, keine Lücke. Immer.</p>
+  </section>
+
+  <!-- S10 · FINALE (79 s – Ende, ~16 s) -->
+  <section class="scene last" style="--dl:79.2s;--dur:17s">
+    <div class="zahlen">
+      <div class="zahl" style="--i:0"><b>70+</b><small>Befehle</small></div>
+      <div class="zahl" style="--i:1"><b>100 %</b><small>lokal</small></div>
+      <div class="zahl" style="--i:2"><b>0 €</b><small>Cloud</small></div>
+      <div class="zahl" style="--i:3"><b>24/7</b><small>Wache</small></div>
+    </div>
+    <div class="cta-klein" style="font-size:5vmin;font-weight:800;letter-spacing:.1em;margin-top:1vmin;opacity:0;animation:rein .8s ease calc(79.2s + 1.8s) forwards">
+      LUMIO<span style="background:linear-gradient(120deg,var(--cyan),var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent">X</span>
+    </div>
+    <div class="support"><span class="dot"></span>💬 <b>Super Support</b>&nbsp;auf GitHub – schnelle Hilfe, echte Menschen</div>
+    <div class="cta-pill">github.com/Seekseek174/lumiox</div>
+    <button class="cta-btn" style="margin-top:1vmin">⬇ Jetzt kostenlos herunterladen</button>
+  </section>
+</div>
+
+<button id="replay">▶ Erneut abspielen</button>
+
+<script>
+// Sternenhimmel
+const c = document.getElementById('sterne'), x = c.getContext('2d');
+let S = [];
+function groesse(){ c.width = innerWidth; c.height = innerHeight;
+  S = Array.from({length: 110}, () => ({ x: Math.random()*c.width, y: Math.random()*c.height,
+    r: .4 + Math.random()*1.5, p: Math.random()*Math.PI*2, s: .3 + Math.random()*.9 })); }
+groesse(); addEventListener('resize', groesse);
+(function loop(){ x.clearRect(0,0,c.width,c.height);
+  for (const s of S) { s.p += .02*s.s; x.globalAlpha = .2 + .5*Math.abs(Math.sin(s.p));
+    x.fillStyle = '#cfd8ff'; x.beginPath(); x.arc(s.x, s.y, s.r, 0, 7); x.fill(); }
+  x.globalAlpha = 1; requestAnimationFrame(loop); })();
+
+// Kinointro-Countdown 3·2·1
+const intro = document.getElementById('intro');
+['3','2','1'].forEach((z, i) => {
+  const sp = document.createElement('span');
+  sp.textContent = z;
+  sp.style.animationDelay = (i * 0.95) + 's';
+  intro.appendChild(sp);
+});
+setTimeout(() => intro.remove(), 3000);
+setTimeout(() => document.body.classList.add('cinema'), 2900);
+
+// Kamera-Sweeps bei Scans (S4, S5, S7)
+function sweep(dauer) {
+  const sw = document.getElementById('sweep');
+  sw.style.transition = 'none';
+  sw.style.left = '-30vw'; sw.style.opacity = '1';
+  sw.style.transition = 'left ' + dauer + 's linear';
+  sw.style.left = '110vw';
+  setTimeout(() => { sw.style.opacity = '0'; }, dauer * 1000);
+}
+setTimeout(() => sweep(1.8), 24500);   // Live-Scan
+setTimeout(() => sweep(1.4), 41200);   // Muster-Erkennung
+setTimeout(() => sweep(1.6), 55800);   // Gehirn-Denken
+
+// Roter Alarm im Chaos + bei Mobbing
+function alarm(dauer) {
+  const r = document.getElementById('rot');
+  r.style.opacity = '1';
+  setTimeout(() => { r.style.opacity = '0'; }, dauer * 1000);
+}
+setTimeout(() => alarm(6), 4000);      // Chaos
+setTimeout(() => alarm(9), 33200);     // Mobbing-Timeline
+setTimeout(() => alarm(4), 63400);     // Protokoll-Karte
+
+// Weißer Blitz bei Muster-Erkennung
+setTimeout(() => {
+  const f = document.getElementById('flash');
+  f.style.transition = 'none'; f.style.opacity = '.85';
+  f.style.transition = 'opacity .5s'; f.style.opacity = '0';
+}, 41300);
+
+// Replay
+setTimeout(() => document.getElementById('replay').classList.add('show'), 93000);
+document.getElementById('replay').addEventListener('click', () => location.reload());
+</script>
+</body>
+</html>

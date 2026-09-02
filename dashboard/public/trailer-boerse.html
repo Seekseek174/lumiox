@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>LUMIOX – DIE BÖRSE</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@800;900&display=swap" rel="stylesheet">
+<style>
+:root{--cyan:#22d3ee;--magenta:#e879f9;--indigo:#818cf8;--rot:#f43f5e;--gruen:#34d399;--gold:#f1c40f;--text:#eef1f7;--dim:#8b93a7}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:#02040a;color:var(--text);overflow:hidden;font-family:'Inter',sans-serif}
+#bg{position:fixed;inset:0;z-index:0}
+.vig{position:fixed;inset:0;z-index:40;box-shadow:inset 0 0 20vmin rgba(0,0,0,.85);pointer-events:none}
+.scene{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:2.2vmin;padding:5vmin;text-align:center}
+.scene.on{display:flex;animation:sIn .4s cubic-bezier(.3,0,.7,1)}
+@keyframes sIn{0%{transform:scale(1.18)}60%{transform:scale(1.04)}100%{transform:scale(1.09)}}
+.kick{font-size:1.8vmin;letter-spacing:.55em;text-transform:uppercase;opacity:0;animation:rein .8s ease calc(var(--t) + .4s) forwards}
+.kick.g{color:var(--gold)}.kick.b{color:var(--cyan)}.kick.r{color:var(--rot)}.kick.gr{color:var(--gruen)}.kick.m{color:var(--magenta)}
+@keyframes rein{to{opacity:1}}
+h2{font-size:5.6vmin;font-weight:900;line-height:1.15}
+h2 em{font-style:normal;background:linear-gradient(120deg,var(--gold),var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--dim);font-size:2vmin}
+/* ── Voll gefüllter Ticker ── */
+.grossTicker{width:100vw;overflow:hidden;border-top:2px solid rgba(255,255,255,.15);border-bottom:2px solid rgba(255,255,255,.15);padding:2.4vmin 0;position:absolute;top:10vh;left:0;background:rgba(5,8,18,.75)}
+.grossTicker div{display:flex;gap:6vmin;animation:tk 13s linear infinite;font-family:ui-monospace,monospace;font-size:3.6vmin;font-weight:800;white-space:nowrap}
+@keyframes tk{to{transform:translateX(-50%)}}
+.up{color:var(--gruen)}.down{color:var(--rot)}
+.miniTick{position:absolute;bottom:12vh;left:0;width:100vw;overflow:hidden;padding:1.4vmin 0}
+.miniTick div{display:flex;gap:4vmin;animation:tk 9s linear infinite reverse;font-family:ui-monospace,monospace;font-size:2.2vmin;color:var(--dim)}
+/* ── Gefülltes Chart ── */
+.chartBox{width:min(86vmin,880px);height:38vmin;background:linear-gradient(180deg,rgba(8,12,26,.96),rgba(4,7,16,.96));border:1px solid rgba(255,255,255,.14);border-radius:2vmin;position:relative;overflow:hidden;opacity:0;animation:rein .6s ease calc(var(--t) + .9s) forwards;box-shadow:0 24px 60px rgba(0,0,0,.6)}
+.chartKopf{display:flex;align-items:center;gap:1.6vmin;padding:1.6vmin 2.2vmin;border-bottom:1px solid rgba(255,255,255,.08)}
+.chartKopf .dot{width:1.6vmin;height:1.6vmin;border-radius:50%;background:var(--gruen);box-shadow:0 0 12px var(--gruen);animation:pp 1.2s infinite alternate}
+@keyframes pp{to{box-shadow:0 0 26px var(--gruen)}}
+.chartKopf b{font-size:2.2vmin}
+.chartKopf span{margin-left:auto;font-family:ui-monospace,monospace;font-size:1.8vmin;color:var(--gruen)}
+.chartFlaeche{position:absolute;left:0;right:0;top:6vmin;bottom:0}
+.chartFlaeche svg{position:absolute;inset:0;width:100%;height:100%}
+.linie{fill:none;stroke:var(--cyan);stroke-width:3;filter:drop-shadow(0 0 8px rgba(34,211,238,.7));stroke-dasharray:1200;stroke-dashoffset:1200;animation:dr 2.2s ease calc(var(--t) + 1.4s) forwards}
+@keyframes dr{to{stroke-dashoffset:0}}
+.fl{fill:linear-gradient(rgba(34,211,238,.3),transparent);fill:rgba(34,211,238,.14);stroke:none;opacity:0;animation:rein .8s ease calc(var(--t) + 3.2s) forwards}
+.kp{fill:var(--magenta);opacity:0;animation:rein .25s ease var(--d) forwards}
+.kw{position:absolute;font-family:ui-monospace,monospace;font-weight:800;font-size:2.2vmin;opacity:0}
+.kw.gr{color:var(--gruen);animation:rein .4s ease calc(var(--t) + 3.6s) forwards}
+.kw.rt{color:var(--rot);animation:rein .4s ease calc(var(--t) + 3.9s) forwards}
+/* ── Kerzen-Grid (gefüllt!) ── */
+.kerzen{display:grid;grid-template-columns:repeat(4,20vmin);gap:2vmin}
+.kerze{background:rgba(12,16,32,.95);border:1px solid rgba(255,255,255,.14);border-radius:1.8vmin;padding:2vmin;text-align:left;opacity:0;animation:kIn .6s cubic-bezier(.22,1,.36,1) var(--d) both}
+@keyframes kIn{from{opacity:0;transform:translateY(3.4vmin)}to{opacity:1;transform:none}}
+.kerze .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.8vmin}
+.kerze .sym{font-weight:900;font-size:2.2vmin}
+.kerze .name{font-size:1.4vmin;color:var(--dim)}
+.kerze .kurs{font-size:3vmin;font-weight:900}
+.kerze .kurs.up{color:var(--gruen)}.kerze .kurs.down{color:var(--rot)}
+.kerze .bar{height:1vmin;border-radius:99vmin;background:rgba(255,255,255,.1);overflow:hidden;margin-top:1vmin}
+.kerze .bar i{display:block;height:100%;width:0;border-radius:99vmin;animation:br .9s ease calc(var(--t) + 1.4s) forwards}
+.kerze.up2{border-color:rgba(52,211,153,.4)}.kerze.up2 .bar i{background:var(--gruen)}
+.kerze.down2{border-color:rgba(244,63,94,.4)}.kerze.down2 .bar i{background:var(--rot)}
+@keyframes br{to{width:var(--w)}}
+/* Manipulation */
+.manip{display:flex;align-items:center;gap:3.4vmin;font-family:ui-monospace,monospace;font-weight:900}
+.manip .alt{font-size:5.6vmin;color:var(--dim);text-decoration:line-through}
+.manip .pfeil{font-size:5vmin;color:var(--gruen);animation:pp2 .4s ease 2.3s both}
+@keyframes pp2{from{transform:scale(0) rotate(-90deg)}to{transform:scale(1.25) rotate(0)}}
+.manip .neu{font-size:7.6vmin;color:var(--gruen);text-shadow:0 0 4vmin rgba(52,211,153,.7);opacity:0;animation:rein .4s ease 2.5s forwards}
+.dunkel{position:absolute;inset:0;background:rgba(0,0,0,.5);opacity:0;animation:rein .7s ease calc(var(--t) + .9s) forwards}
+.geheim{display:inline-flex;align-items:center;gap:1.5vmin;border:2px solid var(--magenta);border-radius:99vmin;padding:1.3vmin 3.2vmin;font-size:2.3vmin;font-weight:900;color:var(--magenta);opacity:0;animation:rein .5s ease calc(var(--t) + 3.4s) forwards;box-shadow:0 0 36px rgba(232,121,249,.4)}
+/* Pfad-Editor gefüllt */
+.pathbox{position:relative;width:min(82vmin,820px);height:38vmin;background:rgba(6,10,22,.92);border:1px solid rgba(255,255,255,.13);border-radius:2vmin;overflow:hidden;opacity:0;animation:rein .6s ease calc(var(--t) + .9s) forwards}
+.pathbox .grid-l{position:absolute;inset:0;background:
+  repeating-linear-gradient(0deg,transparent 0 38px,rgba(255,255,255,.06) 38px 39px),
+  repeating-linear-gradient(90deg,transparent 0 38px,rgba(255,255,255,.06) 38px 39px)}
+.pkt{position:absolute;width:2.6vmin;height:2.6vmin;border-radius:50%;background:var(--magenta);box-shadow:0 0 18px var(--magenta);opacity:0;animation:rein .25s ease var(--d) forwards}
+.pkt b{position:absolute;top:-3vmin;left:50%;transform:translateX(-50%);font-size:1.3vmin;color:var(--cyan);white-space:nowrap;font-family:ui-monospace,monospace}
+.pline{position:absolute;height:.5vmin;background:linear-gradient(90deg,var(--cyan),var(--magenta));transform-origin:left center;opacity:0;box-shadow:0 0 12px rgba(34,211,238,.5);animation:rein .25s ease var(--d) forwards}
+.punkt-neu{position:absolute;font-size:3vmin;opacity:0;animation:rein .3s ease var(--d) forwards}
+/* BTC */
+.btcZ{font-family:ui-monospace,monospace;font-weight:900;font-size:7vmin;color:var(--gold);text-shadow:0 0 40px rgba(241,196,15,.6)}
+.capbalken{width:60vmin;height:2.6vmin;border-radius:99vmin;background:rgba(255,255,255,.1);overflow:hidden;opacity:0;animation:rein .6s ease calc(var(--t) + 1.6s) forwards}
+.capbalken i{display:block;height:100%;width:0;border-radius:99vmin;background:linear-gradient(90deg,#f7931a,#ffd166);animation:br2 2s ease calc(var(--t) + 2s) forwards}
+@keyframes br2{to{width:2.4%}}
+/* Finale */
+.final{display:grid;grid-template-columns:repeat(3,25vmin);gap:2.2vmin;perspective:900px}
+.fk{background:rgba(14,18,36,.95);border:1px solid rgba(255,255,255,.15);border-radius:2vmin;padding:2.2vmin;animation:kIn .7s cubic-bezier(.22,1,.36,1) var(--d) both}
+.fk .ico{font-size:4.8vmin}.fk b{display:block;margin-top:.7vmin;font-size:1.9vmin}.fk small{color:var(--dim);font-size:1.4vmin}
+@keyframes kIn{from{opacity:0;transform:rotateX(65deg) translateZ(-80px)}to{opacity:1;transform:none}}
+.soon{font-size:8.6vmin;font-weight:900}
+.soon .a{color:var(--gold);text-shadow:0 1px 0 #8a6d00,0 2px 0 #6d5500,0 3px 0 #513f00,0 4px 0 #342800,0 9px 34px rgba(241,196,15,.55)}
+.soon .b{color:var(--magenta);text-shadow:0 1px 0 #9d174d,0 2px 0 #7f1240,0 3px 0 #610e33,0 4px 0 #430a25,0 9px 34px rgba(232,121,249,.55)}
+.cta-pill{font-family:ui-monospace,monospace;font-size:2.3vmin;background:rgba(14,18,36,.92);border:1px solid rgba(255,255,255,.2);padding:1.4vmin 3vmin;border-radius:99vmin;opacity:0;animation:rein .8s ease calc(var(--t) + 2.2s) forwards}
+.cta-btn{font-size:2.6vmin;font-weight:900;color:#fff;background:linear-gradient(120deg,var(--gold),var(--magenta));border:none;padding:1.9vmin 4.4vmin;border-radius:99vmin;animation:puls 1.4s ease-in-out infinite}
+@keyframes puls{0%,100%{box-shadow:0 0 18px rgba(241,196,15,.5)}50%{box-shadow:0 0 44px rgba(232,121,249,.75)}}
+#replay{position:fixed;bottom:3vmin;left:50%;transform:translateX(-50%);z-index:60;opacity:0;pointer-events:none;transition:.5s;background:rgba(14,18,36,.92);color:#fff;border:1px solid rgba(255,255,255,.2);padding:1.2vmin 3vmin;border-radius:99vmin;font-size:2vmin;cursor:pointer;font-family:inherit}
+#replay.show{opacity:.9;pointer-events:auto}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+<div class="vig"></div>
+
+<!-- S1 0–8s: TICKER -->
+<div class="scene" data-t="0">
+  <div class="grossTicker"><div>
+    <span>LUMX <b class="up">▲ 104,20</b></span><span>MEME <b class="down">▼ 41,80</b></span>
+    <span>PIZA <b class="up">▲ 31,50</b></span><span>ROKT <b class="up">▲ 79,90</b></span>
+    <span>GEIST <b class="down">▼ 58,10</b></span><span>BTC <b class="up">▲ 28.900</b></span>
+    <span>LUMX <b class="up">▲ 104,20</b></span><span>MEME <b class="down">▼ 41,80</b></span>
+    <span>PIZA <b class="up">▲ 31,50</b></span><span>ROKT <b class="up">▲ 79,90</b></span>
+    <span>GEIST <b class="down">▼ 58,10</b></span><span>BTC <b class="up">▲ 28.900</b></span>
+  </div></div>
+  <h2 style="font-size:9vmin;margin-top:12vmin">DIE <em>BÖRSE</em></h2>
+  <p class="kick b" style="--t:2.6s">LUMIOX 0.8.7 · EIN FINANZMARKT. DEIN MARKT.</p>
+  <div class="miniTick"><div>
+    <span>GERÜCHT: ROKT vor Kooperation 🚀</span><span>MEME unter Druck 📉</span>
+    <span>BTC-Reserve gemeldet 🟠</span><span>GEIST volatil ⚡</span>
+    <span>GERÜCHT: ROKT vor Kooperation 🚀</span><span>MEME unter Druck 📉</span>
+  </div></div>
+</div>
+
+<!-- S2 8–20s: GEFÜLLTES CHART -->
+<div class="scene" data-t="8">
+  <p class="kick b" style="--t:8.4s">KURSVERLAUF · JEDE AKTIE EIGEN</p>
+  <div class="chartBox" style="--t:8">
+    <div class="chartKopf"><span class="dot"></span><b>LUMX · Lumiox Corp</b><span>104,20 ▲ +4,1 %</span></div>
+    <div class="chartFlaeche">
+      <svg viewBox="0 0 100 60" preserveAspectRatio="none">
+        <polygon class="fl" points="0,60 0,52 10,48 20,50 30,42 40,44 50,36 60,38 70,28 80,30 90,20 100,16 100,60"/>
+        <polyline class="linie" points="0,52 10,48 20,50 30,42 40,44 50,36 60,38 70,26 80,28 90,18 100,14"/>
+        <circle class="kp" cx="30" cy="42" r="1.3" style="--d:13s"/>
+        <circle class="kp" cx="50" cy="36" r="1.3" style="--d:14s"/>
+        <circle class="kp" cx="70" cy="26" r="1.3" style="--d:15s"/>
+        <circle class="kp" cx="90" cy="18" r="1.5" style="--d:16s"/>
+      </svg>
+      <span class="kw gr" style="top:8%;right:14%">+12 🪙</span>
+      <span class="kw rt" style="top:46%;right:30%">−3 🪙</span>
+    </div>
+  </div>
+</div>
+
+<!-- S3 20–32s: GEFRÜLLTE AKTIEN-KARTEN -->
+<div class="scene" data-t="20">
+  <p class="kick b" style="--t:20.4s">ALLE KURSE AUF EINEN BLICK</p>
+  <div class="kerzen">
+    <div class="kerze up2" style="--d:20.8s;--t:20;--w:70%"><div class="top"><span class="sym">LUMX</span><span class="name">Lumiox</span></div><div class="kurs up">104,20 ▲</div><div class="bar"><i></i></div></div>
+    <div class="kerze down2" style="--d:21s;--t:20;--w:45%"><div class="top"><span class="sym">MEME</span><span class="name">Meme Ind.</span></div><div class="kurs down">41,80 ▼</div><div class="bar"><i></i></div></div>
+    <div class="kerze up2" style="--d:21.2s;--t:20;--w:60%"><div class="top"><span class="sym">PIZA</span><span class="name">Pizza Dyn.</span></div><div class="kurs up">31,50 ▲</div><div class="bar"><i></i></div></div>
+    <div class="kerze down2" style="--d:21.4s;--t:20;--w:38%"><div class="top"><span class="sym">GEIST</span><span class="name">Ghost Sys.</span></div><div class="kurs down">58,10 ▼</div><div class="bar"><i></i></div></div>
+  </div>
+  <p class="sub">Depot-Wert aller Spieler · aktive Trader · 24h-Hoch &amp; −Tief – die komplette Statistik.</p>
+</div>
+
+<!-- S4 32–44s: MANIPULATION -->
+<div class="scene" data-t="32">
+  <div class="dunkel" style="--t:32"></div>
+  <p class="kick r" style="--t:32.4s">UND JETZT DAS GEHEIME KAPITEL …</p>
+  <div class="manip">
+    <span class="alt">104,2</span>
+    <span class="pfeil">➜</span>
+    <span class="neu">208,4</span>
+  </div>
+  <div class="grossTxt a" style="--t:32;font-size:6.4vmin">DEIN MARKT.</div>
+  <div class="grossTxt b" style="--t:32;font-size:6.4vmin">DEINE REGELN.</div>
+  <div class="geheim" style="--t:32">🤫 2085</div>
+</div>
+
+<!-- S5 44–56s: PFADE MIT PUNKTEN -->
+<div class="scene" data-t="44">
+  <p class="kick b" style="--t:44.4s">MALE DEINE KURSLINIE</p>
+  <div class="pathbox">
+    <div class="grid-l"></div>
+    <div class="pkt" style="top:74%;left:8%;--d:44.9s"><b>0s</b></div>
+    <div class="pline" style="top:62%;left:10%;width:16%;--d:45.3s;transform:rotate(-14deg)"></div>
+    <div class="pkt" style="top:56%;left:26%;--d:45.5s"><b>+40s</b></div>
+    <div class="pline" style="top:44%;left:28%;width:17%;--d:45.9s;transform:rotate(-22deg)"></div>
+    <div class="pkt" style="top:38%;left:45%;--d:46.1s"><b>+80s</b></div>
+    <div class="pline" style="top:52%;left:47%;width:16%;--d:46.5s;transform:rotate(20deg)"></div>
+    <div class="pkt" style="top:62%;left:63%;--d:46.9s"><b>+120s</b></div>
+    <div class="pline" style="top:26%;left:65%;width:16%;--d:47.3s;transform:rotate(-38deg)"></div>
+    <div class="pkt" style="top:14%;left:81%;--d:47.7s"><b>+200s</b></div>
+    <span class="punkt-neu" style="top:8%;left:86%;--d:48.2s">🚀</span>
+  </div>
+  <p class="sub">Punkt für Punkt ins Diagramm klicken – mit Zeit- und Kurs-Anzeige. Der Markt folgt deiner Handschrift.</p>
+</div>
+
+<!-- S6 56–67s: BTC MIT BALKEN -->
+<div class="scene" data-t="56">
+  <p class="kick g" style="--t:56.4s">🟠 BITCOIN · BEGRENZT WIE DAS ORIGINAL</p>
+  <div class="btc">28.900 🪙</div>
+  <div class="capbalken" style="--t:56"><i></i></div>
+  <p class="sub" style="opacity:0;animation:rein .8s ease calc(56s + 3s) forwards">Maximal 21.000.000 BTC · du entscheidest, wie viel im Umlauf ist · Kurs beeinflussbar</p>
+</div>
+
+<!-- S7 67–78s: EIGENE AKTIEN -->
+<div class="scene" data-t="67">
+  <p class="kick m" style="--t:67.4s">ERFINDE DEINE EIGENEN PAPIERE</p>
+  <div class="final">
+    <div class="fk" style="--d:.3s"><span class="ico">🏢</span><b>Eigene Aktien</b><small>Sym · Name · Startkurs</small></div>
+    <div class="fk" style="--d:.9s"><span class="ico">🪙</span><b>Eigene Crypto</b><small>Begrenzter Supply = echte Knappheit</small></div>
+    <div class="fk" style="--d:1.5s"><span class="ico">❄️</span><b>Freeze</b><small>Kurs anhalten auf Knopfdruck</small></div>
+  </div>
+</div>
+
+<!-- S8 78–88s: FINALE -->
+<div class="scene last" data-t="78">
+  <div class="soon"><span class="a">0.8.7</span> <span class="b">JETZT</span></div>
+  <p class="kick g" style="--t:79s">DIE BÖRSE · LIVE IM DASHBOARD &amp; AUF DEINEM SERVER</p>
+  <div class="cta-pill" style="--t:78s">github.com/Seekseek174/lumiox</div>
+  <button class="cta-btn">📈 Jetzt traden</button>
+  <p class="sub" style="margin-top:1vmin">Made by ginizw · Open Alpha</p>
+</div>
+
+<button id="replay">▶ Nochmal</button>
+<script>
+const cv = document.getElementById('bg'), cx = cv.getContext('2d');
+let W, H, st = [];
+function init(){ W = cv.width = innerWidth; H = cv.height = innerHeight;
+  st = Array.from({length:210},()=>({x:Math.random()*W,y:Math.random()*H,r:.5+Math.random()*1.3,p:Math.random()*6.28,s:.4+Math.random()})); }
+init(); addEventListener('resize', init);
+(function loop(){ cx.clearRect(0,0,W,H);
+  for (const s of st) { s.p += .028*s.s; cx.globalAlpha = .16+.45*Math.abs(Math.sin(s.p));
+    cx.fillStyle = '#cfd8ff'; cx.beginPath(); cx.arc(s.x,s.y,s.r,0,7); cx.fill(); }
+  cx.globalAlpha = 1; requestAnimationFrame(loop); })();
+
+const PLAN = [...document.querySelectorAll('.scene')].map(el=>({el,start:parseFloat(el.dataset.t)})).sort((a,b)=>a.start-b.start);
+const T0 = performance.now(), ENDE = 88;
+function akt(sek){ let a=null; for (const p of PLAN) if (sek>=p.start) a=p; return a; }
+(function rahmen(now){
+  const sek = (now-T0)/1000;
+  const a = akt(sek);
+  for (const p of PLAN) {
+    const soll = p===a;
+    if (soll && !p.el.classList.contains('on')) p.el.classList.add('on');
+    if (!soll && p.el.classList.contains('on')) p.el.classList.remove('on');
+  }
+  if (sek < ENDE) requestAnimationFrame(rahmen);
+  else document.getElementById('replay').classList.add('show');
+})(performance.now());
+document.getElementById('replay').addEventListener('click',()=>location.reload());
+</script>
+</body>
+</html>

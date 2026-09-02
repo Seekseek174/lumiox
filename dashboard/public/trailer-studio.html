@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>LUMIOX – COMMAND STUDIO</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@800;900&display=swap" rel="stylesheet">
+<style>
+:root{--cyan:#22d3ee;--magenta:#e879f9;--indigo:#818cf8;--rot:#f43f5e;--gruen:#34d399;--gelb:#fbbf24;--text:#e8e9ee;--dim:#8b93a7}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:#0d0e13;color:var(--text);overflow:hidden;font-family:'Inter',sans-serif}
+#bg{position:fixed;inset:0;z-index:0}
+.vig{position:fixed;inset:0;z-index:40;box-shadow:inset 0 0 18vmin rgba(0,0,0,.8);pointer-events:none}
+.scene{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:2vmin;padding:4vmin;text-align:center}
+.scene.on{display:flex;animation:sIn .35s cubic-bezier(.3,0,.7,1)}
+@keyframes sIn{0%{transform:scale(1.15)}60%{transform:scale(1.04)}100%{transform:scale(1.08)}}
+.kick{font-size:1.7vmin;letter-spacing:.5em;text-transform:uppercase;opacity:0;animation:rein .7s ease calc(var(--t) + .4s) forwards}
+.kick.b{color:var(--cyan)}.kick.g{color:var(--gruen)}.kick.m{color:var(--magenta)}
+@keyframes rein{to{opacity:1}}
+h2{font-size:5.2vmin;font-weight:900;line-height:1.15}
+h2 em{font-style:normal;background:linear-gradient(120deg,var(--cyan),var(--indigo) 50%,var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--dim);font-size:1.9vmin}
+.studio{width:min(86vmin,880px);height:50vmin;background:#1b1c22;border:1px solid var(--line);border-radius:1.6vmin;overflow:hidden;display:flex;opacity:0;animation:rein .8s ease calc(var(--t) + .8s) forwards;box-shadow:0 30px 80px rgba(0,0,0,.7);text-align:left}
+.stbar{height:3.6vmin;background:#23242c;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:1vmin;padding:0 1.2vmin}
+.stbar .btn2{width:8vmin;height:2vmin;border-radius:.5vmin;background:#e8484f;font-size:1vmin;font-weight:800;color:#fff;display:flex;align-items:center;justify-content:center}
+.stbar .feld{width:12vmin;height:2vmin;border-radius:.5vmin;background:#0f1015;border:1px solid #33343d}
+.stpal{width:19vmin;background:#1e1f26;border-right:1px solid var(--line);padding:1vmin;display:flex;flex-direction:column;gap:.8vmin}
+.stpal .pt{font-size:1.1vmin;font-weight:800;color:var(--dim);text-transform:uppercase}
+.sblk{background:#23242c;border:1px solid #33343d;border-radius:.7vmin;padding:.8vmin;display:flex;gap:.7vmin;align-items:center;opacity:0;animation:rein .35s ease var(--d) forwards}
+.sblk .i{width:2.4vmin;height:2.4vmin;border-radius:.5vmin;background:var(--c);display:flex;align-items:center;justify-content:center;font-size:1.2vmin}
+.sblk b{font-size:1.1vmin}
+.slein{flex:1;position:relative;background:radial-gradient(rgba(255,255,255,.05) 1px,transparent 1px);background-size:20px 20px}
+.knoten{position:absolute;width:16vmin;background:#23242c;border:2px solid #3a3b45;border-radius:1vmin;opacity:0;animation:kIn .5s cubic-bezier(.22,1,.36,1) var(--d) forwards}
+@keyframes kIn{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:none}}
+.knoten .k{display:flex;align-items:center;gap:.5vmin;padding:.7vmin;border-bottom:1px solid rgba(255,255,255,.07)}
+.knoten .k .i{width:2vmin;height:2vmin;border-radius:.5vmin;background:var(--c);display:flex;align-items:center;justify-content:center;font-size:1vmin}
+.knoten .k b{font-size:1.1vmin}
+.knoten .t2{padding:.5vmin .7vmin;font-size:.9vmin;color:var(--dim)}
+.knoten .pp{position:absolute;bottom:-.6vmin;width:1.3vmin;height:1.3vmin;border-radius:50%;background:#4aa3ff;border:.2vmin solid #141419;box-shadow:0 0 10px #4aa3ff}
+.vl{position:absolute;height:.3vmin;background:linear-gradient(90deg,var(--cyan),var(--magenta));transform-origin:left center;opacity:0;animation:rein .3s ease var(--d) forwards;box-shadow:0 0 12px rgba(34,211,238,.5)}
+.kats{display:grid;grid-template-columns:repeat(4,19vmin);gap:1.6vmin}
+.kc{background:#23242c;border:1.5px solid var(--kc);border-radius:1.3vmin;padding:1.4vmin .7vmin;opacity:0;animation:kIn .5s cubic-bezier(.22,1,.36,1) var(--d) both}
+.kc .ico{font-size:3.2vmin}.kc b{display:block;margin-top:.4vmin;font-size:1.25vmin}
+.zahl{font-size:9vmin;font-weight:900;background:linear-gradient(120deg,var(--cyan),var(--indigo),var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent}
+.soon{font-size:8.4vmin;font-weight:900}
+.soon .a{color:var(--cyan);text-shadow:0 1px 0 #0e7490,0 2px 0 #0b5e73,0 3px 0 #094a5c,0 4px 0 #073745,0 9px 34px rgba(34,211,238,.55)}
+.soon .b{color:var(--magenta);text-shadow:0 1px 0 #9d174d,0 2px 0 #7f1240,0 3px 0 #610e33,0 4px 0 #430a25,0 9px 34px rgba(232,121,249,.55)}
+.cta-pill{font-family:ui-monospace,monospace;font-size:2.3vmin;background:rgba(14,18,36,.92);border:1px solid rgba(255,255,255,.2);padding:1.4vmin 3vmin;border-radius:99vmin;opacity:0;animation:rein .8s ease calc(var(--t) + 2s) forwards}
+.cta-btn{font-size:2.6vmin;font-weight:900;color:#fff;background:linear-gradient(120deg,var(--cyan),var(--indigo),var(--magenta));border:none;padding:1.9vmin 4.4vmin;border-radius:99vmin;animation:puls 1.4s ease-in-out infinite}
+@keyframes puls{0%,100%{box-shadow:0 0 18px rgba(34,211,238,.5)}50%{box-shadow:0 0 44px rgba(232,121,249,.75)}}
+#replay{position:fixed;bottom:3vmin;left:50%;transform:translateX(-50%);z-index:60;opacity:0;pointer-events:none;transition:.5s;background:rgba(14,18,36,.92);color:#fff;border:1px solid rgba(255,255,255,.2);padding:1.2vmin 3vmin;border-radius:99vmin;font-size:2vmin;cursor:pointer;font-family:inherit}
+#replay.show{opacity:.9;pointer-events:auto}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+<div class="vig"></div>
+
+<div class="scene" data-t="0">
+  <div class="kick b" style="--t:.5s">LUMIOX 0.8.9e · DAS NEUE UPDATE</div>
+  <h2 style="font-size:9vmin;margin-top:2vmin">COMMAND<br><em>STUDIO</em></h2>
+</div>
+
+<div class="scene" data-t="7">
+  <h2 class="flash" style="--t:7.4s">Baue deine eigenen<br><em>Discord-Systeme.</em></h2>
+  <p class="sub">Ohne eine Zeile Code. Mit Blöcken. Visuell.</p>
+</div>
+<div class="scene" data-t="14">
+  <p class="kick b" style="--t:14.4s">DER VISUAL-EDITOR</p>
+  <div class="studio">
+    <div class="stbar"><div class="feld"></div><div class="feld" style="width:18vmin"></div><div class="btn2">💾 Save</div></div>
+    <div class="stpal">
+      <span class="pt">BLOCKS</span>
+      <div class="sblk" style="--c:#34d399;--d:15.4s"><div class="i">▶</div><div><b>START</b></div></div>
+      <div class="sblk" style="--c:#4aa3ff;--d:15.9s"><div class="i">💬</div><div><b>Send Reply</b></div></div>
+      <div class="sblk" style="--c:#fbbf24;--d:16.4s"><div class="i">?</div><div><b>IF Role</b></div></div>
+      <div class="sblk" style="--c:#34d399;--d:16.9s"><div class="i">$</div><div><b>Add Money</b></div></div>
+    </div>
+    <div class="slein">
+      <div class="knoten" style="--c:#34d399;--d:17.4s;top:3vmin;left:3vmin">
+        <div class="k"><div class="i">▶</div><b>START</b></div><div class="t2">Befehl beginnt</div><div class="pp"></div>
+      </div>
+      <div class="knoten" style="--c:#fbbf24;--d:18.6s;top:19vmin;left:22vmin">
+        <div class="k"><div class="i">?</div><b>IF Has Role</b></div><div class="t2">Dann / Sonst</div><div class="pp" style="background:#34d399;box-shadow:0 0 10px #34d399"></div><div class="pp" style="background:#f43f5e;box-shadow:0 0 10px #f43f5e"></div>
+      </div>
+      <div class="knoten" style="--c:#4aa3ff;--d:19.8s;top:34vmin;left:42vmin">
+        <div class="k"><div class="i">💬</div><b>Send Reply</b></div><div class="t2">Hallo {user}!</div><div class="pp"></div>
+      </div>
+      <div class="vl" style="top:9.5vmin;left:11vmin;width:13vmin;--d:20.8s;transform:rotate(30deg)"></div>
+      <div class="vl" style="top:25vmin;left:30vmin;width:14vmin;--d:21.6s;transform:rotate(26deg)"></div>
+    </div>
+  </div>
+  <p class="sub">Palette links · Blöcke auf die Leinwand · Punkte verbinden · Fertig.</p>
+</div>
+
+<div class="scene" data-t="26">
+  <p class="kick m" style="--t:26.4s">40+ BLÖCKE · 12 KATEGORIEN</p>
+  <div class="kats">
+    <div class="kc" style="--kc:#f43f5e;--d:27s"><span class="ico">⚙️</span><b>Server</b></div>
+    <div class="kc" style="--kc:#22d3ee;--d:27.3s"><span class="ico">🏷️</span><b>Rollen</b></div>
+    <div class="kc" style="--kc:#e879f9;--d:27.6s"><span class="ico">#️⃣</span><b>Kanäle</b></div>
+    <div class="kc" style="--kc:#9b59b6;--d:27.9s"><span class="ico">📝</span><b>Variablen</b></div>
+    <div class="kc" style="--kc:#fbbf24;--d:28.2s"><span class="ico">❓</span><b>Conditions</b></div>
+    <div class="kc" style="--kc:#4aa3ff;--d:28.5s"><span class="ico">🌐</span><b>API</b></div>
+    <div class="kc" style="--kc:#2ecc71;--d:28.8s"><span class="ico">🔁</span><b>Loops</b></div>
+    <div class="kc" style="--kc:#f7931a;--d:29.1s"><span class="ico">💰</span><b>Wirtschaft</b></div>
+  </div>
+</div>
+
+<div class="scene" data-t="31">
+  <p class="kick m" style="--t:31.4s">WENN / DANN – ZWEIGE</p>
+  <div style="display:flex;gap:2.4vmin">
+    <div style="flex:1;border:2px solid #34d399;background:rgba(52,211,153,.08);border-radius:1.6vmin;padding:2vmin;opacity:0;animation:kIn .6s ease 31.8s both">
+      <h2 style="font-size:1.8vmin;color:#34d399">🟢 DANN</h2>
+      <p class="sub" style="text-align:left">+500 Geld · VIP-Rolle<br>„Willkommen im Club!"</p>
+    </div>
+    <div style="flex:1;border:2px solid #f43f5e;background:rgba(244,63,94,.08);border-radius:1.6vmin;padding:2vmin;opacity:0;animation:kIn .6s ease 32.6s both">
+      <h2 style="font-size:1.8vmin;color:#f43f5e">🔴 SONST</h2>
+      <p class="sub" style="text-align:left">„Level 10 nötig!"<br>Flow stoppen</p>
+    </div>
+  </div>
+</div>
+
+<div class="scene" data-t="35">
+  <div class="zahl" id="bz">0</div>
+  <p class="kick b" style="--t:36s">BLOCK-TYPEN · VON SERVER BIS API</p>
+</div>
+
+<div class="scene" data-t="41">
+  <p class="kick g" style="--t:41.4s">SPEICHERN = LIVE AUF DISCORD</p>
+  <h2 class="flash" style="--t:41.8s">Ohne Neustart.<br><em>Sofort verfügbar.</em></h2>
+</div>
+
+<div class="scene last" data-t="47">
+  <div class="soon"><span class="a">0.8.9e</span> <span class="b">JETZT</span></div>
+  <p class="kick b" style="--t:48.2s">COMMAND STUDIO · LIVE IM DASHBOARD</p>
+  <div class="cta-pill" style="--t:47s">github.com/Seekseek174/lumiox</div>
+  <button class="cta-btn">🧩 Jetzt Systeme bauen</button>
+  <p class="sub" style="margin-top:1vmin">Made by ginizw · Open Alpha</p>
+</div>
+
+<button id="replay">▶ Nochmal</button>
+<script>
+const cv = document.getElementById('bg'), cx = cv.getContext('2d');
+let W, H, st = [];
+function init(){ W = cv.width = innerWidth; H = cv.height = innerHeight;
+  st = Array.from({length:190},()=>({x:Math.random()*W,y:Math.random()*H,r:.5+Math.random()*1.3,p:Math.random()*6.28,s:.4+Math.random()})); }
+init(); addEventListener('resize', init);
+(function loop(){ cx.clearRect(0,0,W,H);
+  for (const s of st) { s.p += .028*s.s; cx.globalAlpha = .16+.45*Math.abs(Math.sin(s.p));
+    cx.fillStyle = '#cfd8ff'; cx.beginPath(); cx.arc(s.x,s.y,s.r,0,7); cx.fill(); }
+  cx.globalAlpha = 1; requestAnimationFrame(loop); })();
+
+const PLAN = [...document.querySelectorAll('.scene')].map(el=>({el,start:parseFloat(el.dataset.t)})).sort((a,b)=>a.start-b.start);
+const T0 = performance.now(), ENDE = 53;
+function akt(sek){ let a=null; for (const p of PLAN) if (sek>=p.start) a=p; return a; }
+let cntGo = false;
+(function rahmen(now){
+  const sek = (now-T0)/1000;
+  const a = akt(sek);
+  for (const p of PLAN) {
+    const soll = p===a;
+    if (soll && !p.el.classList.contains('on')) p.el.classList.add('on');
+    if (!soll && p.el.classList.contains('on')) p.el.classList.remove('on');
+  }
+  if (a && !cntGo && a.el.querySelector('#bz')) {
+    cntGo = true;
+    const el = document.getElementById('bz'), t0 = performance.now();
+    (function z(t){ const p2 = Math.min(1,(t-t0)/1400);
+      el.textContent = Math.round(40*(1-Math.pow(1-p2,3))) + '+';
+      if (p2<1) requestAnimationFrame(z); })(t0);
+  }
+  if (sek < ENDE) requestAnimationFrame(rahmen);
+  else document.getElementById('replay').classList.add('show');
+})(performance.now());
+document.getElementById('replay').addEventListener('click',()=>location.reload());
+</script>
+</body>
+</html>

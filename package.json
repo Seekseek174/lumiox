@@ -1,0 +1,21 @@
+{
+  "name": "neonbot",
+  "version": "1.0.0",
+  "description": "Discord-Bot mit lokaler KI-Moderation (Ollama) und Glass-Dashboard – läuft komplett in Termux",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "discord.js": "^14.27.0",
+    "express": "^4.22.2",
+    "express-session": "^1.19.0"
+  },
+  "devDependencies": {
+    "javascript-obfuscator": "^5.6.0"
+  }
+}

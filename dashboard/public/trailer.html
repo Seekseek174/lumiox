@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>LUMIOX – Offizieller Trailer</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--cyan:#22d3ee;--indigo:#818cf8;--magenta:#e879f9;--text:#eef1f7;--dim:#94a3b8}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#05060d;color:var(--text);font-family:'Inter',system-ui,sans-serif;overflow:hidden}
+#sterne{position:fixed;inset:0;z-index:0}
+.blob{position:fixed;border-radius:50%;filter:blur(90px);opacity:.5;z-index:0;animation:drift 22s ease-in-out infinite alternate}
+.b1{width:55vmax;height:55vmax;background:radial-gradient(circle,#0e7490,transparent 65%);top:-20%;left:-15%}
+.b2{width:50vmax;height:50vmax;background:radial-gradient(circle,#be123c,transparent 65%);bottom:-25%;right:-15%;animation-duration:28s}
+.b3{width:40vmax;height:40vmax;background:radial-gradient(circle,#4c1d95,transparent 65%);bottom:-10%;left:30%;animation-duration:34s}
+@keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(4%,-6%) scale(1.15)}}
+.stage{position:fixed;inset:0;z-index:2}
+.scene{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2.4vmin;opacity:0;padding:4vmin;text-align:center;animation:szene var(--dur) ease var(--delay) forwards}
+@keyframes szene{0%{opacity:0;transform:scale(.985)}7%{opacity:1;transform:none}86%{opacity:1}100%{opacity:0;visibility:hidden}}
+.scene.last{animation-name:szeneEnde}
+@keyframes szeneEnde{0%{opacity:0;transform:scale(.985)}8%{opacity:1;transform:none}100%{opacity:1}}
+.ring{filter:drop-shadow(0 0 14px rgba(34,211,238,.55))}
+.ring .pfad{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 2s ease .2s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.ring .balken{opacity:0;animation:rein .5s ease 1.9s forwards}
+@keyframes rein{to{opacity:1}}
+.wordmark{font-size:12vmin;font-weight:800;display:flex;line-height:1}
+.wordmark span{opacity:0;animation:buchstabe .6s cubic-bezier(.22,1,.36,1) forwards;animation-delay:calc(2s + var(--i)*90ms)}
+@keyframes buchstabe{from{opacity:0;transform:translateY(3vmin) rotate(5deg);filter:blur(8px)}to{opacity:1;transform:none;filter:none}}
+.wordmark .x{background:linear-gradient(120deg,var(--cyan),var(--indigo) 55%,var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent}
+.tagline{font-size:2.1vmin;color:var(--dim);opacity:0;animation:tagline 1.5s ease 3.4s forwards}
+@keyframes tagline{from{opacity:0;letter-spacing:.15em}to{opacity:1;letter-spacing:.5em}}
+.claim{font-size:6.5vmin;font-weight:800;line-height:1.15}
+.claim em{font-style:normal;background:linear-gradient(120deg,var(--cyan),var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--dim);font-size:2.4vmin}
+.feats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2vmin;max-width:80vmin}
+.feat{background:rgba(16,20,38,.55);border:1px solid rgba(255,255,255,.12);border-radius:2vmin;padding:2.6vmin 2vmin;backdrop-filter:blur(12px);opacity:0;animation:flyIn .7s cubic-bezier(.22,1,.36,1) forwards;animation-delay:calc(var(--delay) + .9s + var(--i)*.65s)}
+.feat:nth-child(even){animation-name:flyInAlt}
+.feat .ico{font-size:5vmin}
+.feat b{display:block;margin-top:1vmin;font-size:2.4vmin}
+.feat small{color:var(--dim);font-size:1.7vmin}
+@keyframes flyIn{from{opacity:0;transform:translateY(4vmin) scale(.94)}to{opacity:1;transform:none}}
+@keyframes flyInAlt{from{opacity:0;transform:translateY(-4vmin) scale(.94)}to{opacity:1;transform:none}}
+.zahlen{display:flex;gap:6vmin}
+.zahl{opacity:0;animation:zahlIn .8s cubic-bezier(.22,1,.36,1) forwards;animation-delay:calc(var(--delay) + var(--i)*.45s)}
+.zahl b{font-size:10vmin;font-weight:800;background:linear-gradient(120deg,var(--cyan),var(--indigo),var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 18px rgba(129,140,248,.45))}
+.zahl small{display:block;color:var(--dim);font-size:2.2vmin;letter-spacing:.2em;text-transform:uppercase;margin-top:.6vmin}
+@keyframes zahlIn{from{opacity:0;transform:translateY(3vmin) scale(.9)}to{opacity:1;transform:none}}
+.cta-klein{font-size:5vmin;font-weight:800;letter-spacing:.1em}
+.cta-pill{font-family:ui-monospace,monospace;font-size:2.6vmin;background:rgba(16,20,38,.7);border:1px solid rgba(255,255,255,.16);padding:1.6vmin 3vmin;border-radius:99px;backdrop-filter:blur(10px)}
+.cta-btn{margin-top:1.5vmin;font-size:2.8vmin;font-weight:700;color:#fff;background:linear-gradient(120deg,var(--cyan),var(--indigo),var(--magenta));border:none;padding:2vmin 4.5vmin;border-radius:99px;cursor:pointer;animation:pulsieren 1.6s ease-in-out infinite}
+@keyframes pulsieren{0%,100%{box-shadow:0 0 18px rgba(34,211,238,.45);transform:scale(1)}50%{box-shadow:0 0 42px rgba(232,121,249,.65);transform:scale(1.045)}}
+.cta-foot{color:var(--dim);font-size:1.9vmin}
+#replay{position:fixed;bottom:4vmin;left:50%;transform:translateX(-50%);z-index:9;opacity:0;pointer-events:none;transition:opacity .5s;background:rgba(16,20,38,.8);color:var(--text);border:1px solid rgba(255,255,255,.2);padding:1.2vmin 3vmin;border-radius:99px;font-size:2vmin;cursor:pointer;font-family:inherit}
+#replay.show{opacity:.9;pointer-events:auto}
+</style>
+</head>
+<body>
+<canvas id="sterne"></canvas>
+<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+
+<div class="stage">
+  <!-- Szene 1 (0–6 s): Logo -->
+  <section class="scene" style="--delay:0s;--dur:6.2s">
+    <svg class="ring" viewBox="0 0 220 220" style="width:19vmin;height:19vmin">
+      <defs><linearGradient id="g" x1="20%" y1="0%" x2="80%" y2="100%">
+        <stop offset="0%" stop-color="#22d3ee"/><stop offset="55%" stop-color="#818cf8"/><stop offset="100%" stop-color="#e879f9"/>
+      </linearGradient></defs>
+      <circle class="pfad" cx="110" cy="110" r="70" fill="none" stroke="url(#g)" stroke-width="12" stroke-linecap="round" pathLength="1"/>
+      <g class="balken" fill="url(#g)">
+        <rect x="160" y="58" width="26" height="10" rx="5"/><rect x="167" y="80" width="23" height="10" rx="5"/>
+        <rect x="170" y="100" width="22" height="10" rx="5"/><rect x="167" y="120" width="23" height="10" rx="5"/>
+        <rect x="160" y="142" width="26" height="10" rx="5"/>
+      </g>
+    </svg>
+    <h1 class="wordmark">
+      <span style="--i:0">L</span><span style="--i:1">u</span><span style="--i:2">m</span><span style="--i:3">i</span><span style="--i:4">o</span><span class="x" style="--i:5">x</span>
+    </h1>
+    <p class="tagline">LIGHT. DATA. POSSIBILITIES.</p>
+  </section>
+
+  <!-- Szene 2 (6,2–9,6 s): Claim -->
+  <section class="scene" style="--delay:6.2s;--dur:3.6s">
+    <h2 class="claim">Ein Discord-Bot.<br><em>Komplett lokal.</em></h2>
+    <p class="sub">KI-Moderation · Steuersystem · Wirtschaft · Dashboard – ohne Cloud, ohne Kosten</p>
+  </section>
+
+  <!-- Szene 3 (9,8–16 s): Features -->
+  <section class="scene" style="--delay:9.8s;--dur:6.4s">
+    <div class="feats">
+      <div class="feat" style="--i:0"><div class="ico">🧠</div><b>KI-Moderation</b><small>erkennt Beleidigungen & Mobbing</small></div>
+      <div class="feat" style="--i:1"><div class="ico">🏛️</div><b>Steuersystem</b><small>Einkommen · Vermögen · Klassen</small></div>
+      <div class="feat" style="--i:2"><div class="ico">💰</div><b>Wirtschaft</b><small>Shop · Gambling · Lotterie</small></div>
+      <div class="feat" style="--i:3"><div class="ico">⭐</div><b>Levelsystem</b><small>Boosts · Rollen · Ränge</small></div>
+      <div class="feat" style="--i:4"><div class="ico">🛡️</div><b>Auto-Mod</b><small>Anti-Raid · Anti-Nuke</small></div>
+      <div class="feat" style="--i:5"><div class="ico">🎨</div><b>Glass-Dashboard</b><small>voll anpassbar, live</small></div>
+    </div>
+  </section>
+
+  <!-- Szene 4 (16,2–20,4 s): Zahlen -->
+  <section class="scene" style="--delay:16.2s;--dur:4.4s">
+    <div class="zahlen">
+      <div class="zahl" style="--i:0"><b>70+</b><small>Befehle</small></div>
+      <div class="zahl" style="--i:1"><b>100 %</b><small>lokal</small></div>
+      <div class="zahl" style="--i:2"><b>0 €</b><small>Cloud</small></div>
+    </div>
+  </section>
+
+  <!-- Szene 5 (20,6 s – Ende): Call-to-Action -->
+  <section class="scene last" style="--delay:20.6s;--dur:8s">
+    <div class="cta-klein">LUMIO<span style="background:linear-gradient(120deg,var(--cyan),var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent">X</span></div>
+    <p class="tagline" style="animation-delay:21.6s">LIGHT. DATA. POSSIBILITIES.</p>
+    <div class="cta-pill" style="margin-top:2vmin">github.com/Seekseek174/lumiox</div>
+    <button class="cta-btn">⬇ Jetzt kostenlos herunterladen</button>
+    <p class="cta-foot">Made by ginizw · läuft auf deinem eigenen Gerät<br>💬 <b>Super Support</b> auf GitHub – Issues &amp; schnelle Hilfe</p>
+  </section>
+</div>
+
+<button id="replay">▶ Erneut abspielen</button>
+
+<script>
+// Sternenhimmel (dezent, 90 Funken)
+const c = document.getElementById('sterne'), x = c.getContext('2d');
+let S = [];
+function groesse(){ c.width = innerWidth; c.height = innerHeight;
+  S = Array.from({length: 90}, () => ({
+    x: Math.random()*c.width, y: Math.random()*c.height,
+    r: .5 + Math.random()*1.4, p: Math.random()*Math.PI*2, s: .4 + Math.random()*.9
+  }));
+}
+groesse(); addEventListener('resize', groesse);
+(function loop(){
+  x.clearRect(0,0,c.width,c.height);
+  for (const s of S) {
+    s.p += .02*s.s;
+    x.globalAlpha = .25 + .55*Math.abs(Math.sin(s.p));
+    x.fillStyle = '#cfd8ff';
+    x.beginPath(); x.arc(s.x, s.y, s.r, 0, 7); x.fill();
+  }
+  x.globalAlpha = 1;
+  requestAnimationFrame(loop);
+})();
+// Replay-Knopf erscheint am Ende
+setTimeout(() => document.getElementById('replay').classList.add('show'), 26500);
+document.getElementById('replay').addEventListener('click', () => location.reload());
+</script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+# ═══ GEHEIMNISSE & PERSÖNLICHE DATEN – NIEMALS HOCHLADEN! ═══
+
+# Enthält deinen DISCORD BOT TOKEN!
+config.json
+
+# Deine komplette Datenbank (Mod-Einträge, Nutzer, Wirtschaft …)
+data/
+
+# Node-Abhängigkeiten (laden andere per npm install selbst)
+node_modules/
+
+# Logs und temporäre Dateien
+*.log
+*.tmp
+.DS_Store
+backups/

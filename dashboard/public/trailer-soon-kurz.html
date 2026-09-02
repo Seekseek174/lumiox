@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>LUMIOX – BALD</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:#03040a;overflow:hidden;display:flex;align-items:center;justify-content:center;
+  font-family:'Inter',system-ui,sans-serif;color:#eef1f7}
+#bg{position:fixed;inset:0}
+.wrap{position:relative;z-index:2;text-align:center;perspective:900px}
+.logo{font-size:13vmin;font-weight:800;background:linear-gradient(120deg,#22d3ee,#818cf8 55%,#e879f9);
+  -webkit-background-clip:text;background-clip:text;color:transparent;display:inline-block;
+  transform-style:preserve-3d;animation:tilt 5s ease-in-out infinite alternate;
+  filter:drop-shadow(0 0 40px rgba(34,211,238,.5))}
+@keyframes tilt{from{transform:rotateX(15deg) rotateY(-12deg)}to{transform:rotateX(-8deg) rotateY(12deg)}}
+.soon{margin-top:2vmin;font-size:6vmin;font-weight:800;letter-spacing:.2em;color:#fff;opacity:0;animation:rein .8s ease .9s forwards;
+  text-shadow:0 0 40px rgba(232,121,249,.7)}
+.soon em{font-style:normal;color:#e879f9}
+.pill{margin-top:3vmin;display:inline-block;font:500 2vmin ui-monospace;background:rgba(13,18,36,.9);
+  border:1px solid rgba(255,255,255,.2);padding:1.2vmin 2.6vmin;border-radius:99px;opacity:0;animation:rein .8s ease 1.6s forwards}
+@keyframes rein{to{opacity:1}}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+<div class="wrap">
+  <div class="logo">LUMIOX</div>
+  <div class="soon">COMING <em>SOON</em></div>
+  <div class="pill">github.com/Seekseek174/lumiox</div>
+</div>
+<script>
+const c = document.getElementById('bg'), x = c.getContext('2d');
+let W, H, st = [];
+function init(){ W = c.width = innerWidth; H = c.height = innerHeight;
+  st = Array.from({length: 350}, () => ({ x: (Math.random()-.5)*W*2, y: (Math.random()-.5)*H*2, z: Math.random()*W })); }
+init(); addEventListener('resize', init);
+(function loop(){ x.fillStyle = 'rgba(3,4,10,.3)'; x.fillRect(0,0,W,H);
+  x.save(); x.translate(W/2,H/2);
+  for (const s of st) { s.z -= 5; if (s.z < 1) s.z = W;
+    const k = 250 / s.z; x.fillStyle = 'rgba(190,205,255,' + Math.min(1,(1-s.z/W)*1.4) + ')';
+    const g = Math.max(.5,(1-s.z/W)*3); x.fillRect(s.x*k, s.y*k, g, g); }
+  x.restore(); requestAnimationFrame(loop); })();
+</script>
+</body>
+</html>

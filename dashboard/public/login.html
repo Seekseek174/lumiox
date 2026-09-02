@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#22d3ee">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lumiox Login</title>
+<link rel="stylesheet" href="css/glass.css">
+</head>
+<body>
+<div class="bg-scene" id="bgScene"></div>
+<canvas id="partikel"></canvas>
+
+<main class="auth-wrap">
+  <section class="panel auth-card">
+    <div class="logo-big">🤖</div>
+    <h1>Lumiox</h1>
+    <p class="dim">Dashboard-Zugang</p>
+
+    <form id="loginForm" autocomplete="on">
+      <label class="feld">
+        <span>Benutzername</span>
+        <input class="input" type="text" id="benutzername" autocomplete="username" required>
+      </label>
+      <label class="feld">
+        <span>Passwort</span>
+        <div class="pw-wrap">
+          <input class="input" type="password" id="passwort" autocomplete="current-password" required>
+          <button type="button" class="pw-eye" id="pwEye" title="Anzeigen/Verbergen">👁️</button>
+        </div>
+      </label>
+
+      <div class="fehler" id="fehler" hidden></div>
+      <button class="btn primary full" type="submit" id="loginBtn">Einloggen</button>
+    </form>
+
+    <p class="dim small center" style="margin-top:14px">
+      Läuft komplett lokal auf deinem Gerät · keine Cloud
+    </p>
+  </section>
+</main>
+
+<div id="toasts"></div>
+<script src="js/api.js"></script>
+<script src="js/design.js"></script>
+<script>
+(async () => {
+  'use strict';
+
+  // Weiterleitung je nach Zustand: Setup nötig? Schon eingeloggt?
+  try {
+    const status = await API.get('/setup/status');
+    if (!status.complete) { location.href = 'setup.html'; return; }
+    try { await API.get('/me'); location.href = 'index.html'; return; } catch (_) { /* normal: noch nicht eingeloggt */ }
+  } catch (_) { /* Netzwerkfehler – Formular trotzdem zeigen */ }
+
+  // Zuletzt genutztes Design für den Hintergrund anwenden (nur lokal)
+  try {
+    const lokal = localStorage.getItem('neonbot_design');
+    if (lokal) Design.apply(JSON.parse(lokal), { speichern: false });
+    else Design.applyPreset('liquid', { speichern: false });
+  } catch (_) { /* Design ist optional */ }
+
+  // Passwort anzeigen/verbergen
+  document.getElementById('pwEye').addEventListener('click', () => {
+    const f = document.getElementById('passwort');
+    f.type = f.type === 'password' ? 'text' : 'password';
+  });
+
+  document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('loginBtn');
+    const fehler = document.getElementById('fehler');
+    fehler.hidden = true;
+    btn.disabled = true;
+    btn.textContent = 'Prüfe …';
+    try {
+      await API.post('/login', {
+        benutzername: document.getElementById('benutzername').value,
+        passwort: document.getElementById('passwort').value,
+      });
+      location.href = 'index.html';
+    } catch (err) {
+      fehler.textContent = err.message;
+      fehler.hidden = false;
+      btn.disabled = false;
+      btn.textContent = 'Einloggen';
+    }
+  });
+})();
+</script>
+<div class="madeby">made by <b>ginizw</b></div>
+</body>
+</html>

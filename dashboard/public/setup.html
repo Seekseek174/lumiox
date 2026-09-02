@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#22d3ee">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lumiox – Einrichtungsassistent</title>
+<link rel="stylesheet" href="css/glass.css">
+</head>
+<body>
+<div class="bg-scene" id="bgScene"></div>
+<canvas id="partikel"></canvas>
+
+<main class="auth-wrap wide">
+  <section class="panel setup-card">
+    <div style="display:flex;align-items:center;gap:14px;justify-content:center;margin-bottom:6px">
+     <img class="login-logo" style="width:64px;height:64px;margin:0" src="img/logo.png" onerror="this.onerror=null;this.src='img/logo.svg';" alt="Lumiox">
+     <h1 style="font-size:1.5rem">Willkommen bei <b>Lumio<span class="lx">x</span></b> 🧙</h1>
+   </div>
+    <p class="dim">In 5 Schritten ist dein Bot startklar.</p>
+
+    <div class="schritte" id="schritte">
+      <span class="schritt-punkt aktiv" data-p="1">1</span>
+      <span class="schritt-linie"></span>
+      <span class="schritt-punkt" data-p="2">2</span>
+      <span class="schritt-linie"></span>
+      <span class="schritt-punkt" data-p="3">3</span>
+      <span class="schritt-linie"></span>
+      <span class="schritt-punkt" data-p="4">4</span>
+      <span class="schritt-linie"></span>
+      <span class="schritt-punkt" data-p="5">5</span>
+    </div>
+
+    <!-- Schritt 1: Token -->
+    <section class="schritt inhalt" data-step="1">
+      <h2>1 · Discord-Bot-Token</h2>
+      <p class="dim">Entwickler-Portal → Applications → dein Bot → „Bot" → „Reset Token". Aktiviere dort auch die beiden privilegierten Intents: <b>Message Content</b> und <b>Server Members</b>.</p>
+      <label class="feld">
+        <span>Bot-Token</span>
+        <div class="pw-wrap">
+          <input class="input" type="password" id="token" placeholder="MTA4NzY1…" autocomplete="off">
+          <button type="button" class="pw-eye" id="tokenEye" title="Anzeigen">👁️</button>
+        </div>
+      </label>
+      <div class="row">
+        <button class="btn primary" id="tokenBtn">Speichern &amp; verbinden</button>
+        <span class="status-chip" id="tokenStatus">–</span>
+      </div>
+      <div class="fehler" id="tokenFehler" hidden></div>
+      <div class="row spread" style="margin-top:16px">
+        <span></span>
+        <button class="btn" data-weiter="2" disabled>Weiter →</button>
+      </div>
+    </section>
+
+    <!-- Schritt 2: IDs + Einladungslink -->
+    <section class="schritt inhalt" data-step="2" hidden>
+      <h2>2 · Application-ID &amp; Einladungslink</h2>
+      <p class="dim">Entwickler-Portal → „General Information" → <b>Application ID</b>. Die Guild-ID (optional) bekommst du per Rechtsklick auf deinen Server → „Server-ID kopieren" (Entwicklermodus in Discord aktivieren).</p>
+      <label class="feld"><span>Application/Client-ID</span>
+        <input class="input" id="clientId" placeholder="1234567890123456789" autocomplete="off"></label>
+      <label class="feld"><span>Guild-ID (optional, beschleunigt die Command-Registrierung)</span>
+        <input class="input" id="guildId" placeholder="9876543210987654321" autocomplete="off"></label>
+      <div class="row">
+        <button class="btn primary" id="idsBtn">Speichern &amp; Link erzeugen</button>
+        <span class="status-chip" id="idsStatus">–</span>
+      </div>
+      <label class="feld" id="inviteBox" hidden>
+        <span>Einladungslink (Berechtigungen sind bereits korrekt berechnet)</span>
+        <div class="row">
+          <input class="input" id="inviteLink" readonly>
+          <button class="btn small" id="copyInvite">Kopieren</button>
+        </div>
+      </label>
+      <div class="fehler" id="idsFehler" hidden></div>
+      <div class="row spread" style="margin-top:16px">
+        <button class="btn ghost" data-zurueck="1">← Zurück</button>
+        <button class="btn" data-weiter="3">Weiter →</button>
+      </div>
+    </section>
+
+    <!-- Schritt 3: Ollama -->
+    <section class="schritt inhalt" data-step="3" hidden>
+      <h2>3 · Lokale KI (Ollama)</h2>
+      <p class="dim">Die KI-Moderation läuft 100 % lokal. Ohne Ollama funktioniert der Bot trotzdem (Wortfilter-Übernimmt).</p>
+      <div class="grid-2">
+        <label class="feld"><span>URL</span><input class="input" id="aiUrl" value="http://127.0.0.1:11434"></label>
+        <label class="feld"><span>Modell</span><input class="input" id="aiModel" value="gemma2:2b"></label>
+      </div>
+      <div class="row">
+        <button class="btn primary" id="aiTestBtn">Verbindung testen</button>
+        <button class="btn ghost" id="aiSaveBtn">Speichern</button>
+        <span class="status-chip" id="aiStatus">–</span>
+      </div>
+      <div class="hinweis-box" id="aiHilfe" hidden>
+        <b>Ollama ist nicht erreichbar.</b> So startest du es in Termux (eigene Session):<br>
+        <code>pkg install ollama</code> → <code>ollama serve</code> → in einer zweiten Session: <code>ollama pull gemma2:2b</code><br>
+        Test von Hand: <code>curl http://127.0.0.1:11434/api/tags</code>
+      </div>
+      <div class="ki-antwort" id="aiAntwort" hidden></div>
+      <div class="row spread" style="margin-top:16px">
+        <button class="btn ghost" data-zurueck="2">← Zurück</button>
+        <button class="btn" data-weiter="4">Weiter →</button>
+      </div>
+    </section>
+
+    <!-- Schritt 4: Admin-Konto -->
+    <section class="schritt inhalt" data-step="4" hidden>
+      <h2>4 · Dashboard-Login erstellen</h2>
+      <p class="dim">Dieses Konto schützt dein Dashboard. Passwort wird gehasht gespeichert (scrypt).</p>
+      <div class="grid-2">
+        <label class="feld"><span>Benutzername</span><input class="input" id="adminName" autocomplete="username"></label>
+        <label class="feld"><span>Passwort (min. 6 Zeichen)</span><input class="input" type="password" id="adminPass" autocomplete="new-password"></label>
+      </div>
+      <div class="row">
+        <button class="btn primary" id="adminBtn">Konto erstellen</button>
+        <span class="status-chip" id="adminStatus">–</span>
+      </div>
+      <div class="fehler" id="adminFehler" hidden></div>
+      <div class="hinweis-box" id="adminLoginHint" hidden>
+        Es existiert bereits ein Admin-Konto und du bist ausgeloggt.
+        <a href="login.html">Hier einloggen</a>, dann kehrt automatisch zurück.
+      </div>
+      <div class="row spread" style="margin-top:16px">
+        <button class="btn ghost" data-zurueck="3">← Zurück</button>
+        <button class="btn" data-weiter="5" id="adminWeiter" disabled>Weiter →</button>
+      </div>
+    </section>
+
+    <!-- Schritt 5: Design -->
+    <section class="schritt inhalt" data-step="5" hidden>
+      <h2>5 · Design wählen</h2>
+      <p class="dim">Klicke auf eine Vorschau – das ganze Dashboard sieht sofort so aus. Jeder Regler ist später im Design-Editor frei einstellbar.</p>
+      <div class="preset-grid" id="presetGrid"></div>
+      <div class="row spread" style="margin-top:18px">
+        <button class="btn ghost" data-zurueck="4">← Zurück</button>
+        <button class="btn primary big" id="finishBtn">🎉 Einrichtung abschließen</button>
+      </div>
+      <div class="fehler" id="finishFehler" hidden></div>
+    </section>
+  </section>
+</main>
+
+<div id="toasts"></div>
+<script src="js/api.js"></script>
+<script src="js/design.js"></script>
+<script>
+(async () => {
+  'use strict';
+  const $ = (s) => document.querySelector(s);
+
+  // ── Zustand laden ─────────────────────────────────────────────
+  let eingeloggt = false;
+  try {
+    const status = await API.get('/setup/status');
+    $('#token').dataset.maske = status.tokenMaske || '';
+    if (status.clientId) $('#clientId').value = status.clientId;
+    if (status.guildId) $('#guildId').value = status.guildId;
+    if (status.ollamaOnline) setChip('#aiStatus', 'ok', 'Ollama erreichbar ✔');
+    try { await API.get('/me'); eingeloggt = true; } catch (_) {}
+    if (status.adminErstellt && !eingeloggt) $('#adminLoginHint').hidden = false;
+    if (eingeloggt) { // Schritt 4 überspringen, wenn schon eingeloggt
+      setChip('#adminStatus', 'ok', 'Bereits eingeloggt ✔');
+      $('#adminWeiter').disabled = false;
+    }
+  } catch (_) { /* Assistent startet trotzdem */ }
+
+  function setChip(sel, typ, text) {
+    const c = $(sel);
+    c.textContent = text;
+    c.className = 'status-chip ' + typ;
+  }
+  function zeigeSchritt(n) {
+    document.querySelectorAll('.schritt.inhalt').forEach((s) => { s.hidden = +s.dataset.step !== n; });
+    document.querySelectorAll('.schritt-punkt').forEach((p) => {
+      p.classList.toggle('aktiv', +p.dataset.p === n);
+      p.classList.toggle('fertig', +p.dataset.p < n);
+    });
+  }
+  document.querySelectorAll('[data-weiter]').forEach((b) =>
+    b.addEventListener('click', () => zeigeSchritt(+b.dataset.weiter)));
+  document.querySelectorAll('[data-zurueck]').forEach((b) =>
+    b.addEventListener('click', () => zeigeSchritt(+b.dataset.zurueck)));
+
+  // ── Schritt 1: Token ─────────────────────────────────────────
+  $('#tokenEye').addEventListener('click', () => {
+    const f = $('#token');
+    f.type = f.type === 'password' ? 'text' : 'password';
+  });
+  $('#tokenBtn').addEventListener('click', async () => {
+    const token = $('#token').value.trim();
+    if (!token) return;
+    $('#tokenFehler').hidden = true;
+    setChip('#tokenStatus', 'busy', 'Verbinde …');
+    try {
+      const r = await API.post('/setup/token', { token });
+      if (r.ok && r.verbunden) {
+        setChip('#tokenStatus', 'ok', 'Verbunden ✔');
+        document.querySelector('[data-weiter="2"]').disabled = false;
+      } else {
+        setChip('#tokenStatus', 'err', 'Fehlgeschlagen ✘');
+        $('#tokenFehler').textContent = r.fehler || 'Unbekannter Fehler.';
+        $('#tokenFehler').hidden = false;
+      }
+    } catch (e) {
+      setChip('#tokenStatus', 'err', 'Fehler ✘');
+      $('#tokenFehler').textContent = e.message;
+      $('#tokenFehler').hidden = false;
+    }
+  });
+
+  // ── Schritt 2: IDs ───────────────────────────────────────────
+  $('#idsBtn').addEventListener('click', async () => {
+    $('#idsFehler').hidden = true;
+    try {
+      const r = await API.post('/setup/ids', { clientId: $('#clientId').value.trim(), guildId: $('#guildId').value.trim() });
+      setChip('#idsStatus', 'ok', 'Gespeichert ✔');
+      $('#inviteBox').hidden = false;
+      $('#inviteLink').value = r.inviteLink;
+    } catch (e) {
+      setChip('#idsStatus', 'err', 'Fehler ✘');
+      $('#idsFehler').textContent = e.message;
+      $('#idsFehler').hidden = false;
+    }
+  });
+  $('#copyInvite').addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText($('#inviteLink').value); toast('Link kopiert ✔', 'ok'); }
+    catch (_) { $('#inviteLink').select(); document.execCommand('copy'); toast('Link kopiert ✔', 'ok'); }
+  });
+
+  // ── Schritt 3: Ollama ────────────────────────────────────────
+  $('#aiTestBtn').addEventListener('click', async () => {
+    setChip('#aiStatus', 'busy', 'Teste …');
+    $('#aiHilfe').hidden = true;
+    $('#aiAntwort').hidden = true;
+    try {
+      const r = await API.post('/ollama/test', { url: $('#aiUrl').value.trim(), model: $('#aiModel').value.trim() });
+      if (r.ok) {
+        setChip('#aiStatus', 'ok', 'Antwortet ✔');
+        $('#aiAntwort').hidden = false;
+        $('#aiAntwort').innerHTML = '<b>Das Modell antwortet:</b><br>„' + API.esc(r.antwort || '…') + '“';
+        await API.post('/config/ollama', { url: $('#aiUrl').value.trim(), model: $('#aiModel').value.trim() }).catch(() => {});
+      } else {
+        setChip('#aiStatus', 'err', 'Nicht erreichbar ✘');
+        $('#aiHilfe').hidden = false;
+        if (r.fehler) $('#aiHilfe').innerHTML = '<b>' + API.esc(r.fehler) + '</b><br>' + $('#aiHilfe').innerHTML;
+      }
+    } catch (e) {
+      setChip('#aiStatus', 'err', 'Fehler ✘');
+      $('#aiHilfe').hidden = false;
+    }
+  });
+  $('#aiSaveBtn').addEventListener('click', async () => {
+    try {
+      await API.post('/config/ollama', { url: $('#aiUrl').value.trim(), model: $('#aiModel').value.trim() });
+      setChip('#aiStatus', 'ok', 'Gespeichert ✔');
+    } catch (e) { setChip('#aiStatus', 'err', e.message); }
+  });
+
+  // ── Schritt 4: Admin ─────────────────────────────────────────
+  $('#adminBtn').addEventListener('click', async () => {
+    $('#adminFehler').hidden = true;
+    try {
+      await API.post('/setup/admin', { benutzername: $('#adminName').value.trim(), passwort: $('#adminPass').value });
+      setChip('#adminStatus', 'ok', 'Konto erstellt ✔ – du bist eingeloggt');
+      $('#adminWeiter').disabled = false;
+      eingeloggt = true;
+    } catch (e) {
+      setChip('#adminStatus', 'err', 'Fehler ✘');
+      $('#adminFehler').textContent = e.message;
+      $('#adminFehler').hidden = false;
+    }
+  });
+
+  // ── Schritt 5: Design ────────────────────────────────────────
+  Design.applyPreset('liquid', { speichern: false }); // neutrale Live-Vorschau
+  const grid = $('#presetGrid');
+  for (const p of Design.presetListe()) {
+    const karte = document.createElement('button');
+    karte.type = 'button';
+    karte.className = 'preset-card';
+    karte.innerHTML = '<div class="mini" style="background:' + p.mini + '"></div><span>' + p.name + '</span>';
+    karte.addEventListener('click', () => {
+      grid.querySelectorAll('.preset-card').forEach((k) => k.classList.remove('aktiv'));
+      karte.classList.add('aktiv');
+      Design.applyPreset(p.id, { speichern: false });
+      toast('Vorschau: ' + p.name, 'info');
+    });
+    grid.appendChild(karte);
+  }
+
+  $('#finishBtn').addEventListener('click', async () => {
+    $('#finishFehler').hidden = true;
+    try {
+      if (eingeloggt) {
+        await API.post('/design', { design: Design.current() }); // gewähltes Design pro Account speichern
+      }
+      const r = await API.post('/setup/finish', {});
+      if (r.complete) { location.href = 'index.html'; return; }
+      throw new Error('Es fehlen noch Angaben (Token und Admin-Konto sind nötig).');
+    } catch (e) {
+      $('#finishFehler').textContent = e.message;
+      $('#finishFehler').hidden = false;
+    }
+  });
+
+  zeigeSchritt(1);
+})();
+</script>
+<div class="madeby">made by <b>ginizw</b></div>
+</body>
+</html>

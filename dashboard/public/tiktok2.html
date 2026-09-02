@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>LUMIOX – DASHBOARD GLOW</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@800;900&display=swap" rel="stylesheet">
+<style>
+:root{--cyan:#22d3ee;--magenta:#e879f9;--indigo:#818cf8;--gruen:#34d399;--warn:#fbbf24;--rot:#f43f5e}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:#000;overflow:hidden;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center}
+#frame{position:relative;height:100vh;aspect-ratio:9/16;background:#05060d;overflow:hidden;max-width:100vw}
+@media (max-aspect-ratio:9/16){#frame{width:100vw;height:auto}}
+#bg{position:absolute;inset:0;z-index:0}
+.vig{position:absolute;inset:0;z-index:60;box-shadow:inset 0 0 16vmin rgba(0,0,0,.8);pointer-events:none}
+.scene{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:2vmin;padding:7vmin 5vmin;text-align:center}
+.scene.on{display:flex;animation:sIn .32s cubic-bezier(.3,0,.7,1)}
+@keyframes sIn{0%{transform:scale(1.18)}55%{transform:scale(1.04)}100%{transform:scale(1.09)}}
+.slam{font-weight:900;line-height:.98;text-transform:uppercase;opacity:0;transform:scale(2.2);filter:blur(8px);animation:sl .24s cubic-bezier(.19,1,.22,1) forwards}
+@keyframes sl{to{opacity:1;transform:scale(1);filter:blur(0)}}
+.t1{font-size:14vmin}.t2{font-size:10vmin}.t3{font-size:7.6vmin}.t4{font-size:5.4vmin}
+.c1{color:#fff}.c2{color:var(--cyan)}.c3{color:var(--magenta)}
+.grad{background:linear-gradient(120deg,var(--cyan),var(--indigo) 50%,var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent}
+/* ── Rainbow (gleiche Nahtlos-Technik wie der Editor) ── */
+.rbt{background:linear-gradient(90deg,#ff004c,#ff9d00,#ffe600,#2bff88,#22d3ee,#818cf8,#e879f9,#ff004c);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:rb 1.4s linear infinite}
+@keyframes rb{to{background-position:-200% 50%}}
+.rbbar{width:66vmin;height:3.4vmin;border-radius:99vmin;background:linear-gradient(90deg,#ff004c,#ff9d00,#ffe600,#2bff88,#22d3ee,#818cf8,#e879f9,#ff004c);background-size:200% 100%;animation:rb 2.2s linear infinite;box-shadow:0 0 22px rgba(232,121,249,.55)}
+/* ── Indirektes Licht: Ambient-Blobs ── */
+.amb{position:absolute;border-radius:50%;filter:blur(30px);opacity:0;z-index:1;pointer-events:none}
+.amb.go{animation:ambIn 1.1s ease var(--d) forwards, ambFloat 6s ease-in-out var(--d) infinite alternate}
+@keyframes ambIn{to{opacity:.55}}
+@keyframes ambFloat{from{transform:translate(0,0) scale(1)}to{transform:translate(4%,-5%) scale(1.15)}}
+/* ── Direktes Highlight: Fokusrahmen ── */
+.focus{position:absolute;border:3px solid var(--cyan);border-radius:2vmin;box-shadow:0 0 34px var(--cyan),inset 0 0 22px rgba(34,211,238,.25);opacity:0;z-index:30;pointer-events:none;animation:focIn .45s cubic-bezier(.22,1,.36,1) var(--d) forwards}
+@keyframes focIn{from{opacity:0;transform:scale(1.35)}to{opacity:1;transform:scale(1)}}
+.focus.p{animation:focIn .45s cubic-bezier(.22,1,.36,1) var(--d) forwards,focP 1s ease-in-out calc(var(--d) + .5s) infinite alternate}
+@keyframes focP{to{box-shadow:0 0 55px var(--magenta),inset 0 0 30px rgba(232,121,249,.3)}}
+/* ── Dashboard-Mockup ── */
+.dash{width:100%;background:rgba(11,15,30,.94);border:1px solid rgba(255,255,255,.13);border-radius:3vmin;padding:2.6vmin;display:flex;flex-direction:column;gap:2vmin;box-shadow:0 30px 80px rgba(0,0,0,.7)}
+.drow{display:flex;gap:1.6vmin;align-items:center}
+.dlogo{width:5vmin;height:5vmin;border-radius:50%;background:linear-gradient(135deg,var(--cyan),var(--magenta));box-shadow:0 0 16px rgba(34,211,238,.6)}
+.dname2{font-weight:900;font-size:2.8vmin}
+.dchip{margin-left:auto;font-size:1.5vmin;padding:.7vmin 1.6vmin;border-radius:99vmin;background:rgba(255,255,255,.07);color:var(--dim,#8b93a7)}
+.dtiles{display:grid;grid-template-columns:repeat(2,1fr);gap:1.6vmin}
+.tile{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:1.8vmin;padding:2vmin;text-align:left;position:relative}
+.tile small{color:#8b93a7;font-size:1.5vmin;display:block}
+.tile b{font-size:4.6vmin;font-weight:900;background:linear-gradient(120deg,var(--cyan),var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent}
+.tilenav{display:flex;flex-direction:column;gap:1vmin;width:34%}
+.navit{font-size:1.7vmin;font-weight:600;padding:1.2vmin 1.6vmin;border-radius:1vmin;color:#b9c0d4;background:rgba(255,255,255,.04)}
+.navit.akt{background:linear-gradient(120deg,rgba(34,211,238,.35),rgba(232,121,249,.25));color:#fff;box-shadow:0 0 18px rgba(34,211,238,.3)}
+.dsplit{display:flex;gap:2vmin}
+/* ── Toggle ── */
+.tog{width:11vmin;height:5.6vmin;border-radius:99vmin;background:linear-gradient(120deg,var(--cyan),var(--magenta));position:relative;box-shadow:0 0 24px rgba(34,211,238,.5);animation:tgl 1.6s ease-in-out infinite alternate}
+.tog::after{content:'';position:absolute;width:4.4vmin;height:4.4vmin;border-radius:50%;background:#fff;top:.6vmin;left:.7vmin;animation:tglK 1.6s ease-in-out infinite alternate}
+@keyframes tgl{from{box-shadow:0 0 16px rgba(34,211,238,.4)}to{box-shadow:0 0 42px rgba(232,121,249,.85)}}
+@keyframes tglK{to{left:5.9vmin}}
+/* ── Slider ── */
+.slid{width:60vmin;height:1.6vmin;border-radius:99vmin;background:rgba(255,255,255,.12);position:relative}
+.slid i{position:absolute;top:50%;transform:translateY(-50%);width:3.6vmin;height:3.6vmin;border-radius:50%;background:#fff;border:.6vmin solid var(--cyan);box-shadow:0 0 16px var(--cyan)}
+.slid .k1{left:22%;animation:kf1 3s ease-in-out infinite alternate}
+.slid .k2{left:58%;animation:kf2 2.4s ease-in-out infinite alternate}
+.slid .k3{left:40%;animation:kf1 3.6s ease-in-out infinite alternate-reverse}
+@keyframes kf1{to{left:72%}}
+@keyframes kf2{to{left:18%}}
+/* Sweep / Burst */
+.sweep{position:absolute;inset:0;z-index:35;pointer-events:none;opacity:0;background:linear-gradient(100deg,transparent 30%,rgba(34,211,238,.28) 46%,rgba(232,121,249,.32) 54%,transparent 70%);animation:swGo 1.1s ease var(--d) forwards}
+@keyframes swGo{0%{opacity:.95;transform:translateX(-60%)}100%{opacity:0;transform:translateX(60%)}}
+#replay{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);z-index:100;opacity:0;pointer-events:none;transition:.4s;background:rgba(20,26,48,.95);color:#fff;border:1px solid rgba(255,255,255,.25);padding:10px 26px;border-radius:99px;font:700 14px Inter;cursor:pointer}
+#replay.show{opacity:.95;pointer-events:auto}
+</style>
+</head>
+<body>
+<div id="frame">
+<canvas id="bg"></canvas>
+<div class="vig"></div>
+
+<!-- T0 · 0–1s -->
+<div class="scene" data-t="0">
+  <div class="amb go" style="width:50vmin;height:50vmin;top:5%;left:-10%;--d:.1s;background:radial-gradient(circle,#0e7490,transparent 65%)"></div>
+  <div class="amb go" style="width:44vmin;height:44vmin;bottom:0;right:-12%;--d:.4s;background:radial-gradient(circle,#be123c,transparent 65%)"></div>
+  <div class="slam t1 rbt">GLOW</div>
+  <div class="slam t3 c1" style="animation-delay:.2s">MODE</div>
+</div>
+
+<!-- T1 · 1–2.4s · Direktes Highlight: Rainbow-Hintergrund -->
+<div class="scene" data-t="1">
+  <div class="amb go" style="width:70vmin;height:70vmin;top:20%;left:15%;--d:.1s;background:radial-gradient(circle,#7c3aed,transparent 60%)"></div>
+  <div class="slam t2 c1">🌈 RAINBOW-</div>
+  <div class="slam t2 rbt">HINTERGRUND</div>
+  <div class="rbbar"></div>
+</div>
+
+<!-- T2 · 2.4–4.2s · Dashboard mit Ambient + indirektem Highlight -->
+<div class="scene" data-t="2.4">
+  <div class="amb go" style="width:60vmin;height:60vmin;top:8%;right:-14%;--d:.2s;background:radial-gradient(circle,#0e7490,transparent 62%)"></div>
+  <div class="amb go" style="width:55vmin;height:55vmin;bottom:-8%;left:-12%;--d:.5s;background:radial-gradient(circle,#be123c,transparent 62%)"></div>
+  <div class="dash">
+    <div class="drow"><div class="dlogo"></div><span class="dname2">Lumiox</span><span class="dchip">Alpha 0.8</span></div>
+    <div class="dtiles">
+      <div class="tile"><small>Mitglieder</small><b>1.284</b></div>
+      <div class="tile"><small>Nachrichten</small><b>9.317</b></div>
+      <div class="tile"><small>Erkennungen</small><b>112</b></div>
+      <div class="tile"><small>Kasse</small><b>12.600</b></div>
+    </div>
+  </div>
+  <div class="slam t4 c2" style="animation-delay:.9s">INDIREKTES LICHT 🌫️</div>
+</div>
+
+<!-- T3 · 4.2–6.4s · Direktes Highlight auf Statistik -->
+<div class="scene" data-t="4.2">
+  <div class="amb go" style="width:56vmin;height:56vmin;top:14%;left:20%;--d:.1s;background:radial-gradient(circle,#818cf8,transparent 60%)"></div>
+  <div class="dash">
+    <div class="drow"><div class="dlogo"></div><span class="dname2">Lumiox</span></div>
+    <div class="dtiles" id="tiles3">
+      <div class="tile"><small>Mitglieder</small><b>1.284</b></div>
+      <div class="tile" style="outline:none"><small>Nachrichten</small><b>9.317</b></div>
+      <div class="tile"><small>Erkennungen</small><b>112</b></div>
+      <div class="tile"><small>Kasse</small><b>12.600</b></div>
+    </div>
+  </div>
+  <div class="slam t4 c1" style="animation-delay:.8s">DIREKTES HIGHLIGHT 🎯</div>
+</div>
+
+<!-- T4 · 6.4–8.6s · Slider & Toggle (Design-Editor Feel) -->
+<div class="scene" data-t="6.4">
+  <div class="amb go" style="width:64vmin;height:64vmin;top:0;left:10%;--d:.1s;background:radial-gradient(circle,#0e7490,transparent 60%)"></div>
+  <div class="dash">
+    <div class="drow"><div class="dlogo"></div><span class="dname2">🎨 Design-Editor</span></div>
+    <div style="text-align:left;font-size:1.7vmin;color:#8b93a7">Ambient-Intensität</div>
+    <div class="slid"><i class="k1"></i></div>
+    <div style="text-align:left;font-size:1.7vmin;color:#8b93a7">Glow-Radius</div>
+    <div class="slid"><i class="k2"></i></div>
+    <div style="display:flex;align-items:center;gap:2vmin;margin-top:1vmin">
+      <div class="tog"></div><span style="font-size:1.8vmin;font-weight:700">Rainbow AN</span>
+    </div>
+  </div>
+  <div class="slam t4 c3" style="animation-delay:1.4s">SOFORT. LIVE. ⚡</div>
+</div>
+
+<!-- T5 · 8.6–10.4s · DROP: Nav-Highlight -->
+<div class="scene" data-t="8.6">
+  <div class="sweep" style="--d:.15s"></div>
+  <div class="amb go" style="width:58vmin;height:58vmin;top:26%;left:22%;--d:.2s;background:radial-gradient(circle,#7c3aed,transparent 60%)"></div>
+  <div class="dash">
+    <div class="drow"><div class="dlogo"></div><span class="dname2">Lumiox</span></div>
+    <div class="dsplit">
+      <div class="tilenav">
+        <div class="navit">🏠 Übersicht</div>
+        <div class="navit akt">🧠 KI-Mod</div>
+        <div class="navit">🏛️ Steuern</div>
+        <div class="navit">⭐ Level</div>
+        <div class="navit">🎨 Design</div>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:1.2vmin;justify-content:center;text-align:left">
+        <span style="font-size:2.6vmin;font-weight:900;color:#fff">16 Seiten.</span>
+        <span style="font-size:2vmin;color:#8b93a7">Ein Klick. Alles steuerbar.</span>
+      </div>
+    </div>
+  </div>
+  <div class="slam t3 rbt">16 SEITEN</div>
+</div>
+
+<!-- T6 · 10.4–12s · Rainbow-Text Zoom -->
+<div class="scene" data-t="10.4">
+  <div class="amb go" style="width:66vmin;height:66vmin;top:10%;left:18%;--d:.1s;background:radial-gradient(circle,#be123c,transparent 60%)"></div>
+  <div class="amb go" style="width:50vmin;height:50vmin;bottom:5%;right:-8%;--d:.35s;background:radial-gradient(circle,#0e7490,transparent 62%)"></div>
+  <div class="slam t1 rbt">TEXT</div>
+  <div class="slam t1 rbt" style="animation-delay:.15s">LEISTEN</div>
+  <div class="slam t1 rbt" style="animation-delay:.3s">HINTERGRUND</div>
+</div>
+
+<!-- T7 · 12–14.2s · Toggle Moment -->
+<div class="scene" data-t="12">
+  <div class="amb go" style="width:70vmin;height:70vmin;top:15%;left:15%;--d:.15s;background:radial-gradient(circle,#312e81,transparent 60%)"></div>
+  <div class="slam t3 c1">EIN SWITCH …</div>
+  <div class="tog" style="margin:2vmin auto"></div>
+  <div class="slam t2 rbt" style="animation-delay:.8s">… GANZ NEUER LOOK</div>
+</div>
+
+<!-- T8 · 14.2–16.4s · Stats Glow -->
+<div class="scene" data-t="14.2">
+  <div class="amb go" style="width:60vmin;height:60vmin;top:6%;left:-10%;--d:.1s;background:radial-gradient(circle,#0e7490,transparent 62%)"></div>
+  <div class="amb go" style="width:60vmin;height:60vmin;bottom:-6%;right:-10%;--d:.3s;background:radial-gradient(circle,#be123c,transparent 62%)"></div>
+  <div class="dash">
+    <div class="drow"><div class="dlogo"></div><span class="dname2">Lumiox</span></div>
+    <div class="dtiles">
+      <div class="tile"><small>Uptime</small><b style="background:linear-gradient(120deg,#34d399,var(--cyan));-webkit-background-clip:text;background-clip:text">99,9%</b></div>
+      <div class="tile"><small>RAM</small><b style="background:linear-gradient(120deg,var(--warn),var(--rot));-webkit-background-clip:text;background-clip:text">64MB</b></div>
+      <div class="tile"><small>Latenz</small><b style="background:linear-gradient(120deg,var(--cyan),var(--indigo));-webkit-background-clip:text;background-clip:text">42ms</b></div>
+      <div class="tile"><small>KI-Puffer</small><b style="background:linear-gradient(120deg,var(--magenta),var(--rot));-webkit-background-clip:text;background-clip:text">0</b></div>
+    </div>
+  </div>
+  <div class="slam t4 c1" style="animation-delay:1s">LIVE-STATUS. IMMER.</div>
+</div>
+
+<!-- T9 · 16.4–18.6s · Finale Wide -->
+<div class="scene" data-t="16.4">
+  <div class="amb go" style="width:64vmin;height:64vmin;top:0;left:5%;--d:.1s;background:radial-gradient(circle,#0e7490,transparent 60%)"></div>
+  <div class="amb go" style="width:56vmin;height:56vmin;bottom:-4%;right:-8%;--d:.3s;background:radial-gradient(circle,#be123c,transparent 62%)"></div>
+  <div class="amb go" style="width:40vmin;height:40vmin;top:40%;left:32%;--d:.5s;background:radial-gradient(circle,#4c1d95,transparent 62%)"></div>
+  <div class="dash" style="opacity:.92">
+    <div class="drow"><div class="dlogo"></div><span class="dname2">Lumiox</span></div>
+    <div class="dtiles">
+      <div class="tile"><small>Mitglieder</small><b>1.284</b></div>
+      <div class="tile"><small>Nachrichten</small><b>9.317</b></div>
+      <div class="tile"><small>Erkennungen</small><b>112</b></div>
+      <div class="tile"><small>Kasse</small><b>12.600</b></div>
+    </div>
+  </div>
+  <div class="slam t2 rbt" style="animation-delay:1.1s">DEIN DASHBOARD</div>
+</div>
+
+<!-- T10 · 18.6–20.2s · CTA -->
+<div class="scene" data-t="18.6">
+  <div class="amb go" style="width:70vmin;height:70vmin;top:12%;left:15%;--d:.1s;background:radial-gradient(circle,#7c3aed,transparent 58%)"></div>
+  <div class="pulse-btn" style="display:inline-flex;padding:2.4vmin 5vmin;border-radius:99vmin;background:linear-gradient(120deg,var(--cyan),var(--indigo),var(--magenta));color:#fff;font-weight:900;font-size:5.6vmin;animation:bp .35s ease-in-out infinite alternate;box-shadow:0 0 40px rgba(232,121,249,.7)">⬇ GITHUB: LUMIOX</div>
+  <div class="slam t4 c1" style="animation-delay:.4s">@deinhandle</div>
+</div>
+
+<!-- T11 · 20.2–22s · OUTRO -->
+<div class="scene" data-t="20.2">
+  <div class="slam t1 c1">LUMIO<span class="grad">X</span></div>
+  <div class="slam t4 c2" style="animation-delay:.25s">MADE BY GINIZW</div>
+  <div class="slam t3 rbt" style="animation-delay:.5s">OPEN ALPHA 🔓</div>
+</div>
+
+</div>
+<button id="replay">▶ Nochmal</button>
+
+<script>
+// Sterne
+const cv = document.getElementById('bg'), cx = cv.getContext('2d');
+let W, H, st = [];
+function init() { const f = document.getElementById('frame');
+  W = cv.width = f.clientWidth; H = cv.height = f.clientHeight;
+  st = Array.from({ length: 190 }, () => ({ x: Math.random()*W, y: Math.random()*H, r: .5 + Math.random()*1.3, p: Math.random()*6.28, s: .4 + Math.random() })); }
+init(); addEventListener('resize', init);
+(function loop() { cx.clearRect(0,0,W,H);
+  for (const s of st) { s.p += .028*s.s; cx.globalAlpha = .16 + .45*Math.abs(Math.sin(s.p));
+    cx.fillStyle = '#cfd8ff'; cx.beginPath(); cx.arc(s.x, s.y, s.r, 0, 7); cx.fill(); }
+  cx.globalAlpha = 1; requestAnimationFrame(loop); })();
+
+// Gleiche robuste Engine wie TikTok #1
+const PLAN = [...document.querySelectorAll('.scene')]
+  .map(el => ({ el, start: parseFloat(el.dataset.t) }))
+  .sort((a, b) => a.start - b.start);
+function aktive(sek) { let a = null; for (const p of PLAN) if (sek >= p.start) a = p; return a; }
+const T0 = performance.now(), ENDE = 22;
+// Direkte Fokus-Rahmen dynamisch setzen (Szene T3: 2. Tile)
+setTimeout(() => {
+  const tiles = document.querySelectorAll('#tiles3 .tile');
+  if (tiles[1]) {
+    const f = document.createElement('div');
+    f.className = 'focus p';
+    f.style.cssText += 'inset:-6px;--d:4.9s;';
+    tiles[1].style.position = 'relative';
+    tiles[1].appendChild(f);
+  }
+}, 100);
+function rahmen(now) {
+  const sek = (now - T0) / 1000;
+  const akt = aktive(sek);
+  for (const p of PLAN) {
+    const soll = p === akt;
+    if (soll && !p.el.classList.contains('on')) p.el.classList.add('on');
+    if (!soll && p.el.classList.contains('on')) p.el.classList.remove('on');
+  }
+  if (sek < ENDE) requestAnimationFrame(rahmen);
+  else document.getElementById('replay').classList.add('show');
+}
+requestAnimationFrame(rahmen);
+document.getElementById('replay').addEventListener('click', () => location.reload());
+</script>
+</body>
+</html>

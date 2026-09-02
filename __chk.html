@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Lumiox – Visual Command Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:#141419;color:#e8e9ee;font-family:'Inter',sans-serif;overflow:hidden}
+#topbar{height:54px;display:flex;align-items:center;gap:12px;padding:0 14px;background:#1b1c22;border-bottom:1px solid #2a2b33}
+#topbar .back{color:#8b93a7;text-decoration:none;font-size:20px}
+#topbar input{background:#0f1015;border:1px solid #33343d;border-radius:8px;color:#e8e9ee;padding:8px 12px;font:600 13px Inter}
+#topbar .save{margin-left:auto;background:#e8484f;border:none;color:#fff;font-weight:800;padding:10px 22px;border-radius:8px;cursor:pointer}
+#topbar .save:hover{filter:brightness(1.15)}
+#topbar select{background:#0f1015;border:1px solid #33343d;border-radius:8px;color:#e8e9ee;padding:7px 10px;font:600 12px Inter;max-width:180px}
+#main{display:flex;height:calc(100vh - 54px)}
+/* ── Palette ── */
+#pal{width:280px;background:#1b1c22;border-right:1px solid #2a2b33;display:flex;flex-direction:column}
+#pal .tabs{display:flex;border-bottom:1px solid #2a2b33}
+#pal .tabs button{flex:1;background:none;border:none;color:#8b93a7;padding:12px;cursor:pointer;font:600 12px Inter;border-bottom:2px solid transparent}
+#pal .tabs button.akt{color:#fff;border-bottom-color:#e8484f}
+#pal .suche{margin:10px;padding:9px 12px;background:#0f1015;border:1px solid #33343d;border-radius:8px;color:#e8e9ee;font:13px Inter;width:calc(100% - 20px)}
+#palListe{flex:1;overflow-y:auto;padding:6px 10px}
+.blk{background:#23242c;border:1px solid #33343d;border-radius:10px;padding:10px 12px;margin-bottom:8px;cursor:grab;display:flex;gap:10px;align-items:flex-start}
+.blk:hover{border-color:var(--c);box-shadow:0 0 14px color-mix(in srgb,var(--c) 30%,transparent)}
+.blk .ico{width:30px;height:30px;border-radius:8px;background:var(--c);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.blk b{font-size:12.5px;display:block}
+.blk small{color:#8b93a7;font-size:11px;line-height:1.35;display:block;margin-top:2px}
+/* ── Canvas ── */
+#wrap{flex:1;position:relative;overflow:hidden;background:#141419;
+  background-image:radial-gradient(rgba(255,255,255,.06) 1px,transparent 1px);background-size:22px 22px}
+#linien{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.node{position:absolute;width:230px;background:#23242c;border:1.5px solid #3a3b45;border-radius:12px;
+  box-shadow:0 8px 30px rgba(0,0,0,.5);z-index:5;cursor:grab}
+.node.sel{border-color:var(--c);box-shadow:0 0 24px color-mix(in srgb,var(--c) 45%,transparent)}
+.node .kopf{display:flex;align-items:center;gap:9px;padding:10px 12px;cursor:grab}
+.node .kopf .ico{width:26px;height:26px;border-radius:7px;background:var(--c);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.node .kopf b{font-size:12.5px;flex:1}
+.node .kopf .del{color:#8b93a7;cursor:pointer;font-size:14px;background:none;border:none}
+.node .kopf .del:hover{color:#e8484f}
+.node .txt{padding:0 12px 10px;font-size:11px;color:#8b93a7;line-height:1.4;word-break:break-word}
+.port{position:absolute;width:16px;height:16px;border-radius:50%;background:#4aa3ff;border:2.5px solid #141419;cursor:crosshair;z-index:10}
+.port:hover{transform:scale(1.35);box-shadow:0 0 12px #4aa3ff}
+.port.dann{background:#34d399;bottom:-8px;left:30%}
+.port.sonst{background:#f43f5e;bottom:-8px;right:30%}
+.port.out{background:#4aa3ff;bottom:-8px;left:50%;transform:translateX(-50%)}
+.portlbl{position:absolute;font-size:9px;color:#8b93a7;bottom:-22px}
+#tmpLine{stroke:#4aa3ff;stroke-width:2.5;stroke-dasharray:6 4}
+.hinweis{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);background:#1b1c22;border:1px solid #2a2b33;border-radius:10px;padding:8px 18px;font-size:12px;color:#8b93a7;z-index:30}
+/* ── Feld-Modal ── */
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;display:none;align-items:center;justify-content:center}
+#modal .karte{width:420px;max-width:92vw;background:#1b1c22;border:1px solid #33343d;border-radius:14px;padding:20px;max-height:80vh;overflow-y:auto}
+#modal h3{font-size:15px;margin-bottom:14px}
+#modal label{display:block;font-size:12px;color:#8b93a7;margin:10px 0 4px}
+#modal input,#modal select,#modal textarea{width:100%;background:#0f1015;border:1px solid #33343d;border-radius:8px;color:#e8e9ee;padding:9px 12px;font:13px Inter}
+#modal textarea{resize:vertical;min-height:60px}
+#modal .btns{display:flex;gap:10px;margin-top:16px;justify-content:flex-end}
+#modal .btns button{padding:9px 18px;border-radius:8px;border:none;cursor:pointer;font:700 13px Inter}
+#modal .ok{background:linear-gradient(120deg,#22d3ee,#818cf8);color:#fff}
+#modal .zu{background:#33343d;color:#e8e9ee}
+</style>
+</head>
+<body>
+<div id="topbar">
+  <a class="back" href="/index.html" title="Zurück">←</a>
+  <input id="cName" placeholder="command-name" style="max-width:170px">
+  <input id="cDesc" placeholder="Beschreibung" style="flex:1;max-width:340px">
+  <select id="cRoles" multiple title="Rollen (leer = alle)"></select>
+  <input id="cCd" type="number" placeholder="CD s" style="max-width:80px" value="0">
+  <button class="save" id="saveBtn">💾 Save Command</button>
+</div>
+<div id="main">
+  <div id="pal">
+    <div class="tabs" id="palTabs"></div>
+    <input class="suche" id="suche" placeholder="Search">
+    <div id="palListe"></div>
+  </div>
+  <div id="wrap">
+    <svg id="linien"></svg>
+    <div class="hinweis">Doppelklick auf Block = Felder bearbeiten · Vom blauen Punkt ziehen = verbinden · Leere Fläche ziehen = bewegen · Entf = löschen</div>
+  </div>
+</div>
+<div id="modal"><div class="karte"><h3 id="mTitel"></h3><div id="mBody"></div>
+  <div class="btns"><button class="zu" id="mZu">Abbrechen</button><button class="ok" id="mOk">Übernehmen</button></div></div></div>
+
+<script>
+// ═══ KATALOG ═══
+const KATALOG = [
+  { typ:'respond', kat:'actions', ico:'💬', name:'Send Reply', c:'#4aa3ff', desc:'Antwort an den Nutzer (Text/Embed)', felder:[
+    {k:'text',l:'Text',t:'text',d:'Hallo {user}! 🎉'},{k:'title',l:'Embed-Titel (optional)',t:'text'},
+    {k:'color',l:'Farbe HEX',t:'text',d:'5865F2'},{k:'ephemeral',l:'Nur für Nutzer sichtbar',t:'bool'},{k:'embed',l:'Als Embed',t:'bool'}]},
+  { typ:'send_channel', kat:'actions', ico:'📨', name:'Send in Channel', c:'#818cf8', desc:'Nachricht in einen Kanal senden', felder:[
+    {k:'kanal',l:'Kanal-ID',t:'text'},{k:'text',l:'Text',t:'text',d:'Etwas ist passiert!'}]},
+  { typ:'dm', kat:'actions', ico:'📩', name:'Send DM', c:'#e879f9', desc:'Private Nachricht an den Nutzer', felder:[
+    {k:'text',l:'Text',t:'text',d:'Private Nachricht!'}]},
+  { typ:'add_money', kat:'actions', ico:'💰', name:'Add Money', c:'#34d399', desc:'Geld dem Nutzer gutschreiben', felder:[
+    {k:'menge',l:'Menge',t:'number',d:100},{k:'grund',l:'Grund',t:'text',d:'Block-Belohnung'}]},
+  { typ:'remove_money', kat:'actions', ico:'💸', name:'Remove Money', c:'#f43f5e', desc:'Geld abziehen', felder:[
+    {k:'menge',l:'Menge',t:'number',d:50}]},
+  { typ:'add_xp', kat:'actions', ico:'⭐', name:'Add XP', c:'#fbbf24', desc:'XP geben', felder:[
+    {k:'menge',l:'XP',t:'number',d:25}]},
+  { typ:'give_role', kat:'actions', ico:'🏷️', name:'Give Role', c:'#22d3ee', desc:'Rolle vergeben', felder:[
+    {k:'rolle',l:'Rolle',t:'rolle'}]},
+  { typ:'remove_role', kat:'actions', ico:'🏷️', name:'Remove Role', c:'#f43f5e', desc:'Rolle entfernen', felder:[
+    {k:'rolle',l:'Rolle',t:'rolle'}]},
+  { typ:'delay', kat:'actions', ico:'⏱️', name:'Wait', c:'#8b93a7', desc:'Warten (1–60 s)', felder:[
+    {k:'sekunden',l:'Sekunden',t:'number',d:3}]},
+  { typ:'react', kat:'actions', ico:'✅', name:'Quick Message', c:'#46c2cb', desc:'Kurze Status-Nachricht', felder:[
+    {k:'text',l:'Text',t:'text',d:'✅ Erledigt!'}]},
+  { typ:'poll', kat:'actions', ico:'📊', name:'Mini Poll', c:'#9b59b6', desc:'Umfrage starten', felder:[
+    {k:'frage',l:'Frage',t:'text',d:'Wie findet ihr das?'},{k:'optionen',l:'Optionen (Komma)',t:'text',d:'Ja,Nein'}]},
+  { typ:'log', kat:'actions', ico:'📜', name:'Mod-Log Eintrag', c:'#95a5a6', desc:'Ins Mod-Protokoll schreiben', felder:[
+    {k:'text',l:'Text',t:'text',d:'Block-Ereignis'}]},
+  { typ:'if_role', kat:'conditions', ico:'❓', name:'IF Has Role', c:'#fbbf24', desc:'Zweig je nach Rolle', felder:[
+    {k:'rolle',l:'Rolle',t:'rolle'},{k:'dann',l:'Dann',t:'nested'},{k:'sonst',l:'Sonst',t:'nested'}]},
+  { typ:'if_money', kat:'conditions', ico:'❓', name:'IF Money ≥', c:'#fbbf24', desc:'Zweig je nach Geld', felder:[
+    {k:'menge',l:'Mindest-Geld',t:'number',d:100},{k:'dann',l:'Dann',t:'nested'},{k:'sonst',l:'Sonst',t:'nested'}]},
+  { typ:'random', kat:'conditions', ico:'🎲', name:'RANDOM Chance', c:'#e879f9', desc:'Zufalls-Zweig', felder:[
+    {k:'chance',l:'Chance %',t:'number',d:50},{k:'dann',l:'Getroffen',t:'nested'},{k:'sonst',l:'Nicht getroffen',t:'nested'}]},
+  { typ:'abbruch', kat:'conditions', ico:'⛔', name:'Stop Flow', c:'#33343d', desc:'Kette hier beenden', felder:[]},
+];
+const START = { typ:'start', kat:'options', ico:'▶️', name:'START', c:'#34d399', desc:'Beginn des Befehls', felder:[] };
+
+let nodes = [], edges = [], nodeId = 1, selNode = null, connectVon = null;
+let panX = 0, panY = 0, panAktiv = false, panStart = null;
+let editId = null;
+const gid = () => { const s = document.getElementById('guildSelect'); return s ? s.value : (new URLSearchParams(location.search).get('g') || ''); };
+const esc = (t) => String(t ?? '').replace(/[<>&"']/g, (c) => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c]));
+const katVon = (typ) => KATALOG.find((k) => k.typ === typ) || START;
+
+// ═══ PALETTE ═══
+let palTab = 'actions', palFilter = '';
+const KAT_REIHEN = [['start','▶️ Start'],['message','💬 Message'],['server','⚙️ Server'],['roles','🏷️ Rollen'],['channels','#️⃣ Kanäle'],['threads','🧵 Threads'],['voice','🔊 Voice'],['conditions','❓ Conditions'],['variables','= Variablen'],['api','🌐 API'],['loops','🔁 Loops'],['other','✨ Other']];
+function palette() {
+  const box = document.getElementById('palListe');
+  box.innerHTML = '';
+  const tabs = document.getElementById('palTabs');
+  tabs.innerHTML = KAT_REIHEN.map(([id, label]) =>
+    '<button data-t="' + id + '" class="' + (palTab === id ? 'akt' : '') + '">' + label + '</button>').join('');
+  tabs.querySelectorAll('button').forEach((b) => b.addEventListener('click', () => { palTab = b.dataset.t; palette(); }));
+  const liste = [{ ...START, kat: 'start' }, ...KATALOG].filter((k) => k.kat === palTab)
+    .filter((k) => !palFilter || k.name.toLowerCase().includes(palFilter));
+  if (!liste.length) { box.innerHTML = '<p class="dim" style="padding:10px;font-size:12px">Keine Blöcke in dieser Kategorie.</p>'; return; }
+  for (const k of liste) {
+    const d = document.createElement('div');
+    d.className = 'blk'; d.style.setProperty('--c', k.c);
+    d.innerHTML = '<div class="ico">' + k.ico + '</div><div><b>' + esc(k.name) + '</b><small>' + esc(k.desc) + '</small></div>';
+    d.addEventListener('click', () => addNode(k));
+    box.appendChild(d);
+  }
+}
+document.querySelectorAll('#pal .tabs button').forEach((b) => b.addEventListener('click', () => {
+  document.querySelectorAll('#pal .tabs button').forEach((x) => x.classList.remove('akt'));
+  b.classList.add('akt'); palTab = b.dataset.t; palette();
+}));
+document.getElementById('suche').addEventListener('input', (e) => { palFilter = e.target.value.toLowerCase(); palette(); });
+
+// ═══ NODES ═══
+function addNode(kat, x, y) {
+  const n = { id: 'n' + (nodeId++), typ: kat.typ, x: x || (100 + nodes.length * 40), y: y || (80 + nodes.length * 30), felder: {} };
+  kat.felder.forEach((f) => { n.felder[f.k] = f.t === 'nested' ? [] : (f.d != null ? f.d : (f.t === 'bool' ? false : '')); });
+  nodes.push(n);
+  render();
+}
+function delNode(id) {
+  nodes = nodes.filter((n) => n.id !== id);
+  edges = edges.filter((e) => e.from !== id && e.to !== id);
+  render();
+}
+
+// ═══ RENDER ═══
+function render() {
+  const wrap = document.getElementById('wrap');
+  wrap.querySelectorAll('.node').forEach((n) => n.remove());
+  const svg = document.getElementById('linien');
+  svg.innerHTML = '';
+  const off = wrap.getBoundingClientRect();
+  // Linien
+  for (const e of edges) {
+    const von = nodes.find((n) => n.id === e.from), zu = nodes.find((n) => n.id === e.to);
+    if (!von || !zu) continue;
+    const p1 = portPos(von, e.fromPort);
+    const p2 = { x: zu.x - panX, y: zu.y - panY + 10 };
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    const mx = (p1.x + p2.x) / 2;
+    line.setAttribute('d', `M${p1.x},${p1.y} C${mx},${p1.y} ${mx},${p2.y} ${p2.x},${p2.y}`);
+    line.setAttribute('stroke', e.fromPort === 'dann' ? '#34d399' : e.fromPort === 'sonst' ? '#f43f5e' : '#4aa3ff');
+    line.setAttribute('stroke-width', '2.5'); line.setAttribute('fill', 'none');
+    line.style.filter = 'drop-shadow(0 0 4px currentColor)';
+    svg.appendChild(line);
+  }
+  // Nodes
+  for (const n of nodes) {
+    const k = katVon(n.typ);
+    const d = document.createElement('div');
+    d.className = 'node' + (selNode === n.id ? ' sel' : '');
+    d.style.left = (n.x - panX) + 'px'; d.style.top = (n.y - panY) + 'px';
+    d.style.setProperty('--c', k.c); d.dataset.id = n.id;
+    const ports = n.typ === 'if_role' || n.typ === 'if_money' || n.typ === 'random'
+      ? '<span class="port dann" data-port="dann" title="Dann"></span><span class="port sonst" data-port="sonst" title="Sonst"></span>'
+      : '<span class="port out" data-port="out"></span>';
+    d.innerHTML = '<div class="kopf"><div class="ico">' + k.ico + '</div><b>' + esc(k.name) + '</b>' +
+      (n.typ !== 'start' ? '<button class="del">✕</button>' : '') + '</div>' +
+      '<div class="txt">' + esc(summarize(n)) + '</div>' + ports;
+    // Drag Block
+    d.querySelector('.kopf').addEventListener('mousedown', (e) => {
+      if (e.button !== 0) return;
+      e.preventDefault();
+      const sx = e.clientX - n.x + panX, sy = e.clientY - n.y + panY;
+      const mv = (ev) => { n.x = ev.clientX - sx + panX; n.y = ev.clientY - sy + panY; render(); };
+      const up = () => { removeEventListener('mousemove', mv); removeEventListener('mouseup', up); };
+      addEventListener('mousemove', mv); addEventListener('mouseup', up);
+    });
+    d.querySelector('.del')?.addEventListener('click', (e) => { e.stopPropagation(); delNode(n.id); });
+    d.addEventListener('dblclick', () => editNode(n));
+    d.addEventListener('click', () => { selNode = n.id; render(); });
+    // Port-Verbinden (drag von Port)
+    d.querySelectorAll('.port').forEach((port) => {
+      port.addEventListener('mousedown', (e) => {
+        e.preventDefault(); e.stopPropagation();
+        connectVon = { node: n.id, port: port.dataset.port };
+        toastHint('Ziehe jetzt auf einen anderen Block und lasse los …');
+      });
+    });
+    wrap.appendChild(d);
+  }
+  // Temp-Linie bei connectVon
+  if (connectVon) {
+    const von = nodes.find((n) => n.id === connectVon.node);
+    if (von) {
+      const p1 = portPos(von, connectVon.port);
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.id = 'tmpLine'; line.setAttribute('x1', p1.x); line.setAttribute('y1', p1.y);
+      line.setAttribute('x2', p1.x + 40); line.setAttribute('y2', p1.y + 40);
+      svg.appendChild(line);
+    }
+  }
+}
+function portPos(n, port) {
+  let x = n.x - panX + 115, y = n.y - panY + 20;
+  if (port === 'dann') x = n.x - panX + 70;
+  if (port === 'sonst') x = n.x - panX + 160;
+  y += document.querySelector(`.node[data-id="${n.id}"]`)?.offsetHeight || 60;
+  return { x, y };
+}
+function summarize(n) {
+  const f = n.felder || {};
+  if (f.text) return '"' + f.text.slice(0, 60) + '"';
+  if (f.menge) return 'Menge: ' + f.menge;
+  if (f.chance) return 'Chance: ' + f.chance + '%';
+  return '–';
+}
+
+// ═══ CONNECT DRAG ═══
+document.getElementById('wrap').addEventListener('mousemove', (e) => {
+  if (connectVon) {
+    const tmp = document.getElementById('tmpLine');
+    if (tmp) { const r = e.currentTarget.getBoundingClientRect();
+      tmp.setAttribute('x2', e.clientX - r.left); tmp.setAttribute('y2', e.clientY - r.top); }
+  } else if (panAktiv) {
+    panX += e.clientX - panStart.x; panY += e.clientY - panStart.y;
+    panStart = { x: e.clientX, y: e.clientY }; render();
+  }
+});
+document.getElementById('wrap').addEventListener('mouseup', (e) => {
+  if (connectVon) {
+    const ziel = e.target.closest('.node');
+    if (ziel && ziel.dataset.id !== connectVon.node) {
+      edges = edges.filter((ed) => !(ed.from === connectVon.node && ed.fromPort === connectVon.port));
+      edges.push({ from: connectVon.node, fromPort: connectVon.port, to: ziel.dataset.id });
+    }
+    connectVon = null; render();
+  }
+  panAktiv = false;
+});
+// Leere Fläche ziehen = Pan
+document.getElementById('wrap').addEventListener('mousedown', (e) => {
+  if (e.target.id === 'wrap' || e.target.id === 'linien') {
+    panAktiv = true; panStart = { x: e.clientX, y: e.clientY };
+  }
+});
+
+// ═══ FELD-EDIT (Doppelklick) ═══
+function editNode(n) {
+  const k = katVon(n.typ);
+  document.getElementById('mTitel').textContent = k.ico + ' ' + k.name;
+  const body = document.getElementById('mBody');
+  body.innerHTML = '';
+  k.felder.forEach((f) => {
+    const cur = (n.felder || {})[f.k];
+    if (f.t === 'nested') return;
+    const l = document.createElement('label'); l.textContent = f.l; body.appendChild(l);
+    if (f.t === 'bool') {
+      const c = document.createElement('input'); c.type = 'checkbox'; c.checked = !!cur;
+      c.addEventListener('change', () => { n.felder[f.k] = c.checked; });
+      body.appendChild(c);
+    } else if (f.t === 'number') {
+      const i = document.createElement('input'); i.type = 'number'; i.value = cur ?? f.d ?? 0;
+      i.addEventListener('input', () => { n.felder[f.k] = Number(i.value); });
+      body.appendChild(i);
+    } else if (f.t === 'rolle') {
+      fetch('/api/roles').then((r) => r.json()).then((r) => {
+        const sel = document.createElement('select');
+        sel.innerHTML = '<option value="">– wählen –</option>' + r.liste.map((x) =>
+          '<option value="' + esc(x.id) + '"' + cur === x.id ? ' selected' : '' + '>' + esc(x.name) + '</option>').join('');
+        sel.addEventListener('change', () => { n.felder[f.k] = sel.value; });
+        body.appendChild(sel);
+      }).catch(() => {});
+    } else {
+      const i = document.createElement(f.t === 'text' && f.l.includes('Text') ? 'textarea' : 'input');
+      if (i.tagName === 'INPUT') i.type = 'text';
+      i.value = cur ?? f.d ?? '';
+      i.addEventListener('input', () => { n.felder[f.k] = i.value; });
+      body.appendChild(i);
+    }
+  });
+  const m = document.getElementById('modal'); m.style.display = 'flex';
+  document.getElementById('mOk').onclick = () => { m.style.display = 'none'; render(); };
+  document.getElementById('mZu').onclick = () => { m.style.display = 'none'; };
+}
+
+// ═══ LÖSCHEN per Entf ═══
+addEventListener('keydown', (e) => {
+  if (e.key === 'Delete' && selNode && document.activeElement.tagName !== 'INPUT') delNode(selNode);
+});
+
+// ═══ SAVE / LOAD ═══
+document.getElementById('saveBtn').addEventListener('click', async () => {
+  const name = document.getElementById('cName').value.toLowerCase().trim();
+  if (!name) return alert('Bitte command-name eingeben!');
+  if (!nodes.length) return alert('Mindestens ein Block auf der Leinwand!');
+  try {
+    const payload = { id: editId, name, description: document.getElementById('cDesc').value,
+      cooldown: Number(document.getElementById('cCd').value) || 0,
+      roles: [...document.getElementById('cRoles').selectedOptions].map((o) => o.value),
+      guildId: gid(), nodes, edges };
+    await api('POST', '/studio/befehle', payload);
+    alert('✅ Gespeichert & live geladen! /' + name + ' ist auf Discord verfügbar.');
+  } catch (e) { alert('Fehler: ' + e.message); }
+});
+async function api(m, u, b) {
+  const o = { method: m, headers: { 'Content-Type': 'application/json' } };
+  if (b !== undefined) o.body = JSON.stringify(b);
+  const r = await fetch('/api' + u, o);
+  const d = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(d.error || 'HTTP ' + r.status);
+  return d;
+}
+function toastHint(msg) {
+  let h = document.querySelector('.hinweis');
+  if (h) h.textContent = msg;
+}
+// Rollen laden
+fetch('/api/roles').then((r) => r.json()).then((r) => {
+  document.getElementById('cRoles').innerHTML = r.liste.map((x) =>
+    '<option value="' + esc(x.id) + '">' + esc(x.name) + '</option>').join('');
+}).catch(() => {});
+// Start-Node
+nodes.push({ id: 'n0', typ: 'start', x: 60, y: 120, felder: {} });
+nodeId = 1;
+palette(); render();
+
+// Existierenden Befehl laden: /studio.html?id=...
+(async () => {
+  const id = new URLSearchParams(location.search).get('id');
+  if (!id) return;
+  try {
+    const r = await api('GET', '/studio/befehl/' + id);
+    const c = r.befehl;
+    editId = c.id;
+    document.getElementById('cName').value = c.name;
+    document.getElementById('cDesc').value = c.description || '';
+    document.getElementById('cCd').value = c.cooldown || 0;
+    nodes = (c.nodes && c.nodes.length) ? c.nodes : [];
+    edges = c.edges || [];
+    nodeId = nodes.length + 1;
+    render();
+  } catch (_) {}
+})();
+</script>
+</body>
+</html>

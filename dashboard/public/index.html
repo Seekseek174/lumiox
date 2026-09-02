@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="de" data-mode="dark">
+<head>
+<meta charset="UTF-8">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#22d3ee">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lumiox Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/glass.css">
+</head>
+<body>
+<div class="bg-scene" id="bgScene"></div>
+<canvas id="partikel"></canvas>
+
+<div class="app">
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="sidebar panel">
+    <div class="logo">🤖 <b>Lumiox</b><span class="dim small">lokal &amp; KI</span></div>
+    <nav class="nav" id="nav"></nav>
+    <div class="sidebar-foot">
+      <div class="status-row">
+        <span class="dot" id="dotBot" title="Bot-Verbindung"></span><span class="small">Bot</span>
+        <span class="dot" id="dotAI" title="Ollama-Status" style="margin-left:auto"></span><span class="small">KI</span>
+      </div>
+      <div class="status-row small dim" id="ramZeile">RAM: –</div>
+      <button class="btn ghost small full" id="logoutBtn">⎋ Abmelden</button>
+    </div>
+  </aside>
+
+  <!-- ═══ HAUPTBEREICH ═══ -->
+  <div class="main">
+    <header class="topbar panel">
+      <select class="input" id="guildSelect" style="max-width:260px"></select>
+      <div class="row" style="gap:14px;margin-left:auto">
+        <span class="chip" id="chipPing">Ping –</span>
+        <span class="chip" id="chipUptime">Uptime –</span>
+        <span class="chip" id="chipUser">–</span>
+      </div>
+    </header>
+    <main class="page" id="page"></main>
+  </div>
+</div>
+
+<div id="toasts"></div>
+<div id="modalHost"></div>
+
+
+<script>
+window.__fehlerBox = function (msg) {
+  var b = document.getElementById('jsFehlerBox');
+  if (!b) {
+    b = document.createElement('div');
+    b.id = 'jsFehlerBox';
+    b.style.cssText = 'position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:rgba(170,25,40,.97);color:#fff;padding:14px 16px;border-radius:12px;font:600 13px/1.5 ui-monospace,monospace;max-height:45vh;overflow:auto;box-shadow:0 10px 40px rgba(0,0,0,.6);white-space:pre-wrap';
+    (document.body || document.documentElement).appendChild(b);
+  }
+  b.innerHTML += '<div style="border-top:1px solid rgba(255,255,255,.35);margin-top:8px;padding-top:8px">⚠️ ' + String(msg).replace(/</g, '&lt;') + '</div>';
+};
+window.addEventListener('error', function (e) {
+  window.__fehlerBox((e.message || 'Fehler') + '\n→ ' + (e.filename || '').split('/').pop() + ' Zeile ' + e.lineno);
+});
+window.addEventListener('unhandledrejection', function (e) {
+  window.__fehlerBox('Promise-Fehler: ' + (e.reason && e.reason.message ? e.reason.message : e.reason));
+});
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="js/api.js"></script>
+<script src="js/design.js"></script>
+<script src="js/app.js"></script>
+
+<script src="js/theme-extras.js"></script>
+<div class="madeby">made by <b>ginizw</b></div>
+<script src="js/umlage.js"></script>
+</body>
+</html>
