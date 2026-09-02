@@ -1596,6 +1596,55 @@ page.appendChild(karte('🧩 Command-Studio', '' +
     Design.editor(host);
   }
 
+  // ══════════════════ SEITE: EINSTELLUNGEN ══════════════════
+  async function seiteEinstellungen(page) {
+    const cfg = await API.get('/config');
+    const st = await API.get('/status');
+    page.appendChild(karte('🤖 Bot-Status & Token', `
+      <div class="row mb">
+        ${st.bot.connected ? '<span class="badge ok">Verbunden als ' + esc(st.bot.user) + '</span>' : '<span class="badge err">Nicht verbunden</span>'}
+        <button class="btn small" id="botRestart">↻ Neu verbinden</button>
+      </div>
+      ${feld('Token (maskiert: ' + esc(cfg.tokenMaske) + ') – neuer Token:', '<input class="input" type="password" id="setToken" placeholder="nur zum Ändern">')}
+      <button class="btn primary" id="setTokenSave">Token speichern & verbinden</button>`));
+    $('#setTokenSave', page).addEventListener('click', async () => {
+      const t = val('setToken');
+      if (!t) return toast('Bitte Token eingeben', 'err');
+      const r = await API.post('/config/token', { token: t });
+      toast(r.ok ? 'Verbindung erfolgreich ✔' : r.fehler, r.ok ? 'ok' : 'err');
+    });
+    $('#botRestart', page).addEventListener('click', async () => {
+      const r = await API.post('/bot/restart');
+      toast(r.ok ? 'Neu verbunden ✔' : r.fehler, r.ok ? 'ok' : 'err');
+    });
+    page.appendChild(karte('🦙 Ollama', `
+      <div class="grid-3">
+      ${feld('URL', textInput('ollUrl', cfg.ollama.url))}
+      ${feld('Modell', textInput('ollModel', cfg.ollama.model))}
+      ${feld('Temperature', '<input class="input" type="number" step="0.1" id="ollTemp" value="' + cfg.ollama.temperature + '">')}
+      </div>
+      <div class="row"><button class="btn primary" id="ollTest">Verbindung testen</button>
+      <span class="status-chip" id="ollChip">${st.ollama.online ? 'Online' : 'Offline'}</span></div>
+      <div id="ollErgebnis" class="mt"></div>`));
+    $('#ollTest', page).addEventListener('click', async () => {
+      const chip = $('#ollChip', page); chip.textContent = 'Teste ...'; chip.className = 'status-chip busy';
+      const r = await API.post('/ollama/test', { url: val('ollUrl'), model: val('ollModel') });
+      if (r.ok) { chip.textContent = 'Antwortet: ' + (r.antwort || '...'); chip.className = 'status-chip ok';
+        await API.post('/config/ollama', { url: val('ollUrl'), model: val('ollModel'), temperature: Number(val('ollTemp')) });
+      } else { chip.textContent = r.fehler || 'Fehler'; chip.className = 'status-chip err'; }
+    });
+    page.appendChild(karte('🖥️ Dashboard', `
+      <div class="grid-2">
+      ${feld('Port (Neustart nötig)', zahlInput('dPort', cfg.dashboard.port, 1, 65535))}
+      ${feld('Session-Dauer (Stunden)', zahlInput('dSess', cfg.dashboard.sessionHours, 1, 720))}
+      </div>
+      <button class="btn primary" id="dSave">Speichern</button>`));
+    $('#dSave', page).addEventListener('click', async () => {
+      const r = await API.post('/config/dashboard', { port: num('dPort'), sessionHours: num('dSess') });
+      toast(r.hinweis || 'Gespeichert ✔', 'ok');
+    });
+  }
+
   // ══════════════════ SEITE: BACKUP ══════════════════
   async function seiteBackup(page) {
     page.appendChild(karte('💾 Backup', `
