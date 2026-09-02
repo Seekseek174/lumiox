@@ -1645,6 +1645,13 @@ page.appendChild(karte('🧩 Command-Studio', '' +
     });
   }
 
+  // ══════════════════ SEITE: EMBED-STUDIO ══════════════════
+  async function seiteEmbedStudio(page) {
+    page.appendChild(karte('🪄 Embed-Studio', '<p class="dim small">Öffne den Embed-Editor im Vollbild-Tab – baue professionelle Discord-Embeds mit Live-Vorschau.</p>' +
+      '<div class="row"><button class="btn primary big" id="esOpen">🪄 EMBED-EDITOR ÖFFNEN</button></div>'));
+    $('#esOpen', page).addEventListener('click', () => window.open('/embed-editor.html', '_blank'));
+  }
+
   // ══════════════════ SEITE: BACKUP ══════════════════
   async function seiteBackup(page) {
     page.appendChild(karte('💾 Backup', `
