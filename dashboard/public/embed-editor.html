@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Lumiox – Embed-Editor</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:#141419;color:#e8e9ee;font-family:'Inter',sans-serif;overflow:hidden}
+#top{height:52px;display:flex;align-items:center;gap:10px;padding:0 12px;background:#1b1c22;border-bottom:1px solid var(--line,#2a2b33)}
+#top a{color:#8b93a7;text-decoration:none;font-size:18px}
+#top b{font-size:15px}
+#top .sp{flex:1}
+.tb{padding:8px 14px;border-radius:8px;border:1px solid #33343d;background:#23242c;color:#e8e9ee;font:600 12px Inter;cursor:pointer}
+.tb.rot{background:#e8484f;border-color:#e8484f;color:#fff}
+#main{display:flex;height:calc(100vh - 52px)}
+#form{width:50%;overflow-y:auto;padding:16px;border-right:1px solid #2a2b33}
+#prev{width:50%;overflow-y:auto;padding:16px;background:#0d0e13}
+label{display:block;font-size:12px;color:#8b93a7;margin:12px 0 4px;font-weight:600}
+input,select,textarea{width:100%;background:#0f1015;border:1px solid #33343d;border-radius:8px;color:#e8e9ee;padding:9px 12px;font:13px Inter}
+textarea{resize:vertical;min-height:60px}
+.karte{background:#1b1c22;border:1px solid #2a2b33;border-radius:12px;padding:14px;margin-bottom:14px}
+.karte h3{font-size:13px;margin-bottom:8px;color:#fff}
+.zahl{font-size:10px;color:#8b93a7;text-align:right;margin-top:3px}
+.btn{padding:9px 18px;border-radius:8px;border:none;cursor:pointer;font:700 13px Inter;margin-right:8px}
+.btn.p{background:linear-gradient(120deg,#22d3ee,#818cf8);color:#fff}
+.btn.r{background:#33343d;color:#e8e9ee}
+.btn.d{background:#e8484f;color:#fff}
+/* ── Discord Vorschau ── */
+.dmsg{display:flex;gap:12px}
+.dava{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#22d3ee,#e879f9);flex-shrink:0}
+.dkopf{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.dname{font-weight:700;font-size:.95rem}
+.dbot{font-size:.62rem;background:#5865F2;color:#fff;padding:1px 6px;border-radius:4px;font-weight:700}
+.dcard{position:relative;background:rgba(4,6,14,.5);border-radius:8px;padding:14px;display:flex;gap:14px;margin-top:6px}
+.dbar{position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:4px 0 0 4px;background:#5865F2}
+.dmain{flex:1;min-width:0}
+.dauthor{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:.82rem;font-weight:600}
+.dtitle{font-weight:700;font-size:1rem;margin-bottom:6px;word-break:break-word}
+.ddesc{font-size:.88rem;color:#c9cfdb;line-height:1.5;word-break:break-word;white-space:pre-wrap}
+.dfields{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+.dfield{width:calc(33.3% - 7px);min-width:120px}
+.dfield b{display:block;font-size:.8rem}
+.dfield span{font-size:.78rem;color:var(--dim)}
+.dfoot{display:flex;align-items:center;gap:6px;margin-top:12px;color:var(--dim);font-size:.75rem}
+.dthumb{width:84px;height:84px;border-radius:6px;object-fit:cover;flex-shrink:0}
+.dimage{margin-top:8px;max-width:100%;border-radius:8px}
+</style>
+</head>
+<body>
+<div id="top">
+  <a href="/index.html" title="Zurück">←</a>
+  <b>🪄 Embed-Editor</b>
+  <div class="sp"></div>
+  <button class="tb" id="expB">📤 Export JSON</button>
+  <button class="tb rot" id="saveB">💾 Speichern</button>
+</div>
+<div id="main">
+  <div id="form">
+    <div class="karte">
+      <h3>🎨 Basis</h3>
+      <label>Farbe</label>
+      <div style="display:flex;gap:10px;align-items:center">
+        <input type="color" id="esColor" value="#5865F2" style="height:38px;width:60px">
+        <input id="esColorHex" value="#5865F2" style="max-width:110px" placeholder="5865F2">
+      </div>
+      <label>Titel</label>
+      <input id="esTitle" placeholder="z. B. 🎉 Server-Update!" maxlength="306">
+      <div class="zahl" id="esTitleCnt">0 / 256</div>
+      <label>Titel-URL (optional, macht Titel klickbar)</label>
+      <input id="esUrl" placeholder="https://…">
+      <label>Beschreibung</label>
+      <textarea id="esDesc" rows="5" placeholder="Der Haupttext deines Embeds…"></textarea>
+      <div class="zahl" id="esDescCnt">0 / 4096</div>
+    </div>
+    <div class="karte">
+      <h3>👤 Autor</h3>
+      <label>Autor-Name</label>
+      <input id="esAuthorName" placeholder="z. B. Dein Server">
+      <label>Autor-Icon URL (optional)</label>
+      <input id="esAuthorIcon" placeholder="https://…png">
+      <label>Autor-Link (optional)</label>
+      <input id="esAuthorUrl" placeholder="https://…">
+    </div>
+    <div class="karte">
+      <h3>🧱 Felder <span id="esFieldCnt" style="color:#8b93a7;font-weight:400">(0 / 25)</span></h3>
+      <div id="esFelder"></div>
+      <button class="btn p" id="esFieldAdd" style="font-size:12px;padding:7px 14px">+ Feld hinzufügen</button>
+      <p style="font-size:11px;color:#8b93a7;margin-top:6px">„Inline" = bis zu 3 nebeneinander.</p>
+    </div>
+    <div class="karte">
+      <h3>🖼️ Medien</h3>
+      <label>Thumbnail (kleines Bild oben rechts)</label>
+      <input id="esThumb" placeholder="https://…png">
+      <label>Großes Bild (unten)</label>
+      <input id="esImage" placeholder="https://…png">
+    </div>
+    <div class="karte">
+      <h3>🦶 Fußzeile</h3>
+      <label>Fußzeilen-Text</label>
+      <input id="esFooter" placeholder="z. B. Lumiox · heute" maxlength="2054">
+      <div class="zahl" id="esFooterCnt">0 / 2048</div>
+      <label>Fußzeilen-Icon URL (optional)</label>
+      <input id="esFooterIcon" placeholder="https://…png">
+      <label style="display:flex;gap:8px;align-items:center;margin-top:10px">
+        <input type="checkbox" id="esTimestamp"> Zeitstempel anhängen
+      </label>
+    </div>
+    <div class="karte">
+      <h3>💾 & 📤 Speichern / Senden</h3>
+      <label>Entwurfs-Name</label>
+      <input id="esName" placeholder="z. B. Update-Ankündigung">
+      <div style="display:flex;gap:8px;margin:10px 0;flex-wrap:wrap">
+        <button class="btn p" id="esSave">💾 Entwurf speichern</button>
+        <button class="tb" id="esExport">⬇ JSON Export</button>
+        <button class="btn d" id="esReset">↺ Leeren</button>
+      </div>
+      <hr style="border:none;border-top:1px solid #2a2b33;margin:14px 0">
+      <label>Ziel-Kanal</label>
+      <select id="esKanal"><option value="">– laden … –</option></select>
+      <button class="btn p" id="esSend" style="width:100%;margin-top:10px">📤 In Kanal senden</button>
+      <p style="font-size:11px;color:#8b93a7;margin-top:8px">Geprüft werden: Discord-Limits, Bot-Rechte im Kanal.</p>
+    </div>
+    <div class="karte">
+      <h3>📚 Gespeicherte Entwürfe</h3>
+      <div id="esDrafts"><p style="color:#8b93a7;font-size:12px">Lade …</p></div>
+    </div>
+  </div>
+
+  <div id="prev">
+    <h3 style="font-size:14px;margin-bottom:12px;color:#8b93a7">👁️ Live-Vorschau (so sieht es in Discord aus)</h3>
+    <div id="esPrev"></div>
+    <div style="display:flex;justify-content:space-between;margin-top:12px">
+      <span style="font-size:11px;color:#8b93a7">Gesamt (Discord-Max 6000):</span>
+      <span style="font-size:11px;font-family:monospace;color:#8b93a7" id="esTotalCnt">0 / 6000</span>
+    </div>
+    <div style="height:8px;border-radius:6px;background:rgba(255,255,255,.12);overflow:hidden;margin-top:4px">
+      <div id="esTotalBar" style="height:100%;width:0;border-radius:6px;background:linear-gradient(90deg,#22d3ee,#e879f9);transition:width .3s"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+// ══════════════════ HELPERS ══════════════════
+const $ = (s, el) => (el || document).querySelector(s);
+const $$ = (s, el) => [...(el || document).querySelectorAll(s)];
+const gid = () => new URLSearchParams(location.search).get('g') || '';
+const esc = (t) => String(t ?? '').replace(/[<>&"']/g, (c) => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c]));
+const fmtZ = (n) => Number(n || 0).toLocaleString('de-DE');
+const fmtD = (ts) => new Date(ts).toLocaleString('de-DE', { dateStyle: 'short', timeStyle: 'short' });
+async function API(m, u, b) {
+  const o = { method: m, headers: { 'Content-Type': 'application/json' } };
+  if (b !== undefined) o.body = JSON.stringify(b);
+  const r = await fetch('/api' + u, o);
+  const d = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(d.error || 'HTTP ' + r.status);
+  return d;
+}
+function toast(msg, typ) {
+  const t = document.createElement('div');
+  t.style.cssText = 'position:fixed;bottom:20px;right:20px;z-index:500;background:rgba(24,28,46,.96);border-left:4px solid ' +
+    (typ === 'ok' ? '#34d399' : typ === 'err' ? '#f43f5e' : '#22d3ee') + ';border-radius:10px;padding:12px 18px;font:500 13px Inter;color:#e8e9ee;box-shadow:0 10px 30px rgba(0,0,0,.5)';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3200);
+}
+
+// ══════════════════ FELDER ══════════════════
+function addFieldRow(name, value, inline) {
+  const n = $$('#esFelder .frow').length;
+  if (n >= 25) return toast('Max. 25 Felder', 'err');
+  const row = document.createElement('div');
+  row.className = 'frow';
+  row.style.cssText = 'border:1px solid #2a2b33;border-radius:8px;padding:10px;margin-bottom:8px';
+  row.innerHTML = `
+    <div style="display:flex;gap:8px;margin-bottom:6px">
+      <input class="f-name" placeholder="Feld-Name" value="${esc(name || '')}" maxlength="306" style="flex:1">
+      <label style="display:flex;gap:5px;align-items:center;font-size:11px;white-space:nowrap">
+        <input type="checkbox" class="f-inline" ${inline ? 'checked' : ''}> Inline</label>
+      <button class="f-del" style="background:#e8484f;border:none;color:#fff;border-radius:6px;padding:4px 10px;cursor:pointer;font:700 11px Inter">✕</button>
+    </div>
+    <textarea class="f-value" placeholder="Feld-Wert" rows="2" maxlength="1074">${esc(value || '')}</textarea>`;
+  row.querySelector('.f-del').addEventListener('click', () => { row.remove(); render(); });
+  row.querySelector('.f-name').addEventListener('input', render);
+  row.querySelector('.f-value').addEventListener('input', render);
+  row.querySelector('.f-inline').addEventListener('change', render);
+  document.getElementById('esFelder').appendChild(row);
+}
+
+function leseFelder() {
+  return $$('#esFelder .frow').map((row) => ({
+    name: row.querySelector('.f-name').value,
+    value: row.querySelector('.f-value').value,
+    inline: row.querySelector('.f-inline').checked,
+  })).filter((f) => f.name.trim() || f.value.trim());
+}
+
+function baueEmbed() {
+  const v = (id) => { const n = document.getElementById(id); return n ? n.value.trim() : ''; };
+  const emb = {};
+  const hex = v('esColor').replace('#', '');
+  emb.color = parseInt(hex, 16) || 0x5865F2;
+  if (v('esTitle')) emb.title = v('esTitle');
+  if (v('esUrl')) emb.url = v('esUrl');
+  if (v('esDesc')) emb.description = v('esDesc');
+  const felder = leseFelder();
+  if (felder.length) emb.fields = felder.map((f) => ({ name: f.name || '\u200b', value: f.value || '\u200b', inline: f.inline }));
+  if (v('esAuthorName')) {
+    emb.author = { name: v('esAuthorName') };
+    if (v('esAuthorIcon')) emb.author.icon_url = v('esAuthorIcon');
+    if (v('esAuthorUrl')) emb.author.url = v('esAuthorUrl');
+  }
+  if (v('esFooter')) {
+    emb.footer = { text: v('esFooter') };
+    if (v('esFooterIcon')) emb.footer.icon_url = v('esFooterIcon');
+  }
+  if (v('esThumb')) emb.thumbnail = { url: v('esThumb') };
+  if (v('esImage')) emb.image = { url: v('esImage') };
+  if (document.getElementById('esTimestamp').checked) emb.timestamp = new Date().toISOString();
+  return emb;
+}
+
+function gesamtLaenge(emb) {
+  let n = 0;
+  if (emb.title) n += emb.title.length;
+  if (emb.description) n += emb.description.length;
+  if (emb.author) n += emb.author.name.length;
+  if (emb.footer) n += emb.footer.text.length;
+  if (emb.fields) for (const f of emb.fields) n += f.name.length + f.value.length;
+  return n;
+}
+
+// ══════════════════ VORSCHAU ══════════════════
+function renderPreview() {
+  const emb = baueEmbed();
+  const farbe = '#' + (emb.color || 0x5865F2).toString(16).padStart(6, '0');
+  let html = '<div style="display:flex;gap:12px">' +
+    '<div style="width:38px;height:38px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,#22d3ee,#e879f9)"></div>' +
+    '<div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">' +
+    '<b style="font-size:.95rem">Lumiox</b><span style="font-size:.62rem;background:#5865F2;color:#fff;padding:1px 6px;border-radius:4px;font-weight:700">BOT</span></div>';
+  html += '<div style="position:relative;background:rgba(4,6,14,.5);border-radius:8px;padding:14px;display:flex;gap:14px">' +
+    '<div style="position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:4px 0 0 4px;background:' + farbe + '"></div>' +
+    '<div style="flex:1;min-width:0">';
+  if (emb.author) {
+    html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">' +
+      (emb.author.icon_url ? '<img src="' + esc(emb.author.icon_url) + '" style="width:22px;height:22px;border-radius:50%" onerror="this.remove()">' : '') +
+      '<b style="font-size:.82rem">' + esc(emb.author.name) + '</b></div>';
+  }
+  if (emb.title) html += '<div style="font-weight:700;font-size:1rem;margin-bottom:6px;word-break:break-word">' +
+    (emb.url ? '<a href="' + esc(emb.url) + '" target="_blank" style="color:inherit">' + esc(emb.title) + '</a>' : esc(emb.title)) + '</div>';
+  if (emb.description) html += '<div style="font-size:.88rem;color:#c9cfdb;line-height:1.5;word-break:break-word;white-space:pre-wrap">' + esc(emb.description) + '</div>';
+  if (emb.fields && emb.fields.length) {
+    html += '<div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:10px">';
+    for (const f of emb.fields) {
+      html += '<div style="' + (f.inline ? 'width:calc(33.3% - 7px);min-width:120px' : 'width:100%') + '">' +
+        '<b style="display:block;font-size:.8rem">' + esc(f.name) + '</b>' +
+        '<span style="font-size:.78rem;color:#8b93a7">' + esc(f.value) + '</span></div>';
+    }
+    html += '</div>';
+  }
+  const fuss = [];
+  if (emb.footer) fuss.push((emb.footer.icon_url ? '<img src="' + esc(emb.footer.icon_url) + '" style="width:20px;height:20px;border-radius:50%" onerror="this.remove()">' : '') + '<span>' + esc(emb.footer.text) + '</span>');
+  if (emb.timestamp) fuss.push('<span>· ' + new Date().toLocaleString('de-DE', { dateStyle: 'medium', timeStyle: 'short' }) + '</span>');
+  if (fuss.length) html += '<div style="display:flex;align-items:center;gap:6px;margin-top:12px;color:#8b93a7;font-size:.75rem">' + fuss.join(' ') + '</div>';
+  html += '</div>';
+  if (emb.thumbnail) html += '<img src="' + esc(emb.thumbnail.url) + '" style="width:84px;height:84px;border-radius:6px;object-fit:cover;flex-shrink:0" onerror="this.style.display=\'none\'">';
+  html += '</div></div>';
+  if (emb.image) html += '<div style="margin-top:8px"><img src="' + esc(emb.image.url) + '" style="max-width:100%;border-radius:8px" onerror="this.parentElement.remove()"></div>';
+  html += '</div>';
+  document.getElementById('esPrev').innerHTML = html;
+
+  const total = gesamtLaenge(emb);
+  const tc = document.getElementById('esTotalCnt');
+  tc.textContent = total + ' / 6000';
+  tc.style.color = total > 6000 ? '#f43f5e' : '#8b93a7';
+  document.getElementById('esTotalBar').style.width = Math.min(100, (total / 6000) * 100) + '%';
+  document.getElementById('esTotalBar').style.background = total > 6000 ? '#f43f5e' : 'linear-gradient(90deg,#22d3ee,#e879f9)';
+  document.getElementById('esFieldCnt').textContent = '(' + leseFelder().length + ' / 25)';
+}
+
+// ══════════════════ ZÄHLER ══════════════════
+function zeichen(id, max) {
+  const f = document.getElementById(id);
+  const c = document.getElementById(id + 'Cnt');
+  if (!f || !c) return;
+  const n = f.value.length;
+  c.textContent = n + ' / ' + max;
+  c.style.color = n > max ? '#f43f5e' : '#8b93a7';
+}
+
+// ══════════════════ INIT ══════════════════
+// Kanäle laden
+(async () => {
+  try {
+    const r = await API('GET', '/channels?guildId=' + gid());
+    const sel = document.getElementById('esKanal');
+    sel.innerHTML = '<option value="">– Kanal wählen –</option>' +
+      r.liste.filter((k) => k.typ === 0).map((k) => '<option value="' + esc(k.id) + '">#' + esc(k.name) + '</option>').join('');
+  } catch (_) {}
+})();
+
+// Farb-Hex-Sync
+document.getElementById('esColor').addEventListener('input', (e) => {
+  document.getElementById('esColorHex').value = e.target.value.toUpperCase();
+  renderPreview();
+});
+document.getElementById('esColorHex').addEventListener('input', (e) => {
+  const hex = e.target.value.replace('#', '');
+  if (/^[0-9a-fA-F]{6}$/.test(hex)) document.getElementById('esColor').value = '#' + hex;
+  renderPreview();
+});
+
+// Live-Bindung
+['esTitle', 'esDesc', 'esAuthorName', 'esFooter', 'esUrl', 'esAuthorIcon', 'esAuthorUrl',
+ 'esThumb', 'esImage', 'esFooterIcon'].forEach((id) => {
+  document.getElementById(id).addEventListener('input', () => {
+    const map = { esTitle: 256, esDesc: 4096, esAuthorName: 256, esFooter: 2048 };
+    if (map[id]) zeichen(id, map[id]);
+    renderPreview();
+  });
+  document.getElementById(id).addEventListener('change', renderPreview);
+});
+document.getElementById('esTimestamp').addEventListener('change', renderPreview);
+document.getElementById('esFieldAdd').addEventListener('click', () => { addFieldRow(); renderPreview(); });
+
+// ══════════════════ ENTWÜRFE ══════════════════
+async function ladeDrafts() {
+  const box = document.getElementById('esDrafts');
+  try {
+    const { liste } = await API('GET', '/embeds?guildId=' + gid());
+    if (!liste.length) { box.innerHTML = '<p style="color:#8b93a7;font-size:12px">Noch keine Entwürfe.</p>'; return; }
+    box.innerHTML = '';
+    for (const d of liste) {
+      const row = document.createElement('div');
+      row.style.cssText = 'display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #2a2b33;font-size:12px';
+      row.innerHTML = '<span style="flex:1"><b>' + esc(d.name) + '</b><br><span style="color:#8b93a7">' + fmtD(d.zeit) + '</span></span>';
+      const load = document.createElement('button');
+      load.textContent = 'Laden'; load.className = 'tb';
+      load.style.cssText = 'padding:5px 10px;font-size:11px';
+      load.addEventListener('click', async () => {
+        const r = await API('GET', '/embeds/' + d.id);
+        const dt = r.data || {};
+        document.getElementById('esColor').value = '#' + (dt.color || 5865).toString(16).padStart(6, '0');
+        document.getElementById('esColorHex').value = '#' + (dt.color || 5865).toString(16).padStart(6, '0').toUpperCase();
+        document.getElementById('esTitle').value = dt.title || '';
+        document.getElementById('esDesc').value = dt.description || '';
+        document.getElementById('esUrl').value = dt.url || '';
+        document.getElementById('esAuthorName').value = (dt.author && dt.author.name) || '';
+        document.getElementById('esAuthorIcon').value = (dt.author && dt.author.icon_url) || '';
+        document.getElementById('esAuthorUrl').value = (dt.author && dt.author.url) || '';
+        document.getElementById('esFooter').value = (dt.footer && dt.footer.text) || '';
+        document.getElementById('esFooterIcon').value = (dt.footer && dt.footer.icon_url) || '';
+        document.getElementById('esThumb').value = (dt.thumbnail && dt.thumbnail.url) || '';
+        document.getElementById('esImage').value = (dt.image && dt.image.url) || '';
+        document.getElementById('esTimestamp').checked = !!dt.timestamp;
+        document.getElementById('esFelder').innerHTML = '';
+        for (const f of dt.fields || []) addFieldRow(f.name === '\u200b' ? '' : f.name, f.value === '\u200b' ? '' : f.value, f.inline);
+        renderPreview();
+        toast('Entwurf geladen ✔', 'ok');
+      });
+      const del = document.createElement('button');
+      del.textContent = '✕'; del.className = 'tb';
+      del.style.cssText = 'padding:5px 10px;font-size:11px;color:#f43f5e';
+      del.addEventListener('click', async () => {
+        if (!confirm('Entwurf löschen?')) return;
+        await API('DELETE', '/embeds/' + d.id);
+        toast('Gelöscht ✔', 'ok'); ladeDrafts();
+      });
+      row.appendChild(load); row.appendChild(del);
+      box.appendChild(row);
+    }
+  } catch (e) { box.innerHTML = '<p style="color:#8b93a7;font-size:12px">' + esc(e.message) + '</p>'; }
+}
+ladeDrafts();
+
+document.getElementById('esSave').addEventListener('click', async () => {
+  const name = document.getElementById('esName').value;
+  if (!name) return toast('Bitte erst Entwurfs-Name eingeben', 'err');
+  try {
+    await API('POST', '/embeds?guildId=' + gid(), { name, data: baueEmbed() });
+    toast('Entwurf gespeichert ✔', 'ok');
+    ladeDrafts();
+  } catch (e) { toast(e.message, 'err'); }
+});
+
+document.getElementById('esExport').addEventListener('click', () => {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(baueEmbed(), null, 2)], { type: 'application/json' }));
+  a.download = 'lumiox-embed.json'; a.click();
+  toast('JSON exportiert ✔', 'ok');
+});
+
+document.getElementById('esReset').addEventListener('click', async () => {
+  if (!confirm('Alle Eingaben leeren?')) return;
+  ['esTitle', 'esDesc', 'esUrl', 'esAuthorName', 'esAuthorIcon', 'esAuthorUrl',
+   'esFooter', 'esFooterIcon', 'esThumb', 'esImage', 'esName'].forEach((id) => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('esTimestamp').checked = false;
+  document.getElementById('esColor').value = '#5865F2';
+  document.getElementById('esColorHex').value = '#5865F2';
+  document.getElementById('esFelder').innerHTML = '';
+  renderPreview();
+});
+
+document.getElementById('esSend').addEventListener('click', async () => {
+  const kanalId = document.getElementById('esKanal').value;
+  if (!kanalId) return toast('Erst einen Ziel-Kanal wählen', 'err');
+  const emb = baueEmbed();
+  if (gesamtLaenge(emb) > 6000) return toast('Gesamt-Länge über 6000 – bitte kürzen', 'err');
+  if (!emb.title && !emb.description && !(emb.fields || []).length && !emb.image && !emb.thumbnail && !emb.author && !emb.footer) {
+    return toast('Der Embed ist leer', 'err');
+  }
+  try {
+    await API('POST', '/embeds/send?guildId=' + gid(), { channelId: kanalId, embed: emb });
+    toast('📤 Gesendet!', 'ok');
+  } catch (e) { toast(e.message, 'err'); }
+});
+
+// Beispiel-Daten beim ersten Öffnen
+document.getElementById('esTitle').value = '🎉 Server-Update 0.8.9e ist da!';
+document.getElementById('esDesc').value = 'Das Embed-Studio ist live – baue Ankündigungen, Regeln & Infos direkt im Dashboard mit echter Live-Vorschau.';
+document.getElementById('esFooter').value = 'Lumiox';
+addFieldRow('📅 Wann?', 'Heute, 20:00 Uhr', true);
+addFieldRow('🆕 Neu?', 'Embed-Editor', true);
+addFieldRow('🐛 Fixes', '12 Stück', true);
+['esTitle', 'esDesc', 'esFooter'].forEach((id) => zeichen(id, { esTitle: 256, esDesc: 4096, esFooter: 2048 }[id]));
+renderPreview();
+</script>
+</body>
+</html>
