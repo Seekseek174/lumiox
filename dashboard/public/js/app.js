@@ -1537,6 +1537,57 @@ page.appendChild(karte('🧩 Command-Studio', '' +
     $('#bsRefresh', page).addEventListener('click', () => route('boerse'));
   }
 
+  // ══════════════════ SEITE: ANALYTICS ══════════════════
+  async function seiteAnalytics(page) {
+    const d = await API.get('/analytics?guildId=' + gid);
+    const mk = (titel) => {
+      const k = karte(titel, '<div class="chart-box"><canvas></canvas></div>');
+      page.appendChild(k);
+      return $('canvas', k);
+    };
+    const opt = { responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: '#aab' } } },
+      scales: { x: { ticks: { color: '#889' }, grid: { color: 'rgba(127,127,127,.12)' } },
+                y: { ticks: { color: '#889' }, grid: { color: 'rgba(127,127,127,.12)' }, beginAtZero: true } } };
+    Chart.defaults.color = '#aab';
+    charts.push(new Chart(mk('💬 Nachrichten pro Tag (30 Tage)'), {
+      type: 'line', data: { labels: d.nachrichtenProTag.map((x) => x.tag.slice(5)),
+        datasets: [{ label: 'Nachrichten', data: d.nachrichtenProTag.map((x) => x.anzahl),
+          borderColor: '#6c8cff', backgroundColor: 'rgba(108,140,255,.15)', fill: true, tension: 0.3 }] },
+      options: opt }));
+    charts.push(new Chart(mk('🏆 Aktivste User (XP)'), {
+      type: 'bar', data: { labels: d.topUser.map((u) => u.name),
+        datasets: [{ label: 'XP', data: d.topUser.map((u) => u.xp), backgroundColor: '#b06cff' }] },
+      options: Object.assign({}, opt, { indexAxis: 'y' }) }));
+    charts.push(new Chart(mk('# Aktivste Kanäle'), {
+      type: 'bar', data: { labels: d.topKanael.map((k) => k.name),
+        datasets: [{ label: 'Nachrichten', data: d.topKanael.map((k) => k.anzahl), backgroundColor: '#6c8cff' }] },
+      options: Object.assign({}, opt, { indexAxis: 'y' }) }));
+    charts.push(new Chart(mk('🧠 KI-Erkennungen nach Kategorie'), {
+      type: 'doughnut', data: { labels: Object.keys(d.aiKategorien),
+        datasets: [{ data: Object.values(d.aiKategorien),
+          backgroundColor: ['#e74c3c', '#9b59b6', '#f39c12', '#3498db', '#2ecc71', '#95a5a6'] }] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#aab' } } } } }));
+    charts.push(new Chart(mk('🧹 Wortfilter-Treffer (Top 10)'), {
+      type: 'bar', data: { labels: d.filterTop.map((f) => f.word),
+        datasets: [{ label: 'Treffer', data: d.filterTop.map((f) => f.anzahl), backgroundColor: '#e67e22' }] },
+      options: Object.assign({}, opt, { indexAxis: 'y' }) }));
+    charts.push(new Chart(mk('🏛️ Steuereinnahmen (30 Tage)'), {
+      type: 'line', data: { labels: Object.keys(d.steuerVerlauf).map((k) => k.slice(5)),
+        datasets: [{ label: 'Einnahmen', data: Object.values(d.steuerVerlauf),
+          borderColor: '#2ecc71', backgroundColor: 'rgba(46,204,113,.15)', fill: true, tension: 0.3 }] },
+      options: opt }));
+    charts.push(new Chart(mk('💰 Geldmengen-Verlauf'), {
+      type: 'line', data: { labels: d.geldVerlauf.map((x) => x.tag.slice(5)),
+        datasets: [{ label: 'Geldmenge', data: d.geldVerlauf.map((x) => x.wert),
+          borderColor: '#f1c40f', backgroundColor: 'rgba(241,196,15,.12)', fill: true, tension: 0.3 }] },
+      options: opt }));
+    charts.push(new Chart(mk('⭐ Level-Verteilung'), {
+      type: 'bar', data: { labels: d.levelVerteilung.map((l) => 'Lv ' + l.level),
+        datasets: [{ label: 'User', data: d.levelVerteilung.map((l) => l.anzahl), backgroundColor: '#5865F2' }] },
+      options: opt }));
+  }
+
   // ══════════════════ SEITE: BACKUP ══════════════════
   async function seiteBackup(page) {
     page.appendChild(karte('💾 Backup', `
