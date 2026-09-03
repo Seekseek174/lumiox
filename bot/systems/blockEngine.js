@@ -293,6 +293,74 @@ async function blockAus(b, interaction, ctx) {
       if (ch) await ch.send('🧩 Block: ' + fill(b.text || 'Ereignis', interaction, ctx).slice(0, 500)).catch(() => {});
       return 'out';
     }
+        case 'wait_min':
+      await new Promise((r) => setTimeout(r, Math.min(3600000, Math.max(1000, (Number(b.minuten) || 1) * 60000))));
+      return 'ok';
+    case 'send_embed_webhook':
+      try { await fetch(b.url, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: fill(b.text, interaction, ctx).slice(0, 1900) }) }); } catch (_) {}
+      return 'ok';
+    case 'nickname_user':
+      await interaction.guild.me.setNickname(fill(b.name, interaction, ctx)).catch(() => {});
+      return 'ok';
+    case 'channel_info': {
+      const ch = b.kanal ? interaction.guild.channels.cache.get(b.kanal) : interaction.channel;
+      if (ch) {
+        const e = new EmbedBuilder().setTitle('ℹ️ #' + ch.name).setColor(0x22d3ee)
+          .addFields(
+            { name: 'Kanal-ID', value: ch.id, inline: true },
+            { name: 'Erstellt', value: ch.createdTimestamp ? new Date(ch.createdTimestamp).toLocaleDateString('de-DE') : '?', inline: true });
+        await interaction.reply({ embeds: [e] }).catch(() => {});
+      }
+      return 'ok';
+    }
+    case 'random_color': {
+      const farben = [0xe91e63, 0x9b59b6, 0x3498db, 0x2ecc71, 0xf39c12, 0x1abc9c];
+      const e = new EmbedBuilder().setDescription(fill(b.text, interaction, ctx))
+        .setColor(farben[Math.floor(Math.random() * farben.length)]);
+      await interaction.reply({ embeds: [e] }).catch(() => {});
+      return 'ok';
+    }
+    case 'user_avatar': {
+      const uid = b.user || interaction.user.id;
+      const u = await interaction.client.users.fetch(uid).catch(() => null);
+      if (u) {
+        const e = new EmbedBuilder().setTitle('🖼️ Avatar von ' + u.username)
+          .setImage(u.displayAvatarURL({ size: 512 })).setColor(0x9b59b6);
+        await interaction.reply({ embeds: [e] }).catch(() => {});
+      }
+      return 'ok';
+    }
+    case 'server_icon': {
+      const g = interaction.guild;
+      const e = new EmbedBuilder().setTitle('🏰 ' + g.name).setColor(0xf7931a)
+        .setThumbnail(g.iconURL({ size: 256 }))
+        .addFields(
+          { name: 'Mitglieder', value: String(g.memberCount), inline: true },
+          { name: 'Kanäle', value: String(g.channels.cache.size), inline: true },
+          { name: 'Rollen', value: String(g.roles.cache.size), inline: true });
+      await interaction.reply({ embeds: [e] }).catch(() => {});
+      return 'ok';
+    }
+    case 'time_check': {
+      const h = new Date().getHours();
+      const von = Number(b.vonStunde) || 0, bis = Number(b.bisStunde) || 23;
+      const drin = von <= bis ? (h >= von && h <= bis) : (h >= von || h <= bis);
+      const zweig = drin ? 'dann' : 'sonst';
+      if (b[zweig] && b[zweig].length) await ausfuehren(b[zweig], interaction, ctx);
+      return zweig;
+    }
+    case 'counter': {
+      const key = 'block_counter_' + (b.name || 'zaehler') + '_' + interaction.user.id;
+      const n = (db.get('counters', key) || 0) + 1;
+      db.set('counters', key, n);
+      vSet(ctx, b.name || 'zaehler', n);
+      return 'ok';
+    }
+    case 'counter_reset': {
+      db.del('counters', 'block_counter_' + (b.name || 'zaehler') + '_' + interaction.user.id);
+      return 'ok';
+    }
     case 'abbruch': return 'ABBRUCH';
     default: return 'unbekannt: ' + b.typ;
   }
