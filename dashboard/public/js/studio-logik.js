@@ -5,7 +5,8 @@ let zoom = 1, palTab = 'message', palFilter = '', editId = null;
 let undoStack = [], redoStack = [];
 const WRAP = document.getElementById('wrap');
 const SVG = document.getElementById('linien');
-const WELT = document.getElementById('welt');
+WRAP.style.userSelect = 'none';
+WRAP.style.webkitUserSelect = 'none';
 
 const gid = () => new URLSearchParams(location.search).get('g') || '';
 const esc = (t) => String(t ?? '').replace(/[<>&"']/g, (c) => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c]));
@@ -53,8 +54,13 @@ function palette() {
 document.getElementById('suche').addEventListener('input', (e) => { palFilter = e.target.value.toLowerCase(); palette(); });
 
 function addNode(kat) {
-  const n = { id: 'n' + (nid++), typ: kat.typ, x: 150 - panX + (nodes.length % 5) * 40,
-    y: 120 - panY + Math.floor(nodes.length / 5) * 40, felder: {} };
+  // Im SICHTBAREN Bereich platzieren (nicht irgendwo im Pan-Nirvana):
+  const sichtbarX = (WRAP.clientWidth / 2 - panX) / zoom - 120;
+  const sichtbarY = (WRAP.clientHeight / 2 - panY) / zoom - 35;
+  const n = { id: 'n' + (nid++), typ: kat.typ,
+    x: Math.round(sichtbarX + (nodes.length % 4) * 40),
+    y: Math.round(sichtbarY + Math.floor(nodes.length / 4) * 30),
+    felder: {} };
   kat.felder.forEach((f) => { n.felder[f.k] = f.t === 'nested' ? [] : (f.d != null ? f.d : (f.t === 'bool' ? false : '')); });
   nodes.push(n); render();
 }
@@ -99,8 +105,8 @@ function minimap() {
 function render() {
   WRAP.querySelectorAll('.node').forEach((n) => n.remove());
   SVG.innerHTML = '';
-  const tx = (x) => x - panX;
-  const ty = (y) => y - panY;
+const tx = (x) => (x * zoom) - panX;
+const ty = (y) => (y * zoom) - panY;
   for (const e of edges) {
     const von = nodes.find((n) => n.id === e.from), zu = nodes.find((n) => n.id === e.to);
     if (!von || !zu) continue;
@@ -151,7 +157,7 @@ function render() {
         connect = { node: n.id, port: port.dataset.port };
       });
     });
-    WELT.appendChild(d);
+    WRAP.appendChild(d);
   }
   minimap();
 }
@@ -164,7 +170,8 @@ addEventListener('mousemove', (e) => {
   }
   if (panAktiv && !connect) {
     panX += e.clientX - panStart.x; panY += e.clientY - panStart.y;
-    panStart = { x: e.clientX, y: e.clientY }; render();
+    panStart = { x: e.clientX, y: e.clientY };
+      render();
   }
 });
 addEventListener('mouseup', (e) => {
@@ -190,15 +197,25 @@ WRAP.addEventListener('mousedown', (e) => {
 });
 document.addEventListener('click', () => { document.getElementById('ctx').style.display = 'none'; });
 function setZoom(f) {
-  zoom = Math.max(0.25, Math.min(2.5, zoom * f));
+  zoom = Math.max(1.25, Math.min(2.5, zoom * f));
   document.getElementById('zoomAnz').textContent = Math.round(zoom * 100) + ' %';
   render();
 }
-document.getElementById('zIn').addEventListener('click', () => setZoom(1.15));
-document.getElementById('zOut').addEventListener('click', () => setZoom(1 / 1.15));
-document.getElementById('zFit').addEventListener('click', () => { panX = 0; panY = 0; zoom = 1;
-  document.getElementById('zoomAnz').textContent = '100 %'; render(); });
-WRAP.addEventListener('wheel', (e) => { e.preventDefault(); setZoom(e.deltaY > 0 ? 1/1.15 : 1.15); }, { passive: false });
+
+WRAP.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  const r = WRAP.getBoundingClientRect();
+  const mx = e.clientX - r.left, my = e.clientY - r.top;
+  // Weltpunkt unter der Maus (vorher): Bildschirm = Welt*zoom - pan
+  const wx = (mx + panX) / zoom;
+  const wy = (my + panY) / zoom;
+  const f = e.deltaY > 0 ? 1.1 : 1 / 1.1;   // Runter = REINZOOMEN
+  zoom = Math.max(1.25, Math.min(2.5, zoom * f));
+  // pan so, dass wx/wy wieder bei mx/my liegt: mx = wx*zoom - pan → pan = wx*zoom - mx
+  panX = wx * zoom - mx;
+  panY = wy * zoom - my;
+  render();
+}, { passive: false });
 
 function kontext(x, y, id) {
   const c = document.getElementById('ctx');
@@ -299,7 +316,15 @@ addEventListener('keydown', (e) => {
     if (n) { const kopie = JSON.parse(JSON.stringify(n));
       kopie.id = 'n' + (nid++); kopie.x += 50; kopie.y += 50;
       nodes.push(kopie); render(); toast('Dupliziert ✔', 'ok'); }
-  }
+  }// ═══ Pfeiltasten-Pan ═══
+if (e.key.startsWith('Arrow') && document.activeElement.tagName !== 'INPUT') {
+  const schritt = 80;
+  if (e.key === 'ArrowLeft')  { panX += schritt; render(); }
+  if (e.key === 'ArrowRight') { panX -= schritt; render(); }
+  if (e.key === 'ArrowUp')    { panY += schritt; render(); }
+  if (e.key === 'ArrowDown')  { panY -= schritt; render(); }
+  e.preventDefault();
+}
 });
 
 document.getElementById('topbar').insertAdjacentHTML('beforeend',
@@ -328,7 +353,6 @@ fetch('/api/roles').then((r) => r.json()).then((r) => {
   document.getElementById('cRoles').innerHTML = r.liste.map((x) =>
     '<option value="' + esc(x.id) + '">' + esc(x.name) + '</option>').join('');
 }).catch(() => {});
-
 (async () => {
   const id = new URLSearchParams(location.search).get('id');
   if (id) {
