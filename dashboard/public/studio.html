@@ -131,5 +131,101 @@ input,select,textarea{font-family:Inter}
 <div id="toasts"></div>
 <script src="/js/studio-katalog.js"></script>
 <script src="/js/studio-logik.js"></script>
+
+<div id="buch" style="position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:250;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)">
+  <div style="width:720px;max-width:94vw;max-height:86vh;overflow-y:auto;background:#1b1c22;border:1px solid #33343d;border-radius:14px;padding:22px;color:#e8e9ee;font:13px Inter">
+    <div style="display:flex;align-items:center;margin-bottom:14px">
+      <h3 style="font-size:16px;flex:1;margin:0">📖 Nutz-Buch – Alles was du wissen musst</h3>
+      <button onclick="document.getElementById('buch').style.display='none'" style="background:none;border:none;color:#8b93a7;font-size:18px;cursor:pointer">✕</button>
+    </div>
+
+    <b style="font-size:14px;color:#34d399">🟢 MESSAGE-BLÖCKE</b>
+    <table style="width:100%;font-size:12.5px;margin:6px 0 16px;border-collapse:collapse">
+      <tr><td style="padding:4px 8px"><b>💬 Send Reply</b></td><td style="padding:4px 8px;color:#8b93a7">Antwortet dem Nutzer. Mit {user} wird er @pingt. „Als Embed" = Karte. „Nur für Nutzer" = nur er sieht es.</td></tr>
+      <tr><td style="padding:4px 8px"><b>📨 Send in Channel</b></td><td style="padding:4px 8px;color:#8b93a7">Sendet in einen bestimmten Kanal (Kanal-ID: Entwicklermodus + Rechtsklick auf Kanal → ID kopieren).</td></tr>
+      <tr><td style="padding:4px 8px"><b>📩 Send DM</b></td><td style="padding:4px 8px;color:#8b93a7">Private Nachricht. Wenn der Nutzer DMs blockiert hat, geht sie nicht durch (Kette läuft weiter).</td></tr>
+      <tr><td style="padding:4px 8px"><b>⚡ React</b></td><td style="padding:4px 8px;color:#8b93a7">Emoji an eine Nachricht hängen („👍" oder Custom-Emoji).</td></tr>
+      <tr><td style="padding:4px 8px"><b>📌 Pin Last Message</b></td><td style="padding:4px 8px;color:#8b93a7">Pinnt die letzte Kanal-Nachricht an.</td></tr>
+      <tr><td style="padding:4px 8px"><b>📄 Create Transcript</b></td><td style="padding:4px 8px;color:#8b93a7">Transkript der letzten 50 Nachrichten in einen Ziel-Kanal.</td></tr>
+      <tr><td style="padding:4px 8px"><b>📊 Mini Poll</b></td><td style="padding:4px 8px;color:#8b93a7">Umfrage mit Emoji-Reaktionen. Optionen mit Komma: „Ja,Nein,Velleicht"</td></tr>
+      <tr><td style="padding:4px 8px"><b>🎲 Random Message</b></td><td style="padding:4px 8px;color:#8b93a7">Zufällige Nachricht. Texte mit | trennen: „Hi! | Hallo! | Servus!"</td></tr>
+      <tr><td style="padding:4px 8px"><b>🖼️ Embed with Fields</b></td><td style="padding:4px 8px;color:#8b93a7">Embed mit Feldern. Format: „Name=Wert | Name2=Wert2"</td></tr>
+      <tr><td style="padding:4px 8px"><b>🌐 Website Embed</b></td><td style="padding:4px 8px;color:#8b93a7">Embed mit klickbarem Link + Bild.</td></tr>
+    </table>
+
+    <b style="font-size:14px;color:#fbbf24">🟡 CONDITIONS-BLÖCKE (Verzweigungen)</b>
+    <p style="font-size:12px;color:#8b93a7;margin:4px 0 10px">Diese Blöcke haben <b>ZWEI Ausgänge</b>: 🟢 DANN und 🔴 SONST. Ziehe von jedem Punkt eine eigene Kette!</p>
+    <table style="width:100%;font-size:12.5px;margin:6px 0 16px;border-collapse:collapse">
+      <tr><td style="padding:4px 8px"><b>⚖️ Comparison</b></td><td style="padding:4px 8px;color:#8b93a7">Vergleicht zwei Werte (&gt; &lt; = &gt;= &lt;=). Zahlen UND Text.</td></tr>
+      <tr><td style="padding:4px 8px"><b>🎲 Chance</b></td><td style="padding:4px 8px;color:#8b93a7">Zufalls-Verzweigung (30% = 30% gehen in DANN).</td></tr>
+      <tr><td style="padding:4px 8px"><b>🔒 Permissions</b></td><td style="padding:4px 8px;color:#8b93a7">Prüft Discord-Berechtigungen (ManageMessages, KickMembers …).</td></tr>
+      <tr><td style="padding:4px 8px"><b>🏷️ Role Condition</b></td><td style="padding:4px 8px;color:#8b93a7">Prüft ob der Nutzer eine Rolle hat.</td></tr>
+      <tr><td style="padding:4px 8px"><b>#️⃣ Channel Condition</b></td><td style="padding:4px 8px;color:#8b93a7">Prüft den Kanal.</td></tr>
+      <tr><td style="padding:4px 8px"><b>👤 User Condition</b></td><td style="padding:4px 8px;color:#8b93a7">Prüft den Nutzer.</td></tr>
+      <tr><td style="padding:4px 8px"><b>💰 Money Condition</b></td><td style="padding:4px 8px;color:#8b93a7">Prüft Bargeld des Nutzers.</td></tr>
+      <tr><td style="padding:4px 8px"><b>⏳ Cooldown</b></td><td style="padding:4px 8px;color:#8b93a7">Wartezeit pro Nutzer. Bei Cooldown: Abbruch mit Meldung!</td></tr>
+    </table>
+
+    <b style="font-size:14px;color:#9b59b6">🟣 VARIABLEN-BLÖCKE</b>
+    <table style="width:100%;font-size:12.5px;margin:6px 0 16px;border-collapse:collapse">
+      <tr><td style="padding:4px 8px"><b>✏️ Set Variable</b></td><td style="padding:4px 8px;color:#8b93a7">Speichert einen Wert für später.</td></tr>
+      <tr><td style="padding:4px 8px"><b>🧮 Run Equation</b></td><td style="padding:4px 8px;color:#8b93a7">Rechnet: „2+2*3" oder „500/2".</td></tr>
+      <tr><td style="padding:4px 8px"><b>⚖️ Compare Variable</b></td><td style="padding:4px 8px;color:#8b93a7">Variable = Wert? → DANN/SONST.</td></tr>
+      <tr><td style="padding:4px 8px"><b>🗑️ Delete Variable</b></td><td style="padding:4px 8px;color:#8b93a7">Variable löschen.</td></tr>
+    </table>
+
+    <b style="font-size:14px;color:#f7931a">🟠 SERVER-BLÖCKE</b>
+    <table style="width:100%;font-size:12.5px;margin:6px 0 16px;border-collapse:collapse">
+      <tr><td style="padding:4px 8px"><b>👢 Kick Member</b></td><td style="padding:4px 8px;color:#8b93a7">User kicken (User-ID nötig).</td></tr>
+      <tr><td style="padding:4px 8px"><b>🔨 Ban Member</b></td><td style="padding:4px 8px;color:#8b93a7">User bannen.</td></tr>
+      <tr><td style="padding:4px 8px"><b>⏳ Timeout</b></td><td style="padding:4px 8px;color:#8b93a7">User stummschalten (Minuten).</td></tr>
+      <tr><td style="padding:4px 8px"><b>✏️ Nickname</b></td><td style="padding:4px 8px;color:#8b93a7">Nickname ändern.</td></tr>
+      <tr><td style="padding:4px 8px"><b>🧹 Purge</b></td><td style="padding:4px 8px;color:#8b93a7">Nachrichten löschen (1–100).</td></tr>
+      <tr><td style="padding:4px 8px"><b>🔗 Invite</b></td><td style="padding:4px 8px;color:#8b93a7">Einladungslink (Stunden).</td></tr>
+      <tr><td style="padding:4px 8px"><b>🌍 Add Role to ALL</b></td><td style="padding:4px 8px;color:#8b93a7">Rolle an ALLE Mitglieder.</td></tr>
+      <tr><td style="padding:4px 8px"><b>✨ Create Role</b></td><td style="padding:4px 8px;color:#8b93a7">Rolle erstellen.</td></tr>
+      <tr><td style="padding:4px 8px"><b>🗑️ Delete Role</b></td><td style="padding:4px 8px;color:#8b93a7">Rolle löschen.</td></tr>
+      <tr><td style="padding:4px 8px"><b>➕ Create Channel</b></td><td style="padding:4px 8px;color:#8b93a7">Kanal erstellen.</td></tr>
+      <tr><td style="padding:4px 8px"><b>🗑️ Delete Channel</b></td><td style="padding:4px 8px;color:#8b93a7">Kanal löschen.</td></tr>
+      <tr><td style="padding:4px 8px"><b>🧵 Create Thread</b></td><td style="padding:4px 8px;color:#8b93a7">Thread erstellen.</td></tr>
+      <tr><td style="padding:4px 8px"><b>🔊 Join/Leave Voice</b></td><td style="padding:4px 8px;color:#8b93a7">Voice-Kanäle betreten/verlassen.</td></tr>
+    </table>
+
+    <b style="font-size:14px;color:#4aa3ff">🔵 DATEN-BLÖCKE</b>
+    <table style="width:100%;font-size:12.5px;margin:6px 0 16px;border-collapse:collapse">
+      <tr><td style="padding:4px 8px"><b>📝 Set Variable</b></td><td style="padding:4px 8px;color:#8b93a7">Daten speichern.</td></tr>
+      <tr><td style="padding:4px 8px"><b>🧮 Run Equation</b></td><td style="padding:4px 8px;color:#8b93a7">Rechnungen: „2+2*3".</td></tr>
+      <tr><td style="padding:4px 8px"><b>🌐 Send API Request</b></td><td style="padding:4px 8px;color:#8b93a7">Externe Daten (JSON/XML/Text). JSON-Pfad erlaubt gezielte Werte („data.name").</td></tr>
+      <tr><td style="padding:4px 8px"><b>🔁 Run a Loop</b></td><td style="padding:4px 8px;color:#8b93a7">Blöcke 1–20-mal ausführen.</td></tr>
+    </table>
+
+    <b style="font-size:14px;color:#34d399">💡 PROF-BEISPIELE</b>
+    <div style="background:rgba(52,211,153,.08);border-radius:8px;padding:12px;font-size:12px;line-height:1.7;margin-bottom:16px">
+      <b>🎁 Lotterie:</b> Chance 20% → DANN: Add Money 1000 + Send Reply „Du hast gewonnen!"<br>
+      <b>🛡️ Rollen-Check:</b> IF Role (VIP) → DANN: Send „Willkommen VIP!" / SONST: nichts<br>
+      <b>🌐 Live-Daten:</b> API Request (Wetter) → Compare Variable → DANN: „Nimm einen Schirm mit! ☔"<br>
+      <b>🎭 Mini-Game:</b> RANDOM 50% → DANN: Add Money + „Gewonnen!" / SONST: „Verloren!"
+    </div>
+
+    <b style="font-size:14px;color:#22d3ee">🏷️ VARIABLEN (in Texten nutzbar)</b>
+    <table style="width:100%;font-size:12.5px;margin:8px 0;border-collapse:collapse">
+      <tr><td style="padding:5px 8px;background:rgba(255,255,255,.04)"><b>{user}</b></td><td style="padding:5px 8px">Erwähnt den Nutzer (@ping)</td></tr>
+      <tr><td style="padding:5px 8px"><b>{username}</b></td><td style="padding:5px 8px">Nur der Name</td></tr>
+      <tr><td style="padding:5px 8px;background:rgba(255,255,255,.04)"><b>{server}</b></td><td style="padding:5px 8px">Servername</td></tr>
+      <tr><td style="padding:5px 8px"><b>{member}</b></td><td style="padding:5px 8px">Mitglieder-Zahl</td></tr>
+      <tr><td style="padding:5px 8px;background:rgba(255,255,255,.04)"><b>{arg1} / {arg2}</b></td><td style="padding:5px 8px">Command-Argumente</td></tr>
+    </table>
+
+    <b style="font-size:14px;color:#8b93a7">⌨️ TASTENKOMBINATIONEN</b>
+    <table style="width:100%;font-size:12.5px;margin:8px 0;border-collapse:collapse">
+      <tr><td style="padding:5px 8px;background:rgba(255,255,255,.04)"><b>Strg + S</b></td><td style="padding:5px 8px">Speichern</td></tr>
+      <tr><td style="padding:5px 8px"><b>Strg + Z / Y</b></td><td style="padding:5px 8px">Undo / Redo</td></tr>
+      <tr><td style="padding:5px 8px;background:rgba(255,255,255,.04)"><b>Entf</b></td><td style="padding:5px 8px">Block löschen</td></tr>
+      <tr><td style="padding:5px 8px"><b>Strg + D</b></td><td style="padding:5px 8px">Block duplizieren</td></tr>
+      <tr><td style="padding:5px 8px;background:rgba(255,255,255,.04)"><b>Strg + C / V</b></td><td style="padding:5px 8px">Block kopieren / einfügen</td></tr>
+    </table>
+  </div>
+</div>
+</body>
 </body>
 </html>

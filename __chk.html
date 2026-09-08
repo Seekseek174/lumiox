@@ -3,380 +3,229 @@
 <head>
 <meta charset="UTF-8">
 <title>Lumiox – Visual Command Studio</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{height:100%;background:#141419;color:#e8e9ee;font-family:'Inter',sans-serif;overflow:hidden}
-#topbar{height:54px;display:flex;align-items:center;gap:12px;padding:0 14px;background:#1b1c22;border-bottom:1px solid #2a2b33}
-#topbar .back{color:#8b93a7;text-decoration:none;font-size:20px}
-#topbar input{background:#0f1015;border:1px solid #33343d;border-radius:8px;color:#e8e9ee;padding:8px 12px;font:600 13px Inter}
-#topbar .save{margin-left:auto;background:#e8484f;border:none;color:#fff;font-weight:800;padding:10px 22px;border-radius:8px;cursor:pointer}
-#topbar .save:hover{filter:brightness(1.15)}
-#topbar select{background:#0f1015;border:1px solid #33343d;border-radius:8px;color:#e8e9ee;padding:7px 10px;font:600 12px Inter;max-width:180px}
-#main{display:flex;height:calc(100vh - 54px)}
-/* ── Palette ── */
-#pal{width:280px;background:#1b1c22;border-right:1px solid #2a2b33;display:flex;flex-direction:column}
-#pal .tabs{display:flex;border-bottom:1px solid #2a2b33}
-#pal .tabs button{flex:1;background:none;border:none;color:#8b93a7;padding:12px;cursor:pointer;font:600 12px Inter;border-bottom:2px solid transparent}
-#pal .tabs button.akt{color:#fff;border-bottom-color:#e8484f}
-#pal .suche{margin:10px;padding:9px 12px;background:#0f1015;border:1px solid #33343d;border-radius:8px;color:#e8e9ee;font:13px Inter;width:calc(100% - 20px)}
-#palListe{flex:1;overflow-y:auto;padding:6px 10px}
-.blk{background:#23242c;border:1px solid #33343d;border-radius:10px;padding:10px 12px;margin-bottom:8px;cursor:grab;display:flex;gap:10px;align-items:flex-start}
-.blk:hover{border-color:var(--c);box-shadow:0 0 14px color-mix(in srgb,var(--c) 30%,transparent)}
-.blk .ico{width:30px;height:30px;border-radius:8px;background:var(--c);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+:root{--bg:#141419;--panel:#1b1c22;--panel2:#23242c;--line:#2a2b33;--text:#e8e9ee;--dim:#8b93a7;--red:#e8484f;--blue:#4aa3ff;--gruen:#34d399;--gelb:#fbbf24;--rot:#f43f5e;--cyan:#22d3ee;--lila:#9b59b6;--orange:#f7931a;--rosa:#e879f9;--indigo:#818cf8}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif}
+button{font-family:Inter;cursor:pointer}
+input,select,textarea{font-family:Inter}
+#topbar{height:52px;display:flex;align-items:center;gap:10px;padding:0 12px;background:var(--panel);border-bottom:1px solid var(--line)}
+.tb{display:flex;align-items:center;gap:7px;background:var(--panel2);border:1px solid var(--line);border-radius:8px;color:var(--text);padding:8px 14px;font:600 12px Inter;cursor:pointer;transition:.15s}
+.tb:hover{border-color:#55565f}
+.tb.rot{background:var(--red);border-color:var(--red);color:#fff;font-weight:800}
+.tbsep{width:1px;height:26px;background:var(--line)}
+#topbar input{background:#0f1015;border:1px solid #33343d;border-radius:8px;color:var(--text);padding:8px 12px;font:600 13px Inter}
+#cName{width:150px}#cDesc{width:200px}#cCd{width:65px}
+#cRoles{max-width:170px;height:36px}
+#saveAnz{margin-left:auto;font-size:11px;color:var(--dim)}
+#main{display:flex;height:calc(100vh - 52px)}
+#pal{width:290px;background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column}
+#pal .kopf{padding:14px 14px 8px}
+#pal h3{font-size:16px}
+#pal .sub{font-size:11.5px;color:var(--dim);margin-top:6px;line-height:1.5}
+#pal .sub .b1{color:var(--cyan);font-weight:600}#pal .sub .b2{color:var(--gruen);font-weight:600}#pal .sub .b3{color:var(--gelb);font-weight:600}
+#palTabs{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--line);padding:6px 8px;gap:4px}
+#palTabs button{background:var(--panel2);border:1px solid var(--line);color:var(--dim);padding:6px 10px;border-radius:7px;cursor:pointer;font:600 11px Inter}
+#palTabs button.akt{background:linear-gradient(120deg,var(--cyan),var(--indigo));color:#fff;border-color:transparent}
+#suche{margin:10px;padding:9px 12px;background:#0f1015;border:1px solid #33343d;border-radius:8px;color:var(--text);font:13px Inter;width:calc(100% - 20px)}
+#palListe{flex:1;overflow-y:auto;padding:4px 10px 20px}
+.katT{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);padding:10px 4px 5px}
+.blk{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:7px;cursor:grab;display:flex;gap:10px;align-items:flex-start;transition:border-color .15s,transform .15s}
+.blk:hover{border-color:var(--c);transform:translateY(-1px)}
+.blk .ico{width:32px;height:32px;border-radius:8px;background:var(--c);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
 .blk b{font-size:12.5px;display:block}
-.blk small{color:#8b93a7;font-size:11px;line-height:1.35;display:block;margin-top:2px}
-/* ── Canvas ── */
-#wrap{flex:1;position:relative;overflow:hidden;background:#141419;
-  background-image:radial-gradient(rgba(255,255,255,.06) 1px,transparent 1px);background-size:22px 22px}
-#linien{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-.node{position:absolute;width:230px;background:#23242c;border:1.5px solid #3a3b45;border-radius:12px;
-  box-shadow:0 8px 30px rgba(0,0,0,.5);z-index:5;cursor:grab}
-.node.sel{border-color:var(--c);box-shadow:0 0 24px color-mix(in srgb,var(--c) 45%,transparent)}
-.node .kopf{display:flex;align-items:center;gap:9px;padding:10px 12px;cursor:grab}
-.node .kopf .ico{width:26px;height:26px;border-radius:7px;background:var(--c);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.blk small{color:var(--dim);font-size:10.5px;line-height:1.35;display:block;margin-top:2px}
+#wrap{flex:1;position:relative;overflow:hidden;background:var(--bg);background-image:radial-gradient(rgba(255,255,255,.05) 1px,transparent 1px);background-size:24px 24px}
+#linien{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}
+.node{position:absolute;background:var(--panel2);border:2px solid #3a3b45;border-radius:12px;box-shadow:0 10px 32px rgba(0,0,0,.55);z-index:5;user-select:none}
+.node.sel{border-color:var(--c);box-shadow:0 0 26px color-mix(in srgb,var(--c) 40%,transparent)}
+.node .kopf{display:flex;align-items:center;gap:9px;padding:10px 12px;cursor:grab;border-bottom:1px solid rgba(255,255,255,.06)}
+.node .kopf .ico{width:28px;height:28px;border-radius:8px;background:var(--c);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
 .node .kopf b{font-size:12.5px;flex:1}
-.node .kopf .del{color:#8b93a7;cursor:pointer;font-size:14px;background:none;border:none}
-.node .kopf .del:hover{color:#e8484f}
-.node .txt{padding:0 12px 10px;font-size:11px;color:#8b93a7;line-height:1.4;word-break:break-word}
-.port{position:absolute;width:16px;height:16px;border-radius:50%;background:#4aa3ff;border:2.5px solid #141419;cursor:crosshair;z-index:10}
-.port:hover{transform:scale(1.35);box-shadow:0 0 12px #4aa3ff}
-.port.dann{background:#34d399;bottom:-8px;left:30%}
-.port.sonst{background:#f43f5e;bottom:-8px;right:30%}
-.port.out{background:#4aa3ff;bottom:-8px;left:50%;transform:translateX(-50%)}
-.portlbl{position:absolute;font-size:9px;color:#8b93a7;bottom:-22px}
-#tmpLine{stroke:#4aa3ff;stroke-width:2.5;stroke-dasharray:6 4}
-.hinweis{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);background:#1b1c22;border:1px solid #2a2b33;border-radius:10px;padding:8px 18px;font-size:12px;color:#8b93a7;z-index:30}
-/* ── Feld-Modal ── */
-#modal{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;display:none;align-items:center;justify-content:center}
-#modal .karte{width:420px;max-width:92vw;background:#1b1c22;border:1px solid #33343d;border-radius:14px;padding:20px;max-height:80vh;overflow-y:auto}
-#modal h3{font-size:15px;margin-bottom:14px}
-#modal label{display:block;font-size:12px;color:#8b93a7;margin:10px 0 4px}
-#modal input,#modal select,#modal textarea{width:100%;background:#0f1015;border:1px solid #33343d;border-radius:8px;color:#e8e9ee;padding:9px 12px;font:13px Inter}
-#modal textarea{resize:vertical;min-height:60px}
-#modal .btns{display:flex;gap:10px;margin-top:16px;justify-content:flex-end}
-#modal .btns button{padding:9px 18px;border-radius:8px;border:none;cursor:pointer;font:700 13px Inter}
-#modal .ok{background:linear-gradient(120deg,#22d3ee,#818cf8);color:#fff}
-#modal .zu{background:#33343d;color:#e8e9ee}
+.node .del{color:var(--dim);cursor:pointer;font-size:13px;background:none;border:none;opacity:.6}
+.node .del:hover{color:var(--red);opacity:1}
+.node .txt{padding:9px 12px 11px;font-size:11px;color:var(--dim);line-height:1.45;word-break:break-word}
+.node .txt b{color:var(--text)}
+.port{position:absolute;width:15px;height:15px;border-radius:50%;border:2.5px solid var(--bg);cursor:crosshair;z-index:10;transition:transform .12s}
+.port:hover{transform:scale(1.4)}
+.port.in{top:-8px;left:50%;transform:translateX(-50%);background:var(--blue)}
+.port.out{bottom:-8px;left:50%;transform:translateX(-50%);background:var(--blue)}
+.port.out:hover{transform:translateX(-50%) scale(1.35)}
+.port.dann{bottom:-8px;left:26%;background:var(--gruen)}
+.port.dann:hover{transform:scale(1.35)}
+.port.sonst{bottom:-8px;right:26%;background:var(--rot)}
+.port.sonst:hover{transform:scale(1.35)}
+.plab{position:absolute;font-size:9px;font-weight:800;color:var(--gruen);bottom:-24px;left:18%}
+.plab2{position:absolute;font-size:9px;font-weight:800;color:var(--rot);bottom:-24px;right:18%}
+#zoomCtl{position:absolute;bottom:16px;right:16px;z-index:30;display:flex;flex-direction:column;gap:6px}
+#zoomCtl button{width:36px;height:36px;border-radius:8px;background:var(--panel2);border:1px solid var(--line);color:var(--text);font-size:16px;cursor:pointer}
+#zoomAnz{position:absolute;bottom:16px;right:60px;z-index:30;font:700 11px ui-monospace;color:var(--dim);background:var(--panel2);padding:5px 9px;border-radius:6px}
+#minimap{position:absolute;bottom:16px;left:16px;width:150px;height:95px;background:rgba(10,12,20,.9);border:1px solid var(--line);border-radius:10px;z-index:30;overflow:hidden}
+#minimap .mn{position:absolute;background:var(--cyan);border-radius:2px;opacity:.75}
+#ctx{position:fixed;z-index:300;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:6px;display:none;min-width:180px;box-shadow:0 12px 40px rgba(0,0,0,.6)}
+#ctx button{display:block;width:100%;text-align:left;background:none;border:none;color:var(--text);padding:9px 14px;border-radius:7px;font:500 13px Inter;cursor:pointer}
+#ctx button:hover{background:rgba(255,255,255,.08)}
+#ctx hr{border:none;border-top:1px solid var(--line);margin:4px 0}
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:200;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+#modal .karte{width:440px;max-width:92vw;background:var(--panel2);border:1px solid #33343d;border-radius:14px;padding:20px;max-height:82vh;overflow-y:auto}
+#modal h3{font-size:15px;margin-bottom:4px}
+#modal .unter{font-size:11.5px;color:var(--dim);margin-bottom:12px;line-height:1.5}
+#modal label{display:block;font-size:12px;color:var(--dim);margin:12px 0 5px;font-weight:600}
+#modal input,#modal select,#modal textarea{width:100%;background:#0f1015;border:1px solid #33343d;border-radius:8px;color:var(--text);padding:9px 12px;font:13px Inter}
+#modal textarea{resize:vertical;min-height:64px}
+#modal .chk{display:flex;gap:8px;align-items:center;font-size:13px;margin:12px 0}
+#modal .chk input{width:auto}
+#modal .btns{display:flex;gap:10px;margin-top:18px;justify-content:flex-end}
+#modal .btns button{padding:9px 20px;border-radius:8px;border:none;cursor:pointer;font:700 13px Inter}
+#modal .ok{background:linear-gradient(120deg,var(--cyan),var(--indigo));color:#fff}
+#modal .zu{background:#33343d;color:var(--text)}
+#toasts{position:fixed;bottom:20px;right:20px;z-index:400;display:flex;flex-direction:column;gap:8px}
+.toast{background:rgba(24,28,46,.96);border-left:4px solid var(--cyan);border-radius:10px;padding:12px 18px;font:500 13px Inter;box-shadow:0 10px 30px rgba(0,0,0,.5);animation:tI .25s ease}
+.toast.ok{border-left-color:var(--gruen)}.toast.err{border-left-color:var(--red)}
+@keyframes tI{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:none}}
 </style>
 </head>
 <body>
 <div id="topbar">
-  <a class="back" href="/index.html" title="Zurück">←</a>
-  <input id="cName" placeholder="command-name" style="max-width:170px">
-  <input id="cDesc" placeholder="Beschreibung" style="flex:1;max-width:340px">
+  <a class="tb" href="/index.html">← Dashboard</a>
+  <button class="tb" id="buchB">📖 Nutz-Buch</button>
+  <button class="tb" id="undoB">↶ Undo</button>
+  <button class="tb" id="redoB">↷ Redo</button>
+  <div class="tbsep"></div>
+  <input id="cName" placeholder="command-name">
+  <input id="cDesc" placeholder="Beschreibung">
+  <input id="cCd" type="number" placeholder="CD" value="0">
   <select id="cRoles" multiple title="Rollen (leer = alle)"></select>
-  <input id="cCd" type="number" placeholder="CD s" style="max-width:80px" value="0">
-  <button class="save" id="saveBtn">💾 Save Command</button>
+  <span id="saveAnz">Noch nicht gespeichert</span>
+  <button class="tb rot" id="saveB">💾 Save Command</button>
 </div>
 <div id="main">
   <div id="pal">
-    <div class="tabs" id="palTabs"></div>
-    <input class="suche" id="suche" placeholder="Search">
+    <div class="kopf">
+      <h3>🧩 Blocks</h3>
+      <div class="sub">Drag die <span class="b1">Actions</span> und <span class="b3">Conditions</span> auf die Fläche und verbinde die Punkte für deinen Ablauf.</div>
+    </div>
+    <div id="palTabs"></div>
+    <input id="suche" placeholder="🔍 Search blocks …">
     <div id="palListe"></div>
   </div>
   <div id="wrap">
     <svg id="linien"></svg>
-    <div class="hinweis">Doppelklick auf Block = Felder bearbeiten · Vom blauen Punkt ziehen = verbinden · Leere Fläche ziehen = bewegen · Entf = löschen</div>
+    <div id="minimap"></div>
+    <div id="zoomCtl">
+      <button id="zIn">+</button><button id="zOut">−</button><button id="zFit">⛶</button>
+    </div>
+    <div id="zoomAnz">100 %</div>
   </div>
 </div>
-<div id="modal"><div class="karte"><h3 id="mTitel"></h3><div id="mBody"></div>
-  <div class="btns"><button class="zu" id="mZu">Abbrechen</button><button class="ok" id="mOk">Übernehmen</button></div></div></div>
+<div id="ctx"></div>
+<div id="modal">
+  <div class="karte">
+    <h3 id="mTitel"></h3>
+    <div class="unter" id="mUnter"></div>
+    <div id="mBody"></div>
+    <div class="btns"><button class="zu" id="mZu">Abbrechen</button><button class="ok" id="mOk">Übernehmen</button></div>
+  </div>
+</div>
+<div id="toasts"></div>
+<script src="/js/studio-katalog.js"></script>
+<script src="/js/studio-logik.js"></script>
 
-<script>
-// ═══ KATALOG ═══
-const KATALOG = [
-  { typ:'respond', kat:'actions', ico:'💬', name:'Send Reply', c:'#4aa3ff', desc:'Antwort an den Nutzer (Text/Embed)', felder:[
-    {k:'text',l:'Text',t:'text',d:'Hallo {user}! 🎉'},{k:'title',l:'Embed-Titel (optional)',t:'text'},
-    {k:'color',l:'Farbe HEX',t:'text',d:'5865F2'},{k:'ephemeral',l:'Nur für Nutzer sichtbar',t:'bool'},{k:'embed',l:'Als Embed',t:'bool'}]},
-  { typ:'send_channel', kat:'actions', ico:'📨', name:'Send in Channel', c:'#818cf8', desc:'Nachricht in einen Kanal senden', felder:[
-    {k:'kanal',l:'Kanal-ID',t:'text'},{k:'text',l:'Text',t:'text',d:'Etwas ist passiert!'}]},
-  { typ:'dm', kat:'actions', ico:'📩', name:'Send DM', c:'#e879f9', desc:'Private Nachricht an den Nutzer', felder:[
-    {k:'text',l:'Text',t:'text',d:'Private Nachricht!'}]},
-  { typ:'add_money', kat:'actions', ico:'💰', name:'Add Money', c:'#34d399', desc:'Geld dem Nutzer gutschreiben', felder:[
-    {k:'menge',l:'Menge',t:'number',d:100},{k:'grund',l:'Grund',t:'text',d:'Block-Belohnung'}]},
-  { typ:'remove_money', kat:'actions', ico:'💸', name:'Remove Money', c:'#f43f5e', desc:'Geld abziehen', felder:[
-    {k:'menge',l:'Menge',t:'number',d:50}]},
-  { typ:'add_xp', kat:'actions', ico:'⭐', name:'Add XP', c:'#fbbf24', desc:'XP geben', felder:[
-    {k:'menge',l:'XP',t:'number',d:25}]},
-  { typ:'give_role', kat:'actions', ico:'🏷️', name:'Give Role', c:'#22d3ee', desc:'Rolle vergeben', felder:[
-    {k:'rolle',l:'Rolle',t:'rolle'}]},
-  { typ:'remove_role', kat:'actions', ico:'🏷️', name:'Remove Role', c:'#f43f5e', desc:'Rolle entfernen', felder:[
-    {k:'rolle',l:'Rolle',t:'rolle'}]},
-  { typ:'delay', kat:'actions', ico:'⏱️', name:'Wait', c:'#8b93a7', desc:'Warten (1–60 s)', felder:[
-    {k:'sekunden',l:'Sekunden',t:'number',d:3}]},
-  { typ:'react', kat:'actions', ico:'✅', name:'Quick Message', c:'#46c2cb', desc:'Kurze Status-Nachricht', felder:[
-    {k:'text',l:'Text',t:'text',d:'✅ Erledigt!'}]},
-  { typ:'poll', kat:'actions', ico:'📊', name:'Mini Poll', c:'#9b59b6', desc:'Umfrage starten', felder:[
-    {k:'frage',l:'Frage',t:'text',d:'Wie findet ihr das?'},{k:'optionen',l:'Optionen (Komma)',t:'text',d:'Ja,Nein'}]},
-  { typ:'log', kat:'actions', ico:'📜', name:'Mod-Log Eintrag', c:'#95a5a6', desc:'Ins Mod-Protokoll schreiben', felder:[
-    {k:'text',l:'Text',t:'text',d:'Block-Ereignis'}]},
-  { typ:'if_role', kat:'conditions', ico:'❓', name:'IF Has Role', c:'#fbbf24', desc:'Zweig je nach Rolle', felder:[
-    {k:'rolle',l:'Rolle',t:'rolle'},{k:'dann',l:'Dann',t:'nested'},{k:'sonst',l:'Sonst',t:'nested'}]},
-  { typ:'if_money', kat:'conditions', ico:'❓', name:'IF Money ≥', c:'#fbbf24', desc:'Zweig je nach Geld', felder:[
-    {k:'menge',l:'Mindest-Geld',t:'number',d:100},{k:'dann',l:'Dann',t:'nested'},{k:'sonst',l:'Sonst',t:'nested'}]},
-  { typ:'random', kat:'conditions', ico:'🎲', name:'RANDOM Chance', c:'#e879f9', desc:'Zufalls-Zweig', felder:[
-    {k:'chance',l:'Chance %',t:'number',d:50},{k:'dann',l:'Getroffen',t:'nested'},{k:'sonst',l:'Nicht getroffen',t:'nested'}]},
-  { typ:'abbruch', kat:'conditions', ico:'⛔', name:'Stop Flow', c:'#33343d', desc:'Kette hier beenden', felder:[]},
-];
-const START = { typ:'start', kat:'options', ico:'▶️', name:'START', c:'#34d399', desc:'Beginn des Befehls', felder:[] };
+<div id="buch" style="position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:250;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)">
+  <div style="width:720px;max-width:94vw;max-height:86vh;overflow-y:auto;background:#1b1c22;border:1px solid #33343d;border-radius:14px;padding:22px;color:#e8e9ee;font:13px Inter">
+    <div style="display:flex;align-items:center;margin-bottom:14px">
+      <h3 style="font-size:16px;flex:1;margin:0">📖 Nutz-Buch – Alles was du wissen musst</h3>
+      <button onclick="document.getElementById('buch').style.display='none'" style="background:none;border:none;color:#8b93a7;font-size:18px;cursor:pointer">✕</button>
+    </div>
 
-let nodes = [], edges = [], nodeId = 1, selNode = null, connectVon = null;
-let panX = 0, panY = 0, panAktiv = false, panStart = null;
-let editId = null;
-const gid = () => { const s = document.getElementById('guildSelect'); return s ? s.value : (new URLSearchParams(location.search).get('g') || ''); };
-const esc = (t) => String(t ?? '').replace(/[<>&"']/g, (c) => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c]));
-const katVon = (typ) => KATALOG.find((k) => k.typ === typ) || START;
+    <b style="font-size:14px;color:#34d399">🟢 MESSAGE-BLÖCKE</b>
+    <table style="width:100%;font-size:12.5px;margin:6px 0 16px;border-collapse:collapse">
+      <tr><td style="padding:4px 8px"><b>💬 Send Reply</b></td><td style="padding:4px 8px;color:#8b93a7">Antwortet dem Nutzer. Mit {user} wird er @pingt. „Als Embed" = Karte. „Nur für Nutzer" = nur er sieht es.</td></tr>
+      <tr><td style="padding:4px 8px"><b>📨 Send in Channel</b></td><td style="padding:4px 8px;color:#8b93a7">Sendet in einen bestimmten Kanal (Kanal-ID: Entwicklermodus + Rechtsklick auf Kanal → ID kopieren).</td></tr>
+      <tr><td style="padding:4px 8px"><b>📩 Send DM</b></td><td style="padding:4px 8px;color:#8b93a7">Private Nachricht. Wenn der Nutzer DMs blockiert hat, geht sie nicht durch (Kette läuft weiter).</td></tr>
+      <tr><td style="padding:4px 8px"><b>⚡ React</b></td><td style="padding:4px 8px;color:#8b93a7">Emoji an eine Nachricht hängen („👍" oder Custom-Emoji).</td></tr>
+      <tr><td style="padding:4px 8px"><b>📌 Pin Last Message</b></td><td style="padding:4px 8px;color:#8b93a7">Pinnt die letzte Kanal-Nachricht an.</td></tr>
+      <tr><td style="padding:4px 8px"><b>📄 Create Transcript</b></td><td style="padding:4px 8px;color:#8b93a7">Transkript der letzten 50 Nachrichten in einen Ziel-Kanal.</td></tr>
+      <tr><td style="padding:4px 8px"><b>📊 Mini Poll</b></td><td style="padding:4px 8px;color:#8b93a7">Umfrage mit Emoji-Reaktionen. Optionen mit Komma: „Ja,Nein,Velleicht"</td></tr>
+      <tr><td style="padding:4px 8px"><b>🎲 Random Message</b></td><td style="padding:4px 8px;color:#8b93a7">Zufällige Nachricht. Texte mit | trennen: „Hi! | Hallo! | Servus!"</td></tr>
+      <tr><td style="padding:4px 8px"><b>🖼️ Embed with Fields</b></td><td style="padding:4px 8px;color:#8b93a7">Embed mit Feldern. Format: „Name=Wert | Name2=Wert2"</td></tr>
+      <tr><td style="padding:4px 8px"><b>🌐 Website Embed</b></td><td style="padding:4px 8px;color:#8b93a7">Embed mit klickbarem Link + Bild.</td></tr>
+    </table>
 
-// ═══ PALETTE ═══
-let palTab = 'actions', palFilter = '';
-const KAT_REIHEN = [['start','▶️ Start'],['message','💬 Message'],['server','⚙️ Server'],['roles','🏷️ Rollen'],['channels','#️⃣ Kanäle'],['threads','🧵 Threads'],['voice','🔊 Voice'],['conditions','❓ Conditions'],['variables','= Variablen'],['api','🌐 API'],['loops','🔁 Loops'],['other','✨ Other']];
-function palette() {
-  const box = document.getElementById('palListe');
-  box.innerHTML = '';
-  const tabs = document.getElementById('palTabs');
-  tabs.innerHTML = KAT_REIHEN.map(([id, label]) =>
-    '<button data-t="' + id + '" class="' + (palTab === id ? 'akt' : '') + '">' + label + '</button>').join('');
-  tabs.querySelectorAll('button').forEach((b) => b.addEventListener('click', () => { palTab = b.dataset.t; palette(); }));
-  const liste = [{ ...START, kat: 'start' }, ...KATALOG].filter((k) => k.kat === palTab)
-    .filter((k) => !palFilter || k.name.toLowerCase().includes(palFilter));
-  if (!liste.length) { box.innerHTML = '<p class="dim" style="padding:10px;font-size:12px">Keine Blöcke in dieser Kategorie.</p>'; return; }
-  for (const k of liste) {
-    const d = document.createElement('div');
-    d.className = 'blk'; d.style.setProperty('--c', k.c);
-    d.innerHTML = '<div class="ico">' + k.ico + '</div><div><b>' + esc(k.name) + '</b><small>' + esc(k.desc) + '</small></div>';
-    d.addEventListener('click', () => addNode(k));
-    box.appendChild(d);
-  }
-}
-document.querySelectorAll('#pal .tabs button').forEach((b) => b.addEventListener('click', () => {
-  document.querySelectorAll('#pal .tabs button').forEach((x) => x.classList.remove('akt'));
-  b.classList.add('akt'); palTab = b.dataset.t; palette();
-}));
-document.getElementById('suche').addEventListener('input', (e) => { palFilter = e.target.value.toLowerCase(); palette(); });
+    <b style="font-size:14px;color:#fbbf24">🟡 CONDITIONS-BLÖCKE (Verzweigungen)</b>
+    <p style="font-size:12px;color:#8b93a7;margin:4px 0 10px">Diese Blöcke haben <b>ZWEI Ausgänge</b>: 🟢 DANN und 🔴 SONST. Ziehe von jedem Punkt eine eigene Kette!</p>
+    <table style="width:100%;font-size:12.5px;margin:6px 0 16px;border-collapse:collapse">
+      <tr><td style="padding:4px 8px"><b>⚖️ Comparison</b></td><td style="padding:4px 8px;color:#8b93a7">Vergleicht zwei Werte (&gt; &lt; = &gt;= &lt;=). Zahlen UND Text.</td></tr>
+      <tr><td style="padding:4px 8px"><b>🎲 Chance</b></td><td style="padding:4px 8px;color:#8b93a7">Zufalls-Verzweigung (30% = 30% gehen in DANN).</td></tr>
+      <tr><td style="padding:4px 8px"><b>🔒 Permissions</b></td><td style="padding:4px 8px;color:#8b93a7">Prüft Discord-Berechtigungen (ManageMessages, KickMembers …).</td></tr>
+      <tr><td style="padding:4px 8px"><b>🏷️ Role Condition</b></td><td style="padding:4px 8px;color:#8b93a7">Prüft ob der Nutzer eine Rolle hat.</td></tr>
+      <tr><td style="padding:4px 8px"><b>#️⃣ Channel Condition</b></td><td style="padding:4px 8px;color:#8b93a7">Prüft den Kanal.</td></tr>
+      <tr><td style="padding:4px 8px"><b>👤 User Condition</b></td><td style="padding:4px 8px;color:#8b93a7">Prüft den Nutzer.</td></tr>
+      <tr><td style="padding:4px 8px"><b>💰 Money Condition</b></td><td style="padding:4px 8px;color:#8b93a7">Prüft Bargeld des Nutzers.</td></tr>
+      <tr><td style="padding:4px 8px"><b>⏳ Cooldown</b></td><td style="padding:4px 8px;color:#8b93a7">Wartezeit pro Nutzer. Bei Cooldown: Abbruch mit Meldung!</td></tr>
+    </table>
 
-// ═══ NODES ═══
-function addNode(kat, x, y) {
-  const n = { id: 'n' + (nodeId++), typ: kat.typ, x: x || (100 + nodes.length * 40), y: y || (80 + nodes.length * 30), felder: {} };
-  kat.felder.forEach((f) => { n.felder[f.k] = f.t === 'nested' ? [] : (f.d != null ? f.d : (f.t === 'bool' ? false : '')); });
-  nodes.push(n);
-  render();
-}
-function delNode(id) {
-  nodes = nodes.filter((n) => n.id !== id);
-  edges = edges.filter((e) => e.from !== id && e.to !== id);
-  render();
-}
+    <b style="font-size:14px;color:#9b59b6">🟣 VARIABLEN-BLÖCKE</b>
+    <table style="width:100%;font-size:12.5px;margin:6px 0 16px;border-collapse:collapse">
+      <tr><td style="padding:4px 8px"><b>✏️ Set Variable</b></td><td style="padding:4px 8px;color:#8b93a7">Speichert einen Wert für später.</td></tr>
+      <tr><td style="padding:4px 8px"><b>🧮 Run Equation</b></td><td style="padding:4px 8px;color:#8b93a7">Rechnet: „2+2*3" oder „500/2".</td></tr>
+      <tr><td style="padding:4px 8px"><b>⚖️ Compare Variable</b></td><td style="padding:4px 8px;color:#8b93a7">Variable = Wert? → DANN/SONST.</td></tr>
+      <tr><td style="padding:4px 8px"><b>🗑️ Delete Variable</b></td><td style="padding:4px 8px;color:#8b93a7">Variable löschen.</td></tr>
+    </table>
 
-// ═══ RENDER ═══
-function render() {
-  const wrap = document.getElementById('wrap');
-  wrap.querySelectorAll('.node').forEach((n) => n.remove());
-  const svg = document.getElementById('linien');
-  svg.innerHTML = '';
-  const off = wrap.getBoundingClientRect();
-  // Linien
-  for (const e of edges) {
-    const von = nodes.find((n) => n.id === e.from), zu = nodes.find((n) => n.id === e.to);
-    if (!von || !zu) continue;
-    const p1 = portPos(von, e.fromPort);
-    const p2 = { x: zu.x - panX, y: zu.y - panY + 10 };
-    const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    const mx = (p1.x + p2.x) / 2;
-    line.setAttribute('d', `M${p1.x},${p1.y} C${mx},${p1.y} ${mx},${p2.y} ${p2.x},${p2.y}`);
-    line.setAttribute('stroke', e.fromPort === 'dann' ? '#34d399' : e.fromPort === 'sonst' ? '#f43f5e' : '#4aa3ff');
-    line.setAttribute('stroke-width', '2.5'); line.setAttribute('fill', 'none');
-    line.style.filter = 'drop-shadow(0 0 4px currentColor)';
-    svg.appendChild(line);
-  }
-  // Nodes
-  for (const n of nodes) {
-    const k = katVon(n.typ);
-    const d = document.createElement('div');
-    d.className = 'node' + (selNode === n.id ? ' sel' : '');
-    d.style.left = (n.x - panX) + 'px'; d.style.top = (n.y - panY) + 'px';
-    d.style.setProperty('--c', k.c); d.dataset.id = n.id;
-    const ports = n.typ === 'if_role' || n.typ === 'if_money' || n.typ === 'random'
-      ? '<span class="port dann" data-port="dann" title="Dann"></span><span class="port sonst" data-port="sonst" title="Sonst"></span>'
-      : '<span class="port out" data-port="out"></span>';
-    d.innerHTML = '<div class="kopf"><div class="ico">' + k.ico + '</div><b>' + esc(k.name) + '</b>' +
-      (n.typ !== 'start' ? '<button class="del">✕</button>' : '') + '</div>' +
-      '<div class="txt">' + esc(summarize(n)) + '</div>' + ports;
-    // Drag Block
-    d.querySelector('.kopf').addEventListener('mousedown', (e) => {
-      if (e.button !== 0) return;
-      e.preventDefault();
-      const sx = e.clientX - n.x + panX, sy = e.clientY - n.y + panY;
-      const mv = (ev) => { n.x = ev.clientX - sx + panX; n.y = ev.clientY - sy + panY; render(); };
-      const up = () => { removeEventListener('mousemove', mv); removeEventListener('mouseup', up); };
-      addEventListener('mousemove', mv); addEventListener('mouseup', up);
-    });
-    d.querySelector('.del')?.addEventListener('click', (e) => { e.stopPropagation(); delNode(n.id); });
-    d.addEventListener('dblclick', () => editNode(n));
-    d.addEventListener('click', () => { selNode = n.id; render(); });
-    // Port-Verbinden (drag von Port)
-    d.querySelectorAll('.port').forEach((port) => {
-      port.addEventListener('mousedown', (e) => {
-        e.preventDefault(); e.stopPropagation();
-        connectVon = { node: n.id, port: port.dataset.port };
-        toastHint('Ziehe jetzt auf einen anderen Block und lasse los …');
-      });
-    });
-    wrap.appendChild(d);
-  }
-  // Temp-Linie bei connectVon
-  if (connectVon) {
-    const von = nodes.find((n) => n.id === connectVon.node);
-    if (von) {
-      const p1 = portPos(von, connectVon.port);
-      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-      line.id = 'tmpLine'; line.setAttribute('x1', p1.x); line.setAttribute('y1', p1.y);
-      line.setAttribute('x2', p1.x + 40); line.setAttribute('y2', p1.y + 40);
-      svg.appendChild(line);
-    }
-  }
-}
-function portPos(n, port) {
-  let x = n.x - panX + 115, y = n.y - panY + 20;
-  if (port === 'dann') x = n.x - panX + 70;
-  if (port === 'sonst') x = n.x - panX + 160;
-  y += document.querySelector(`.node[data-id="${n.id}"]`)?.offsetHeight || 60;
-  return { x, y };
-}
-function summarize(n) {
-  const f = n.felder || {};
-  if (f.text) return '"' + f.text.slice(0, 60) + '"';
-  if (f.menge) return 'Menge: ' + f.menge;
-  if (f.chance) return 'Chance: ' + f.chance + '%';
-  return '–';
-}
+    <b style="font-size:14px;color:#f7931a">🟠 SERVER-BLÖCKE</b>
+    <table style="width:100%;font-size:12.5px;margin:6px 0 16px;border-collapse:collapse">
+      <tr><td style="padding:4px 8px"><b>👢 Kick Member</b></td><td style="padding:4px 8px;color:#8b93a7">User kicken (User-ID nötig).</td></tr>
+      <tr><td style="padding:4px 8px"><b>🔨 Ban Member</b></td><td style="padding:4px 8px;color:#8b93a7">User bannen.</td></tr>
+      <tr><td style="padding:4px 8px"><b>⏳ Timeout</b></td><td style="padding:4px 8px;color:#8b93a7">User stummschalten (Minuten).</td></tr>
+      <tr><td style="padding:4px 8px"><b>✏️ Nickname</b></td><td style="padding:4px 8px;color:#8b93a7">Nickname ändern.</td></tr>
+      <tr><td style="padding:4px 8px"><b>🧹 Purge</b></td><td style="padding:4px 8px;color:#8b93a7">Nachrichten löschen (1–100).</td></tr>
+      <tr><td style="padding:4px 8px"><b>🔗 Invite</b></td><td style="padding:4px 8px;color:#8b93a7">Einladungslink (Stunden).</td></tr>
+      <tr><td style="padding:4px 8px"><b>🌍 Add Role to ALL</b></td><td style="padding:4px 8px;color:#8b93a7">Rolle an ALLE Mitglieder.</td></tr>
+      <tr><td style="padding:4px 8px"><b>✨ Create Role</b></td><td style="padding:4px 8px;color:#8b93a7">Rolle erstellen.</td></tr>
+      <tr><td style="padding:4px 8px"><b>🗑️ Delete Role</b></td><td style="padding:4px 8px;color:#8b93a7">Rolle löschen.</td></tr>
+      <tr><td style="padding:4px 8px"><b>➕ Create Channel</b></td><td style="padding:4px 8px;color:#8b93a7">Kanal erstellen.</td></tr>
+      <tr><td style="padding:4px 8px"><b>🗑️ Delete Channel</b></td><td style="padding:4px 8px;color:#8b93a7">Kanal löschen.</td></tr>
+      <tr><td style="padding:4px 8px"><b>🧵 Create Thread</b></td><td style="padding:4px 8px;color:#8b93a7">Thread erstellen.</td></tr>
+      <tr><td style="padding:4px 8px"><b>🔊 Join/Leave Voice</b></td><td style="padding:4px 8px;color:#8b93a7">Voice-Kanäle betreten/verlassen.</td></tr>
+    </table>
 
-// ═══ CONNECT DRAG ═══
-document.getElementById('wrap').addEventListener('mousemove', (e) => {
-  if (connectVon) {
-    const tmp = document.getElementById('tmpLine');
-    if (tmp) { const r = e.currentTarget.getBoundingClientRect();
-      tmp.setAttribute('x2', e.clientX - r.left); tmp.setAttribute('y2', e.clientY - r.top); }
-  } else if (panAktiv) {
-    panX += e.clientX - panStart.x; panY += e.clientY - panStart.y;
-    panStart = { x: e.clientX, y: e.clientY }; render();
-  }
-});
-document.getElementById('wrap').addEventListener('mouseup', (e) => {
-  if (connectVon) {
-    const ziel = e.target.closest('.node');
-    if (ziel && ziel.dataset.id !== connectVon.node) {
-      edges = edges.filter((ed) => !(ed.from === connectVon.node && ed.fromPort === connectVon.port));
-      edges.push({ from: connectVon.node, fromPort: connectVon.port, to: ziel.dataset.id });
-    }
-    connectVon = null; render();
-  }
-  panAktiv = false;
-});
-// Leere Fläche ziehen = Pan
-document.getElementById('wrap').addEventListener('mousedown', (e) => {
-  if (e.target.id === 'wrap' || e.target.id === 'linien') {
-    panAktiv = true; panStart = { x: e.clientX, y: e.clientY };
-  }
-});
+    <b style="font-size:14px;color:#4aa3ff">🔵 DATEN-BLÖCKE</b>
+    <table style="width:100%;font-size:12.5px;margin:6px 0 16px;border-collapse:collapse">
+      <tr><td style="padding:4px 8px"><b>📝 Set Variable</b></td><td style="padding:4px 8px;color:#8b93a7">Daten speichern.</td></tr>
+      <tr><td style="padding:4px 8px"><b>🧮 Run Equation</b></td><td style="padding:4px 8px;color:#8b93a7">Rechnungen: „2+2*3".</td></tr>
+      <tr><td style="padding:4px 8px"><b>🌐 Send API Request</b></td><td style="padding:4px 8px;color:#8b93a7">Externe Daten (JSON/XML/Text). JSON-Pfad erlaubt gezielte Werte („data.name").</td></tr>
+      <tr><td style="padding:4px 8px"><b>🔁 Run a Loop</b></td><td style="padding:4px 8px;color:#8b93a7">Blöcke 1–20-mal ausführen.</td></tr>
+    </table>
 
-// ═══ FELD-EDIT (Doppelklick) ═══
-function editNode(n) {
-  const k = katVon(n.typ);
-  document.getElementById('mTitel').textContent = k.ico + ' ' + k.name;
-  const body = document.getElementById('mBody');
-  body.innerHTML = '';
-  k.felder.forEach((f) => {
-    const cur = (n.felder || {})[f.k];
-    if (f.t === 'nested') return;
-    const l = document.createElement('label'); l.textContent = f.l; body.appendChild(l);
-    if (f.t === 'bool') {
-      const c = document.createElement('input'); c.type = 'checkbox'; c.checked = !!cur;
-      c.addEventListener('change', () => { n.felder[f.k] = c.checked; });
-      body.appendChild(c);
-    } else if (f.t === 'number') {
-      const i = document.createElement('input'); i.type = 'number'; i.value = cur ?? f.d ?? 0;
-      i.addEventListener('input', () => { n.felder[f.k] = Number(i.value); });
-      body.appendChild(i);
-    } else if (f.t === 'rolle') {
-      fetch('/api/roles').then((r) => r.json()).then((r) => {
-        const sel = document.createElement('select');
-        sel.innerHTML = '<option value="">– wählen –</option>' + r.liste.map((x) =>
-          '<option value="' + esc(x.id) + '"' + cur === x.id ? ' selected' : '' + '>' + esc(x.name) + '</option>').join('');
-        sel.addEventListener('change', () => { n.felder[f.k] = sel.value; });
-        body.appendChild(sel);
-      }).catch(() => {});
-    } else {
-      const i = document.createElement(f.t === 'text' && f.l.includes('Text') ? 'textarea' : 'input');
-      if (i.tagName === 'INPUT') i.type = 'text';
-      i.value = cur ?? f.d ?? '';
-      i.addEventListener('input', () => { n.felder[f.k] = i.value; });
-      body.appendChild(i);
-    }
-  });
-  const m = document.getElementById('modal'); m.style.display = 'flex';
-  document.getElementById('mOk').onclick = () => { m.style.display = 'none'; render(); };
-  document.getElementById('mZu').onclick = () => { m.style.display = 'none'; };
-}
+    <b style="font-size:14px;color:#34d399">💡 PROF-BEISPIELE</b>
+    <div style="background:rgba(52,211,153,.08);border-radius:8px;padding:12px;font-size:12px;line-height:1.7;margin-bottom:16px">
+      <b>🎁 Lotterie:</b> Chance 20% → DANN: Add Money 1000 + Send Reply „Du hast gewonnen!"<br>
+      <b>🛡️ Rollen-Check:</b> IF Role (VIP) → DANN: Send „Willkommen VIP!" / SONST: nichts<br>
+      <b>🌐 Live-Daten:</b> API Request (Wetter) → Compare Variable → DANN: „Nimm einen Schirm mit! ☔"<br>
+      <b>🎭 Mini-Game:</b> RANDOM 50% → DANN: Add Money + „Gewonnen!" / SONST: „Verloren!"
+    </div>
 
-// ═══ LÖSCHEN per Entf ═══
-addEventListener('keydown', (e) => {
-  if (e.key === 'Delete' && selNode && document.activeElement.tagName !== 'INPUT') delNode(selNode);
-});
+    <b style="font-size:14px;color:#22d3ee">🏷️ VARIABLEN (in Texten nutzbar)</b>
+    <table style="width:100%;font-size:12.5px;margin:8px 0;border-collapse:collapse">
+      <tr><td style="padding:5px 8px;background:rgba(255,255,255,.04)"><b>{user}</b></td><td style="padding:5px 8px">Erwähnt den Nutzer (@ping)</td></tr>
+      <tr><td style="padding:5px 8px"><b>{username}</b></td><td style="padding:5px 8px">Nur der Name</td></tr>
+      <tr><td style="padding:5px 8px;background:rgba(255,255,255,.04)"><b>{server}</b></td><td style="padding:5px 8px">Servername</td></tr>
+      <tr><td style="padding:5px 8px"><b>{member}</b></td><td style="padding:5px 8px">Mitglieder-Zahl</td></tr>
+      <tr><td style="padding:5px 8px;background:rgba(255,255,255,.04)"><b>{arg1} / {arg2}</b></td><td style="padding:5px 8px">Command-Argumente</td></tr>
+    </table>
 
-// ═══ SAVE / LOAD ═══
-document.getElementById('saveBtn').addEventListener('click', async () => {
-  const name = document.getElementById('cName').value.toLowerCase().trim();
-  if (!name) return alert('Bitte command-name eingeben!');
-  if (!nodes.length) return alert('Mindestens ein Block auf der Leinwand!');
-  try {
-    const payload = { id: editId, name, description: document.getElementById('cDesc').value,
-      cooldown: Number(document.getElementById('cCd').value) || 0,
-      roles: [...document.getElementById('cRoles').selectedOptions].map((o) => o.value),
-      guildId: gid(), nodes, edges };
-    await api('POST', '/studio/befehle', payload);
-    alert('✅ Gespeichert & live geladen! /' + name + ' ist auf Discord verfügbar.');
-  } catch (e) { alert('Fehler: ' + e.message); }
-});
-async function api(m, u, b) {
-  const o = { method: m, headers: { 'Content-Type': 'application/json' } };
-  if (b !== undefined) o.body = JSON.stringify(b);
-  const r = await fetch('/api' + u, o);
-  const d = await r.json().catch(() => ({}));
-  if (!r.ok) throw new Error(d.error || 'HTTP ' + r.status);
-  return d;
-}
-function toastHint(msg) {
-  let h = document.querySelector('.hinweis');
-  if (h) h.textContent = msg;
-}
-// Rollen laden
-fetch('/api/roles').then((r) => r.json()).then((r) => {
-  document.getElementById('cRoles').innerHTML = r.liste.map((x) =>
-    '<option value="' + esc(x.id) + '">' + esc(x.name) + '</option>').join('');
-}).catch(() => {});
-// Start-Node
-nodes.push({ id: 'n0', typ: 'start', x: 60, y: 120, felder: {} });
-nodeId = 1;
-palette(); render();
-
-// Existierenden Befehl laden: /studio.html?id=...
-(async () => {
-  const id = new URLSearchParams(location.search).get('id');
-  if (!id) return;
-  try {
-    const r = await api('GET', '/studio/befehl/' + id);
-    const c = r.befehl;
-    editId = c.id;
-    document.getElementById('cName').value = c.name;
-    document.getElementById('cDesc').value = c.description || '';
-    document.getElementById('cCd').value = c.cooldown || 0;
-    nodes = (c.nodes && c.nodes.length) ? c.nodes : [];
-    edges = c.edges || [];
-    nodeId = nodes.length + 1;
-    render();
-  } catch (_) {}
-})();
-</script>
+    <b style="font-size:14px;color:#8b93a7">⌨️ TASTENKOMBINATIONEN</b>
+    <table style="width:100%;font-size:12.5px;margin:8px 0;border-collapse:collapse">
+      <tr><td style="padding:5px 8px;background:rgba(255,255,255,.04)"><b>Strg + S</b></td><td style="padding:5px 8px">Speichern</td></tr>
+      <tr><td style="padding:5px 8px"><b>Strg + Z / Y</b></td><td style="padding:5px 8px">Undo / Redo</td></tr>
+      <tr><td style="padding:5px 8px;background:rgba(255,255,255,.04)"><b>Entf</b></td><td style="padding:5px 8px">Block löschen</td></tr>
+      <tr><td style="padding:5px 8px"><b>Strg + D</b></td><td style="padding:5px 8px">Block duplizieren</td></tr>
+      <tr><td style="padding:5px 8px;background:rgba(255,255,255,.04)"><b>Strg + C / V</b></td><td style="padding:5px 8px">Block kopieren / einfügen</td></tr>
+    </table>
+  </div>
+</div>
+</body>
 </body>
 </html>
