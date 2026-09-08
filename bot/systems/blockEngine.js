@@ -183,10 +183,43 @@ async function blockAus(b, interaction, ctx) {
     // ── API ──
     case 'fetch_api': {
       try {
-        const r = await fetch(b.url);
-        const j = await r.json();
-        vSet(ctx, b.varName || 'api', JSON.stringify(j).slice(0, 1500));
-      } catch (_) {}
+        const r = await fetch(b.url, { headers: { 'User-Agent': 'Lumiox/1.0' } });
+        const roh = await r.text();
+        let ergebnis = roh;
+        // JSON versuchen:
+        try {
+          const j = JSON.parse(roh);
+          // Optionaler Pfad: b.pfad = 'data.name' → verschachtelt abrufen
+          if (b.pfad) {
+            let val = j;
+            for (const teil of b.pfad.split('.')) { val = val?.[teil.trim()]; }
+            ergebnis = val != null ? (typeof val === 'object' ? JSON.stringify(val) : String(val)) : 'Pfad nicht gefunden';
+          } else {
+            ergebnis = JSON.stringify(j).slice(0, 1500);
+          }
+        } catch (_) {
+          // Kein JSON → XML? Tags + Inhalte extrahieren:
+          if (roh.includes('<')) {
+            const tags = roh.match(/<([a-zA-Z0-9_-]+)[^>]*>([^<]+)<\/\1>/g) || [];
+            const obj = {};
+            for (const t of tags) {
+              const m2 = t.match(/<([a-zA-Z0-9_-]+)[^>]*>([^<]+)<\/\1>/);
+              if (m2) obj[m2[1]] = m2[2];
+            }
+            // XML als lesbare Liste formatieren:
+            ergebnis = Object.entries(obj).map(([k, v]) => k + ': ' + v).join('\n').slice(0, 1500) || roh.slice(0, 1500);
+          } else {
+            // Reiner Text (HTML-Strip):
+            ergebnis = roh.replace(/<[^>]+>/g, '').trim().slice(0, 1500);
+          }
+        }
+        if (!r.ok) ergebnis = 'HTTP ' + r.status + ': ' + ergebnis;
+        vSet(ctx, b.varName || 'api', ergebnis);
+        logger.info('API-Block: ' + b.url + ' → ' + r.status + ' (' + r.headers.get('content-type') + ')');
+      } catch (e) {
+        vSet(ctx, b.varName || 'api', 'FEHLER: ' + e.message);
+        logger.warn('API-Block Fehler: ' + e.message);
+      }
       return 'out';
     }
     // ── LOOPS ──
